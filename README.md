@@ -1,6 +1,7 @@
 # Beat Saber Linux Goodies
 
 # Recommended Install Method
+- Install wine and ensure your default wine prefix supports .Net 4.6.1
 - Install Beat Saber through Steam
 - Run Beat Saber once/Play a round
 - Take latest Linux alpha from [My BeatDrop Fork](https://github.com/geefr/BeatDrop/releases) 

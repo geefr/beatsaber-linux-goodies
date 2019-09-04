@@ -28,6 +28,8 @@
 
 echo "This script will setup beat saber mods on your system"
 echo "Before running make sure the following have been done:"
+echo " - Wine is installed on your system"
+echo " - Your wine installation supports .Net 4.6.1 or higher"
 echo " - Beat Saber has been installed through steam"
 echo " - Beat Saber has been run/played at least once"
 echo " - BeatDrop or ModAssistant has been run, and the BSIPA mod has been installed (Don't worry if IPA.exe didn't patch correctly, we'll handle that here"
