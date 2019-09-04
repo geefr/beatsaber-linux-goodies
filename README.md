@@ -4,11 +4,11 @@
 - Install Beat Saber through Steam
 - Run Beat Saber once/Play a round
 - Take latest Linux alpha from [My BeatDrop Fork](https://github.com/geefr/BeatDrop/releases) 
-- Use BeatDrop to install BSIPA required mods
-- Run [The Fixup Script](https://github.com/geefr/beatsaber-linux-goodies/blob/master/scripts/bs-linux-modfix.sh) patch the game
+- Use BeatDrop to install BSIPA and other mods
+- Run [The Fixup Script](https://github.com/geefr/beatsaber-linux-goodies/blob/master/scripts/bs-linux-modfix.sh) to patch the game
 - In steam right click Beat Saber -> Properties
 - Check 'Force the use of a specific Steam Play compatibility tool
-- Select the tool called 'Proton BeatSaber'
+- Select the tool called 'Proton BeatSaber' (Might need to restart Steam)
 - Go have fun
 
 # What
