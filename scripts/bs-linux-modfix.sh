@@ -97,7 +97,11 @@ mv "${compatData}/pfx/drive_c/windows/syswow64/winhttp.dll" "${compatData}/pfx/d
 # Patching BS with IPA.exe
 pushd "${bsInstall}"
 
-WINEPATH="${bsProtonDir}/dist/bin/wine64" WINEPREFIX="${bsProtonDir}/dist/share/default_pfx" "${bsProtonDir}/dist/bin/wine64" IPA.exe
+# TODO: Would be nice to exploit the Proton installation here, or otherwise not require the user to deal with winetricks
+#WINEPATH="${bsProtonDir}/dist/bin/wine64" WINEPREFIX="${bsProtonDir}/dist/share/default_pfx" "${bsProtonDir}/dist/bin/wine64" IPA.exe
+# TODO: Would be nice to be able to detect if .net 4.6.1 is supported by wine and quit otherwise
+# For now system wine must be setup with at least dotnet461 installed
+wine IPA.exe
 
 if [ $? -ne 0 ]; then
 	echo "WARNING: IPA.exe returned non-zero result"
