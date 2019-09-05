@@ -26,10 +26,15 @@
 
 #set -x
 
+ipaWinePrefix="~/.wine/wineprefix/beatsaber-linux-goodies-ipa"
+bsProtonName="Proton BeatSaber"
+compatTools="${HOME}/.steam/root/compatibilitytools.d/"
+bsProtonDir="${compatTools}/${bsProtonName}"
+compatData="${bsInstall}/../../compatdata/620980"
+
 echo "This script will setup beat saber mods on your system"
 echo "Before running make sure the following have been done:"
 echo " - Wine is installed on your system"
-echo " - Your wine installation supports .Net 4.6.1 or higher"
 echo " - Beat Saber has been installed through steam"
 echo " - Beat Saber has been run/played at least once"
 echo " - BeatDrop or ModAssistant has been run, and the BSIPA mod has been installed (Don't worry if IPA.exe didn't patch correctly, we'll handle that here"
@@ -42,6 +47,10 @@ echo ""
 echo "The Proton installation will be copied to ~/.steam/root/compatibilitytools.d/Proton BeatSaber"
 echo "TODO: To workaround https://github.com/beat-saber-modding-group/BeatSaber-IPA-Reloaded/issues/18 this script will modify SteamApps/compatdata/620980. If something doesn't work right just delete this folder and validate your beat saber installation"
 echo ""
+echo "This script will also setup a wine prefix for running IPA (${ipaWinePrefix}), and will download the required .net 4.6.1 runtime"
+echo "This step may take a long time to run the first time, please follow all setup wizards and prompts as they appear"
+echo "Once this has been done once subsequent runs of the script will re-use the existing wine installation."
+echo ""
 echo "After running this script you will need to"
 echo " - Restart Steam"
 echo " - Change the proton version user for beat saber to 'Proton BeatSaber'"
@@ -52,6 +61,12 @@ if [ $# -ne 2 ]; then
 	exit 1
 fi
 
+which wine > /dev/null
+if [ $? -ne 0 ]; then
+	echo "ERROR: Wine doesn't appear to be installed on your system, please do so and ensure it's in your PATH"
+	exit 1
+fi
+
 read -n 1 -p "Are you sure you want to continue? [Y/n] " reply; 
 if [ "$reply" != "" ]; then echo; fi
 if [ "$reply" != "${reply#[Nn]}" ]; then
@@ -59,12 +74,25 @@ if [ "$reply" != "${reply#[Nn]}" ]; then
     exit 0
 fi
 
+if [ ! -d "${ipaWinePrefix}" ]; then
+	echo "Setting up wine prefix for IPA in ${ipaWinePrefix}"
+	mkdir -p "${ipaWinePrefix}"
+fi
+if [ ! -d "${ipaWinePrefix}/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/" ]; then
+	pushd "${ipaWinePrefix}"
+	wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+	chmod +x winetricks
+	popd
+
+	WINEPREFIX="${ipaWinePrefix}" ./winetricks dotnet461
+	if [ $? -ne 0 ]; then
+		echo "ERROR: Failed to install .Net 4.6.1"
+		exit 1
+	fi
+fi
+
 bsInstall=$(realpath "${1}")
 protonInstall=$(realpath "${2}")
-bsProtonName="Proton BeatSaber"
-compatTools="${HOME}/.steam/root/compatibilitytools.d/"
-bsProtonDir="${compatTools}/${bsProtonName}"
-compatData="${bsInstall}/../../compatdata/620980"
 
 echo "Creating custom Proton installation for Beat Saber use"
 rm -rf "${bsProtonDir}" || true
@@ -103,7 +131,7 @@ pushd "${bsInstall}"
 #WINEPATH="${bsProtonDir}/dist/bin/wine64" WINEPREFIX="${bsProtonDir}/dist/share/default_pfx" "${bsProtonDir}/dist/bin/wine64" IPA.exe
 # TODO: Would be nice to be able to detect if .net 4.6.1 is supported by wine and quit otherwise
 # For now system wine must be setup with at least dotnet461 installed
-wine IPA.exe
+WINEPREFIX="${ipaWinePrefix}" wine IPA.exe
 
 if [ $? -ne 0 ]; then
 	echo "WARNING: IPA.exe returned non-zero result"
