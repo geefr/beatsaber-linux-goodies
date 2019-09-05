@@ -93,8 +93,8 @@ cat <<EOM >"${bsProtonDir}/compatibilitytool.vdf"
 }
 EOM
 
-mv "${bsProtonDir}/dist/lib64/wine/winhttp.dll.so" "${bsProtonDir}/dist/lib64/wine/winhttp_alt.dll.so" || true
-mv "${compatData}/pfx/drive_c/windows/syswow64/winhttp.dll" "${compatData}/pfx/drive_c/windows/syswow64/winhttp_alt.dll" || true
+mv "${bsProtonDir}/dist/lib64/wine/winhttp.dll.so" "${bsProtonDir}/dist/lib64/wine/winhttp_alt.dll.so" 2> /dev/null || true
+mv "${compatData}/pfx/drive_c/windows/syswow64/winhttp.dll" "${compatData}/pfx/drive_c/windows/syswow64/winhttp_alt.dll" 2> /dev/null || true
 
 # Patching BS with IPA.exe
 pushd "${bsInstall}"
