@@ -109,6 +109,9 @@ if [ $? -ne 0 ]; then
 	echo "WARNING: IPA.exe returned non-zero result"
 fi
 
+echo ""
+echo "SUCCESS: Beat Saber has been modded successfully, have fun hitting block <3"
+
 popd
 
 # Configure wine registry to ensure winhttp.dll loads correctly
