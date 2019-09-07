@@ -26,16 +26,22 @@
 
 #set -x
 
-# This script validates whether the wine installation on the system is valid for use with BSIPA
-# In order to be considered valid:
-# - The wine installation requires .net 4.6.1 installed
-# - TODO: This script may not be perfect. It may return true for other similar versions of .net
+# This script sets up a wine prefix such that it can run BSIPA
+# That means installing:
+# - dotnet461 through winetricks
 #
 # Arguments: None
 # Environment: WINEPREFIX should be set to the prefix to check
-# Returns: 0 if the prefix seems valid
+# Returns: 0 if installation was successful
 
-echo "USAGE: ${0} : Validates whether \$WINEPREFIX is setup for running BSIPA"
+echo "USAGE: ${0} : Sets up \$WINEPREFIX for running BSIPA"
+
+if [ -z "${WINEPREFIX}" ]; then
+  echo "WARNING: WINEPREFIX not set, assuming ~/.wine"
+  WINEPREFIX="${HOME}/.wine"
+fi
+
+export WINEPREFIX=$(realpath ${WINEPREFIX})
 
 which wine > /dev/null
 if [ $? -ne 0 ]; then
@@ -43,22 +49,24 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-if [ -z "${WINEPREFIX}" ]; then
-  echo "WARNING: WINEPREFIX not set, assuming ~/.wine"
-  WINEPREFIX="${HOME}/.wine"
+mkdir -p ${WINEPREFIX} 2> /dev/null
+pushd ${WINEPREFIX} > /dev/null
+if ! wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks 2> /dev/null; then
+  echo "ERROR: Failed to download winetricks, please log this as a bug at https://github.com/geefr/beatsaber-linux-goodies"
+  exit 1
+fi
+chmod +x winetricks
+popd > /dev/null
+
+if ! ${WINEPREFIX}/winetricks dotnet461 2> /dev/null; then
+	echo "ERROR: Failed to install .Net 4.6.1"
+	exit 1
 fi
 
-WINEPREFIX=$(realpath ${WINEPREFIX})
-
-if [ ! -d "${WINEPREFIX}" ]; then
-  echo "ERROR: Wine prefix at ${WINEPREFIX} doesn't exist"
+if ! ./bs-linux-is-wine-valid.sh &> /dev/null; then
+  echo "ERROR: .Net installation succeeded but wine prefix doesn't appear valid"
   exit 1
 fi
 
-if [ ! -f "${WINEPREFIX}/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/Microsoft.CSharp.dll" ]; then
-  echo "ERROR: Wine prefix at ${WINEPREFIX} doesn't contain the expected .Net installation"
-  exit 1
-fi
-
-echo "SUCCESS: Wine prefix at ${WINEPREFIX} should be able to run BSIPA"
+echo "SUCCESS: Wine prefix at ${WINEPREFIX} setup to run BSIPA"
 exit 0
