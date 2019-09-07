@@ -26,7 +26,7 @@
 
 #set -x
 
-ipaWinePrefix="~/.wine/wineprefix/beatsaber-linux-goodies-ipa"
+ipaWinePrefix="${HOME}/.wine/wineprefix/beatsaber-linux-goodies-ipa"
 bsProtonName="Proton BeatSaber"
 compatTools="${HOME}/.steam/root/compatibilitytools.d/"
 bsProtonDir="${compatTools}/${bsProtonName}"
@@ -67,6 +67,12 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
+which cabextract > /dev/null
+if [ $? -ne 0 ]; then
+	echo "ERROR: cabextract is required to install dotnet 4.6.1, please ensure it's in your PATH"
+	exit 1
+fi
+
 read -n 1 -p "Are you sure you want to continue? [Y/n] " reply; 
 if [ "$reply" != "" ]; then echo; fi
 if [ "$reply" != "${reply#[Nn]}" ]; then
@@ -84,7 +90,7 @@ if [ ! -d "${ipaWinePrefix}/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/"
 	chmod +x winetricks
 	popd
 
-	WINEPREFIX="${ipaWinePrefix}" ./winetricks dotnet461
+	WINEPREFIX="${ipaWinePrefix}" "${ipaWinePrefix}/winetricks" dotnet461
 	if [ $? -ne 0 ]; then
 		echo "ERROR: Failed to install .Net 4.6.1"
 		exit 1
