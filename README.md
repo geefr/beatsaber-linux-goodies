@@ -1,16 +1,14 @@
 # Beat Saber Linux Goodies
 
 # Recommended Install Method
-- Install wine and ensure your default wine prefix supports .Net 4.6.1
-- Install Beat Saber through Steam
-- Run Beat Saber once/Play a round
-- Take latest Linux alpha from [My BeatDrop Fork](https://github.com/geefr/BeatDrop/releases) 
-- Use BeatDrop to install BSIPA and other mods
-- Run [The Fixup Script](https://github.com/geefr/beatsaber-linux-goodies/blob/master/scripts/bs-linux-modfix.sh) to patch the game - './bs-linux-modfix.sh &lt;Beat Saber Install directory (SteamApps/common/Beat Saber)&gt; &lt;Path to Proton Installation (SteamApps/common/Proton 3.7)&gt;'
-- In steam right click Beat Saber -> Properties
-- Check 'Force the use of a specific Steam Play compatibility tool
-- Select the tool called 'Proton BeatSaber' (Might need to restart Steam)
-- Go have fun
+
+At the moment there's no fully integrated solution, but if you know how to run a shell script you'll be fine ;)
+
+For downloading mods the recommended method is [My BeatDrop Fork](https://github.com/geefr/BeatDrop/releases). This is a native Linux port of BeatDrop with a few tweaks here and there.
+
+In addition to mod downloads you'll need to ensure your system's wine installation is up to scratch, as a default install can't run BSIPA.
+
+See the [scripts directory](scripts/README.md) for instructions/further detail.
 
 # What
 Mod installation scripts and other goodies for running Beat Saber on Linux.
