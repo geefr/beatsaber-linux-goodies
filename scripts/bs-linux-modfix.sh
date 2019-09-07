@@ -26,6 +26,12 @@
 
 #set -x
 
+ipaWinePrefix="${HOME}/.wine/wineprefix/beatsaber-linux-goodies-ipa"
+bsProtonName="Proton BeatSaber"
+compatTools="${HOME}/.steam/root/compatibilitytools.d/"
+bsProtonDir="${compatTools}/${bsProtonName}"
+compatData="${bsInstall}/../../compatdata/620980"
+
 echo "This script will setup beat saber mods on your system"
 echo "Before running make sure the following have been done:"
 echo " - Wine is installed on your system"
@@ -52,6 +58,11 @@ if [ $# -ne 2 ]; then
 	exit 1
 fi
 
+if ! ./bs-linux-is-wine-valid.sh > /dev/null; then
+  echo "ERROR: Your wine installation doesn't appear to be valid, please ensure you have wine installed, and .Net 4.6.1 is installed in \$WINEPREFIX"
+  exit 1
+fi
+
 read -n 1 -p "Are you sure you want to continue? [Y/n] " reply; 
 if [ "$reply" != "" ]; then echo; fi
 if [ "$reply" != "${reply#[Nn]}" ]; then
@@ -61,10 +72,6 @@ fi
 
 bsInstall=$(realpath "${1}")
 protonInstall=$(realpath "${2}")
-bsProtonName="Proton BeatSaber"
-compatTools="${HOME}/.steam/root/compatibilitytools.d/"
-bsProtonDir="${compatTools}/${bsProtonName}"
-compatData="${bsInstall}/../../compatdata/620980"
 
 echo "Creating custom Proton installation for Beat Saber use"
 rm -rf "${bsProtonDir}" || true
@@ -93,17 +100,17 @@ cat <<EOM >"${bsProtonDir}/compatibilitytool.vdf"
 }
 EOM
 
-mv "${bsProtonDir}/dist/lib64/wine/winhttp.dll.so" "${bsProtonDir}/dist/lib64/wine/winhttp_alt.dll.so" 2> /dev/null || true
-mv "${compatData}/pfx/drive_c/windows/syswow64/winhttp.dll" "${compatData}/pfx/drive_c/windows/syswow64/winhttp_alt.dll" 2> /dev/null || true
+mv "${bsProtonDir}/dist/lib64/wine/winhttp.dll.so" "${bsProtonDir}/dist/lib64/wine/winhttp_alt.dll.so" &> /dev/null || true
+mv "${compatData}/pfx/drive_c/windows/syswow64/winhttp.dll" "${compatData}/pfx/drive_c/windows/syswow64/winhttp_alt.dll" &> /dev/null || true
 
 # Patching BS with IPA.exe
-pushd "${bsInstall}"
+pushd "${bsInstall}" &> /dev/null
 
 # TODO: Would be nice to exploit the Proton installation here, or otherwise not require the user to deal with winetricks
 #WINEPATH="${bsProtonDir}/dist/bin/wine64" WINEPREFIX="${bsProtonDir}/dist/share/default_pfx" "${bsProtonDir}/dist/bin/wine64" IPA.exe
 # TODO: Would be nice to be able to detect if .net 4.6.1 is supported by wine and quit otherwise
 # For now system wine must be setup with at least dotnet461 installed
-wine IPA.exe
+wine IPA.exe -n 2> /dev/null
 
 if [ $? -ne 0 ]; then
 	echo "WARNING: IPA.exe returned non-zero result"
@@ -112,7 +119,7 @@ fi
 echo ""
 echo "SUCCESS: Beat Saber has been modded successfully, have fun hitting block <3"
 
-popd
+popd &> /dev/null
 
 # Configure wine registry to ensure winhttp.dll loads correctly
 # TODO: If using geefr/beatdrop this isn't needed, maybe do it anyway?
