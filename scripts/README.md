@@ -35,7 +35,7 @@ export WINEPREFIX=~/.wine/wineprefix=beatsaber-linux-goodies-ipa
 
 # Run the script
 # The proton installation here will be copied and modified to apply some fixes
-./bs-linux-modfis.sh ~/.steam/steam/steamapps/common/Beat\ Saber ~/.steam/steam/steamapps/common/Proton\ 3.7
+./bs-linux-modfix.sh ~/.steam/steam/steamapps/common/Beat\ Saber ~/.steam/steam/steamapps/common/Proton\ 3.7
 ```
 
 With any luck you should have a modded copy of Beat Saber now, only one this left to do
