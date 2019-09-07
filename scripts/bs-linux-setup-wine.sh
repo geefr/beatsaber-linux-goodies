@@ -49,6 +49,12 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
+which cabextract > /dev/null
+if [ $? -ne 0 ]; then
+	echo "ERROR: cabextract is required to install dotnet 4.6.1, please ensure it's in your PATH"
+	exit 1
+fi
+
 mkdir -p ${WINEPREFIX} 2> /dev/null
 pushd ${WINEPREFIX} > /dev/null
 if ! wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks 2> /dev/null; then

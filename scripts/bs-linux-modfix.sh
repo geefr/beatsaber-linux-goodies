@@ -47,10 +47,6 @@ echo ""
 echo "The Proton installation will be copied to ~/.steam/root/compatibilitytools.d/Proton BeatSaber"
 echo "TODO: To workaround https://github.com/beat-saber-modding-group/BeatSaber-IPA-Reloaded/issues/18 this script will modify SteamApps/compatdata/620980. If something doesn't work right just delete this folder and validate your beat saber installation"
 echo ""
-echo "This script will also setup a wine prefix for running IPA (${ipaWinePrefix}), and will download the required .net 4.6.1 runtime"
-echo "This step may take a long time to run the first time, please follow all setup wizards and prompts as they appear"
-echo "Once this has been done once subsequent runs of the script will re-use the existing wine installation."
-echo ""
 echo "After running this script you will need to"
 echo " - Restart Steam"
 echo " - Change the proton version user for beat saber to 'Proton BeatSaber'"
@@ -61,16 +57,9 @@ if [ $# -ne 2 ]; then
 	exit 1
 fi
 
-which wine > /dev/null
-if [ $? -ne 0 ]; then
-	echo "ERROR: Wine doesn't appear to be installed on your system, please do so and ensure it's in your PATH"
-	exit 1
-fi
-
-which cabextract > /dev/null
-if [ $? -ne 0 ]; then
-	echo "ERROR: cabextract is required to install dotnet 4.6.1, please ensure it's in your PATH"
-	exit 1
+if ! ./bs-linux-is-wine-valid.sh > /dev/null; then
+  echo "ERROR: Your wine installation doesn't appear to be valid, please ensure you have wine installed, and .Net 4.6.1 is installed in \$WINEPREFIX"
+  exit 1
 fi
 
 read -n 1 -p "Are you sure you want to continue? [Y/n] " reply; 
@@ -78,23 +67,6 @@ if [ "$reply" != "" ]; then echo; fi
 if [ "$reply" != "${reply#[Nn]}" ]; then
     echo "Okay I won't touch anything"
     exit 0
-fi
-
-if [ ! -d "${ipaWinePrefix}" ]; then
-	echo "Setting up wine prefix for IPA in ${ipaWinePrefix}"
-	mkdir -p "${ipaWinePrefix}"
-fi
-if [ ! -d "${ipaWinePrefix}/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/" ]; then
-	pushd "${ipaWinePrefix}"
-	wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
-	chmod +x winetricks
-	popd
-
-	WINEPREFIX="${ipaWinePrefix}" "${ipaWinePrefix}/winetricks" dotnet461
-	if [ $? -ne 0 ]; then
-		echo "ERROR: Failed to install .Net 4.6.1"
-		exit 1
-	fi
 fi
 
 bsInstall=$(realpath "${1}")
@@ -127,23 +99,23 @@ cat <<EOM >"${bsProtonDir}/compatibilitytool.vdf"
 }
 EOM
 
-mv "${bsProtonDir}/dist/lib64/wine/winhttp.dll.so" "${bsProtonDir}/dist/lib64/wine/winhttp_alt.dll.so" || true
-mv "${compatData}/pfx/drive_c/windows/syswow64/winhttp.dll" "${compatData}/pfx/drive_c/windows/syswow64/winhttp_alt.dll" || true
+mv "${bsProtonDir}/dist/lib64/wine/winhttp.dll.so" "${bsProtonDir}/dist/lib64/wine/winhttp_alt.dll.so" &> /dev/null || true
+mv "${compatData}/pfx/drive_c/windows/syswow64/winhttp.dll" "${compatData}/pfx/drive_c/windows/syswow64/winhttp_alt.dll" &> /dev/null || true
 
 # Patching BS with IPA.exe
-pushd "${bsInstall}"
+pushd "${bsInstall}" &> /dev/null
 
 # TODO: Would be nice to exploit the Proton installation here, or otherwise not require the user to deal with winetricks
 #WINEPATH="${bsProtonDir}/dist/bin/wine64" WINEPREFIX="${bsProtonDir}/dist/share/default_pfx" "${bsProtonDir}/dist/bin/wine64" IPA.exe
 # TODO: Would be nice to be able to detect if .net 4.6.1 is supported by wine and quit otherwise
 # For now system wine must be setup with at least dotnet461 installed
-WINEPREFIX="${ipaWinePrefix}" wine IPA.exe
+wine IPA.exe -n 2> /dev/null
 
 if [ $? -ne 0 ]; then
 	echo "WARNING: IPA.exe returned non-zero result"
 fi
 
-popd
+popd &> /dev/null
 
 # Configure wine registry to ensure winhttp.dll loads correctly
 # TODO: If using geefr/beatdrop this isn't needed, maybe do it anyway?
