@@ -2,6 +2,7 @@
 #define MOD_H
 
 #include <QString>
+#include "download.h"
 
 struct Mod
 {
@@ -9,6 +10,7 @@ struct Mod
   QString mDescription;
   QString mGameVersion;
   QString mName;
+  Download mDownload;
 };
 
 #endif

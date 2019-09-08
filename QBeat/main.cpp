@@ -6,7 +6,7 @@
 #include "actions.h"
 #include "util.h"
 #include "settings.h"
-#include "mods/mod.h"
+#include "json/mod.h"
 
 int main(int argc, char *argv[])
 {
@@ -37,6 +37,8 @@ int main(int argc, char *argv[])
   QCommandLineOption actionSetupWine = {"setup-wine", "Setup a wine installation for BSIPA"};
   QCommandLineOption actionLinuxModFix = {"linux-patch", "Patch game with BSIPA"};
   QCommandLineOption actionList = {"list", "List available mods"};
+  QCommandLineOption actionDownload = {"download", "Download a mod but don't install it"};
+  //QCommandLineOption actionInstall = {"install", "Install a mod"};
 
   /*
   QCommandLineOption actionValidate = {"validate", "Validate Beat Saber/Mod Installation"};
@@ -49,7 +51,9 @@ int main(int argc, char *argv[])
     actionSetupWine,
     actionLinuxModFix,
     actionList,
+    actionDownload,
   /*
+   actionInstall,
     actionValidate,
     actionListInstalled,
     actionUpdateInstalled,
@@ -103,6 +107,31 @@ int main(int argc, char *argv[])
       qDebug() << "SUCCESS: Game patched with BSIPA";
     } else {
       qDebug() << "FAILURE: Patching game failed";
+    }
+  }
+  else if( parser.isSet(actionDownload) )
+  {
+    if( parser.positionalArguments().size() < 2 ) {
+      qDebug() << "USAGE: --download <mod name> <Destination Directory>";
+      return EXIT_FAILURE;
+    }
+
+    qDebug() << "Downloading mod...";
+    qDebug() << "TODO: Mod installation is not implemented yet, you'll need to extract the archive yourself";
+    auto mod = actions.getNamedMod(parser.positionalArguments()[0]);
+    if( mod.mID.size() == 0 ) // TODO: This is nasty
+    {
+      qOut << "ERROR: Unable to find mod named: " + parser.positionalArguments()[0];
+      return EXIT_FAILURE;
+    }
+
+    if( actions.downloadMod( mod, parser.positionalArguments()[1] ) )
+    {
+      qOut << "SUCCESS: Mod downloaded to: " + parser.positionalArguments()[1];
+      return EXIT_SUCCESS;
+    } else {
+      qOut << "ERROR: Failed to download mod: ";
+      return EXIT_FAILURE;
     }
   }
   else if( parser.isSet(actionList))

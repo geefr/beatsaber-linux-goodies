@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <mods/mod.h>
+#include <json/mod.h>
 
 class Actions : public QObject
 {
@@ -39,6 +39,20 @@ public:
    */
   Q_INVOKABLE std::list<Mod> listAvailableMods();
 
+  /**
+   * Fetch a mod by name
+   */
+  Q_INVOKABLE Mod getNamedMod( QString name );
+
+  /**
+   * Install a mod
+   */
+  Q_INVOKABLE bool installMod( Mod mod, QString fileName );
+
+  /**
+   * Download a mod to the specified directory
+   */
+  Q_INVOKABLE bool downloadMod( Mod mod, QString directory );
 
   /**
    * @brief Filter a list of mods to a specific game version
