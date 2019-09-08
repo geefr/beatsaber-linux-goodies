@@ -35,7 +35,10 @@
 # Environment: WINEPREFIX should be set to the prefix to check
 # Returns: 0 if the prefix seems valid
 
-echo "USAGE: ${0} : Validates whether \$WINEPREFIX is setup for running BSIPA"
+if [ $# -ne 1 ]; then
+  echo "USAGE: ${0} <Wine Prefix>: Validates whether a wine prefix is setup for running BSIPA"
+  exit 1
+fi
 
 which wine > /dev/null
 if [ $? -ne 0 ]; then
@@ -43,22 +46,17 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-if [ -z "${WINEPREFIX}" ]; then
-  echo "WARNING: WINEPREFIX not set, assuming ~/.wine"
-  WINEPREFIX="${HOME}/.wine"
-fi
+winePrefix=$(realpath ${1})
 
-WINEPREFIX=$(realpath ${WINEPREFIX})
-
-if [ ! -d "${WINEPREFIX}" ]; then
-  echo "ERROR: Wine prefix at ${WINEPREFIX} doesn't exist"
+if [ ! -d "${winePrefix}" ]; then
+  echo "ERROR: Wine prefix at ${winePrefix} doesn't exist"
   exit 1
 fi
 
-if [ ! -f "${WINEPREFIX}/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/Microsoft.CSharp.dll" ]; then
-  echo "ERROR: Wine prefix at ${WINEPREFIX} doesn't contain the expected .Net installation"
+if [ ! -f "${winePrefix}/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/Microsoft.CSharp.dll" ]; then
+  echo "ERROR: Wine prefix at ${winePrefix} doesn't contain the expected .Net installation"
   exit 1
 fi
 
-echo "SUCCESS: Wine prefix at ${WINEPREFIX} should be able to run BSIPA"
+echo "SUCCESS: Wine prefix at ${winePrefix} should be able to run BSIPA"
 exit 0
