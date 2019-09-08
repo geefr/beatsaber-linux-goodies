@@ -6,6 +6,7 @@
 #include <QTemporaryDir>
 
 #include "json/mod.h"
+#include "json/download.h"
 
 class BeatModsV1 : public QObject
 {
@@ -19,10 +20,10 @@ public:
   std::list<Mod> getMods(std::map<QString, QString> filters = {});
 
   /**
-   * Download a mod and output the data to file
+   * Download a mod file and output the data to file
    * @param file An open file for data to be saved into
    */
-  bool downloadMod( Mod mod, QFile& file);
+  bool downloadModFile( Download mod, QFile& file);
 
 private:
   QNetworkAccessManager mNetMan;

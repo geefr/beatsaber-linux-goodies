@@ -130,6 +130,7 @@ bool Actions::installMod( Mod mod, QString fileName )
 
   QFile tempFile(dir.path() + "/temp.zip");
 */
+  /*
   QFile tempFile(fileName);
   if( !tempFile.isOpen() ) {
     qDebug() << "ERROR: Failed to open file for mod download: " + fileName;
@@ -137,13 +138,13 @@ bool Actions::installMod( Mod mod, QString fileName )
   }
 
   BeatModsV1 api;
-  if( !api.downloadMod( mod, tempFile ) ) {
+  if( !api.downloadModFile( mod, tempFile ) ) {
     qDebug() << "ERROR: Failed to download mod: " + mod.mName;
     return false;
   }
 
   tempFile.close();
-
+*/
   // TODO: Decompress the mod download into the beatsaber directory
   // TODO: Beat saber dir from settings/cache
   // TODO: Don't assume everything is a zip
@@ -161,21 +162,25 @@ bool Actions::downloadMod( Mod mod, QString directory )
   // TODO: I'm assuming here that all the files are .zip archives just to get the BSIPA download working
 
   // TODO: Make this reliable and such
-  auto split = mod.mDownload.mURL.split("/", QString::SplitBehavior::SkipEmptyParts);
+  for( auto download : mod.mDownloads )
+  {
+    auto split = download.mURL.split("/", QString::SplitBehavior::SkipEmptyParts);
 
-  QFile tempFile(directory + "/" + split.last());
-  if( !tempFile.isOpen() ) {
-    qDebug() << "ERROR: Failed to open file for mod download: " + tempFile.fileName();
-    return false;
+    QFile tempFile(directory + "/" + split.last());
+    tempFile.open(QFile::OpenModeFlag::ReadWrite);
+    if( !tempFile.isOpen() ) {
+      qDebug() << "ERROR: Failed to open file for mod download: " + tempFile.fileName();
+      return false;
+    }
+
+    BeatModsV1 api;
+    if( !api.downloadModFile( download, tempFile ) ) {
+      qDebug() << "ERROR: Failed to download mod: " + mod.mName;
+      return false;
+    }
+
+    tempFile.close();
   }
-
-  BeatModsV1 api;
-  if( !api.downloadMod( mod, tempFile ) ) {
-    qDebug() << "ERROR: Failed to download mod: " + mod.mName;
-    return false;
-  }
-
-  tempFile.close();
 
   // TODO: Decompress the mod download into the beatsaber directory
   // TODO: Beat saber dir from settings/cache
