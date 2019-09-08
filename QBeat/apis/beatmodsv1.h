@@ -9,7 +9,7 @@ class BeatModsV1
 {
 public:
   BeatModsV1();
-  std::list<Mod> getAllMods();
+  std::list<Mod> getMods(std::map<QString, QString> filters = {});
 private:
   QNetworkAccessManager mNetMan;
 };

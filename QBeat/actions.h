@@ -37,7 +37,7 @@ public:
    * TODO: Need regex/search filter
    * TODO: Will need to return list of mods, for now just logs to terminal
    */
-  Q_INVOKABLE void listAvailableMods();
+  Q_INVOKABLE std::list<Mod> listAvailableMods();
 
 
   /**

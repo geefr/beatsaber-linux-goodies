@@ -6,6 +6,7 @@
 #include "actions.h"
 #include "util.h"
 #include "settings.h"
+#include "mods/mod.h"
 
 int main(int argc, char *argv[])
 {
@@ -60,6 +61,7 @@ int main(int argc, char *argv[])
   // The possible actions this application can perform
   // TODO: This should be in some other class, it's way too big and messy for main
   Actions actions;
+  QTextStream qOut( stdout );
 
   if( parser.isSet(actionValidateWine ))
   {
@@ -105,7 +107,11 @@ int main(int argc, char *argv[])
   }
   else if( parser.isSet(actionList))
   {
-    actions.listAvailableMods();
+    auto mods = actions.listAvailableMods();
+    for( auto mod : mods ) {
+      qOut << mod.mName << "\n";
+    }
+    return EXIT_SUCCESS;
   }
   else {
     // Fall back to --help and exit

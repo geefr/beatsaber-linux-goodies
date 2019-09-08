@@ -16,9 +16,18 @@ BeatModsV1::BeatModsV1()
 
 }
 
-std::list<Mod> BeatModsV1::getAllMods()
+std::list<Mod> BeatModsV1::getMods( std::map<QString, QString> filters)
 {
-  QUrl url("https://beatmods.com/api/v1/mod?status=approved");
+
+  // TODO: Hard coding approved here, maybe that should be on Settings
+  QString urlStr = "https://beatmods.com/api/v1/mod?status=approved";
+  for( auto& filter : filters )
+  {
+    urlStr = urlStr + "&" + filter.first + "=" + filter.second;
+  }
+
+
+  QUrl url(urlStr);
   std::unique_ptr<QNetworkReply> response (mNetMan.get(QNetworkRequest(url)));
 
   QEventLoop loop;

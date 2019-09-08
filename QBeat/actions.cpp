@@ -5,6 +5,7 @@
 
 #include "settings.h"
 #include "apis/beatmodsv1.h"
+#include <iostream>
 
 Actions::Actions(QObject *parent) : QObject(parent)
 {
@@ -86,24 +87,16 @@ bool Actions::linuxModFix( QString bsInstall, QString protonInstall, QString win
   return process.exitCode() == EXIT_SUCCESS;
 }
 
-void Actions::listAvailableMods()
+std::list<Mod> Actions::listAvailableMods()
 {
   // TODO: Support for other apis
   // TODO: Support for github downloads/similar, for things that aren't approved on beatmods yet (Obviously at the users override)
   BeatModsV1 api;
-  auto mods = api.getAllMods();
+  auto mods = api.getMods({{
+    "gameVersion", Settings::gameVersion},
+  });
 
-  mods = filterModsToVersion(mods, Settings::gameVersion);
-
-  for( auto mod : mods )
-  {
-    qDebug() << mod.mName;
-    qDebug() << mod.mID;
-    qDebug() << mod.mGameVersion;
-    qDebug() << mod.mDescription;
-    qDebug() << "\n";
-  }
-
+  return mods;
 }
 
 std::list<Mod> Actions::filterModsToVersion(std::list<Mod> mods, QString version)
