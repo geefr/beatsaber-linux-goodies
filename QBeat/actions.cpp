@@ -21,7 +21,7 @@ bool Actions::isWinePrefixValid( QString winePrefix )
   auto script = Settings::scriptDir + "/bs-linux-is-wine-valid.sh";
   if( !QFile::exists(script) )
   {
-    qDebug() << "ERROR: Failed to find script: " << script;
+    qDebug() << "ERROR: Failed to find script, is QBEAT_SCRIPT_DIR set?: " << script;
     return false;
   }
 
@@ -46,7 +46,7 @@ bool Actions::setupWine( QString winePrefix )
   auto script = Settings::scriptDir + "/bs-linux-setup-wine.sh";
   if( !QFile::exists(script) )
   {
-    qDebug() << "ERROR: Failed to find script: " << script;
+    qDebug() << "ERROR: Failed to find script, is QBEAT_SCRIPT_DIR set?: " << script;
     return false;
   }
 
@@ -71,7 +71,7 @@ bool Actions::linuxModFix( QString bsInstall, QString protonInstall, QString win
   auto script = Settings::scriptDir + "/bs-linux-modfix.sh";
   if( !QFile::exists(script) )
   {
-    qDebug() << "ERROR: Failed to find script: " << script;
+    qDebug() << "ERROR: Failed to find script, is QBEAT_SCRIPT_DIR set?: " << script;
     return false;
   }
 
