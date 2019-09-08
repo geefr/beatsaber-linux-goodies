@@ -14,7 +14,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         actions.cpp \
+        apis/beatmodsv1.cpp \
         main.cpp \
+        mods/mod.cpp \
         settings.cpp \
         util.cpp
 
@@ -33,5 +35,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
   actions.h \
+  apis/beatmodsv1.h \
+  mods/mod.h \
   settings.h \
   util.h

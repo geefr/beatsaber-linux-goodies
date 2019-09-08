@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
   parser.addHelpOption();
 
   // TODO: For now must be specified on the command line each time
+  // TODO: In all of this I'm being naughty and using qDebug for what should be in stdout - FIXME!
   // In the future should use application storage to cache this, similar style to git config
   parser.addPositionalArgument("arg1", "First argument to action");
   parser.addPositionalArgument("arg2", "Second argument to action");
@@ -34,19 +35,21 @@ int main(int argc, char *argv[])
   QCommandLineOption actionValidateWine = {"validate-wine", "Validate wine installation"};
   QCommandLineOption actionSetupWine = {"setup-wine", "Setup a wine installation for BSIPA"};
   QCommandLineOption actionLinuxModFix = {"linux-patch", "Patch game with BSIPA"};
+  QCommandLineOption actionList = {"list", "List available mods"};
+
   /*
   QCommandLineOption actionValidate = {"validate", "Validate Beat Saber/Mod Installation"};
-  QCommandLineOption actionList = {"list", "List available mods"};
+
   QCommandLineOption actionListInstalled = {"list-installed", "List installed mods"};
   QCommandLineOption actionUpdateInstalled = {"update", "Update installed mods"};
   */
   parser.addOptions({
     actionValidateWine,
     actionSetupWine,
-    actionLinuxModFix
+    actionLinuxModFix,
+    actionList,
   /*
     actionValidate,
-    actionList,
     actionListInstalled,
     actionUpdateInstalled,
                         */
@@ -54,27 +57,8 @@ int main(int argc, char *argv[])
 
   parser.process(app);
 
-  /*
-  // Fetch the action to perform
-  if( parser.positionalArguments().size() < 1 )
-    qDebug() << "ERROR: Argument 1 not specified";
-  }
-  auto bsDir = parser.positionalArguments()[0];
-  {
-*/
-  /*
-#ifndef Q_WS_WIN
-  if( parser.positionalArguments().size() < 2 )
-  {
-    // TODO: Only for installation validation?
-    qDebug() << "ERROR: Proton directory not specified";
-    std::exit( EXIT_FAILURE );
-  }
-  auto protonDir = parser.positionalArguments()[1];
-#endif
-*/
-
   // The possible actions this application can perform
+  // TODO: This should be in some other class, it's way too big and messy for main
   Actions actions;
 
   if( parser.isSet(actionValidateWine ))
@@ -119,12 +103,14 @@ int main(int argc, char *argv[])
       qDebug() << "FAILURE: Patching game failed";
     }
   }
+  else if( parser.isSet(actionList))
+  {
+    actions.listAvailableMods();
+  }
   else {
     // Fall back to --help and exit
     parser.showHelp();
   }
-
-
 
 // TODO: GUI support will come after command line ;)
 #if 0

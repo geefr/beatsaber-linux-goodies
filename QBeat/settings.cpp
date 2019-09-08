@@ -1,6 +1,7 @@
 #include "settings.h"
 
 QString Settings::scriptDir = ".";
+QString Settings::gameVersion = "1.3.0";
 
 void Settings::initSettings()
 {

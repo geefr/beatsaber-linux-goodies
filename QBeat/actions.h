@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include <mods/mod.h>
+
 class Actions : public QObject
 {
   Q_OBJECT
@@ -28,6 +30,23 @@ public:
    *
    */
   Q_INVOKABLE bool linuxModFix( QString bsInstall, QString protonInstall, QString winePrefix );
+
+  /**
+   * List all available mods
+   *
+   * TODO: Need regex/search filter
+   * TODO: Will need to return list of mods, for now just logs to terminal
+   */
+  Q_INVOKABLE void listAvailableMods();
+
+
+  /**
+   * @brief Filter a list of mods to a specific game version
+   * @param mods List of mods to filter
+   * @param version Game version to filter to
+   * @return Sub-set of mods which match gameVersion
+   */
+  std::list<Mod> filterModsToVersion(std::list<Mod> mods, QString version);
 
 signals:
 

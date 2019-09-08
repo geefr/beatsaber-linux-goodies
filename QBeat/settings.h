@@ -6,6 +6,13 @@
 struct Settings
 {
   /**
+   * Initialise settings
+   * Check for environment overrides and such
+   * Called from main()
+   */
+  static void initSettings();
+
+  /**
    * Directory containing shell scripts
    * Defaults to application directory
    * Can be overriden by QBEAT_SCRIPT_DIR for testing
@@ -13,11 +20,9 @@ struct Settings
   static QString scriptDir;
 
   /**
-   * Initialise settings
-   * Check for environment overrides and such
-   * Called from main()
+   * Game version
    */
-  static void initSettings();
+  static QString gameVersion;
 };
 
 #endif
