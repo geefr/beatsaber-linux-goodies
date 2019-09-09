@@ -26,6 +26,8 @@ public:
   bool downloadModFile( Download mod, QFile& file);
 
 private:
+  void processModJson( std::list<Mod>& res, QJsonObject obj );
+
   QNetworkAccessManager mNetMan;
 };
 

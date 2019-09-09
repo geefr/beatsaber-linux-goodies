@@ -2,6 +2,7 @@
 
 QString Settings::scriptDir = ".";
 QString Settings::gameVersion = "1.3.0";
+QString Settings::gameType = "steam";
 
 void Settings::initSettings()
 {

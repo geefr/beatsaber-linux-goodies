@@ -113,11 +113,9 @@ Mod Actions::getNamedMod( QString name )
   return *(mods.begin());
 }
 
-bool Actions::installMod( Mod mod, QString directory )
+bool Actions::installMod( Mod mod, QString directory, bool includeDependencies )
 {
   // Alright this is the first tough one
-  // TODO: Fetch a list of dependencies
-  // TODO: Install each of the dependencies
 
   // Download the mod's payload to a temporary file
   QTemporaryDir tempDir;
@@ -126,7 +124,7 @@ bool Actions::installMod( Mod mod, QString directory )
       return false;
   }
 
-  if( !downloadMod(mod,tempDir.path()) ) {
+  if( !downloadMod(mod, tempDir.path(), includeDependencies) ) {
     return false;
   }
 
@@ -146,18 +144,20 @@ bool Actions::installMod( Mod mod, QString directory )
   return true;
 }
 
-bool Actions::downloadMod( Mod mod, QString directory )
+bool Actions::downloadMod( Mod mod, QString directory, bool includeDependencies )
 {
   // Alright this is the first tough one
-  // TODO: Fetch a list of dependencies
-  // TODO: Download each of the dependencies
 
   // Download the mod's payload to a temporary file
   // TODO: I'm assuming here that all the files are .zip archives just to get the BSIPA download working
 
   // TODO: Make this reliable and such
+  BeatModsV1 api;
   for( auto download : mod.mDownloads )
   {
+    if( download.mType != Settings::gameType &&
+        download.mType != "universal" ) continue;
+
     auto split = download.mURL.split("/", QString::SplitBehavior::SkipEmptyParts);
 
     QFile tempFile(directory + "/" + split.last());
@@ -167,7 +167,6 @@ bool Actions::downloadMod( Mod mod, QString directory )
       return false;
     }
 
-    BeatModsV1 api;
     if( !api.downloadModFile( download, tempFile ) ) {
       qDebug() << "ERROR: Failed to download mod: " + mod.mName;
       return false;
@@ -176,7 +175,30 @@ bool Actions::downloadMod( Mod mod, QString directory )
     tempFile.close();
   }
 
-  // TODO: Decompress the mod download into the beatsaber directory
+  if( includeDependencies ) {
+    for( auto& dep : mod.mDependencies ) {
+      // If multiple mods are installed, requiring the same dependency they may require different
+      // versions.
+      // So here we need to explicitly fetch the latest version of the dependency from the api,
+      // and if we can't find it then fall back to the information provided as part of the mod we're installing.
+      auto latestDep = api.getMods({{"name", dep.mName}, {"gameVersion", Settings::gameVersion}});
+      if( latestDep.empty() ) {
+        qDebug() << "ERROR: Failed to fetch " << dep.mName << " for mod dependency";
+        return false;
+        /*
+        // Fall over to the listed version
+        if( !downloadMod(dep, directory, includeDependencies ) ) {
+          return false;
+        }*/
+      } else {
+        // Download the latest available version of the mod
+        if( !downloadMod(latestDep.front(), directory, includeDependencies) ) {
+          return false;
+        }
+      }
+    }
+  }
+
   // TODO: Beat saber dir from settings/cache
   // TODO: Don't assume everything is a zip
   // TODO: Actually validate the mod after the download - skipping the install if something doesn't match would be kind useful here

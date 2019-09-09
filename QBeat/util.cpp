@@ -53,7 +53,7 @@ bool Util::extractArchive( QString archivePath, QString destDirectory )
       // Directory
       QDir dir(fileNameStr);
       if (!dir.exists()){
-        dir.mkdir(".");
+        dir.mkpath(".");
       }
     }
     else {
@@ -65,36 +65,36 @@ bool Util::extractArchive( QString archivePath, QString destDirectory )
 
       auto outFileName = destDirectory + "/" + fileNameStr;
       QFileInfo outFileInfo(outFileName);
-
       outFileInfo.absoluteDir().mkpath(".");
-
-      QFile outFile(QString(destDirectory) + "/" + fileNameStr);
-      outFile.open(QFile::OpenModeFlag::ReadWrite);
-      if( !outFile.isOpen() ) {
-        qDebug() << "ERROR: Failed to open file: " << outFileName;
-        unzClose(zFile);
-        return false;
-      }
-
-      auto error = UNZ_OK;
-      do {
-        error = unzReadCurrentFile( zFile, readBuf.get(), readBufSize );
-        if( error < 0 ) {
-          qDebug() << "ERROR: Decompress failed for file: " << outFileName;
-          unzCloseCurrentFile(zFile);
+      if( !outFileInfo.isDir() ) {
+        QFile outFile(QString(destDirectory) + "/" + fileNameStr);
+        outFile.open(QFile::OpenModeFlag::ReadWrite);
+        if( !outFile.isOpen() ) {
+          qDebug() << "ERROR: Failed to open file: " << outFileName;
           unzClose(zFile);
           return false;
         }
 
-        if( error > 0 ) {
-          if( outFile.write(readBuf.get(), error) != error ) {
+        auto error = UNZ_OK;
+        do {
+          error = unzReadCurrentFile( zFile, readBuf.get(), readBufSize );
+          if( error < 0 ) {
             qDebug() << "ERROR: Decompress failed for file: " << outFileName;
             unzCloseCurrentFile(zFile);
             unzClose(zFile);
             return false;
           }
-        }
-      } while (error > 0); // OK or EOF
+
+          if( error > 0 ) {
+            if( outFile.write(readBuf.get(), error) != error ) {
+              qDebug() << "ERROR: Decompress failed for file: " << outFileName;
+              unzCloseCurrentFile(zFile);
+              unzClose(zFile);
+              return false;
+            }
+          }
+        } while (error > 0); // OK or EOF
+      }
 
       unzCloseCurrentFile(zFile);
 

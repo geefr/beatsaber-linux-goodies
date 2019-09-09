@@ -23,6 +23,12 @@ struct Settings
    * Game version
    */
   static QString gameVersion;
+
+  /**
+   * Game Installation Type
+   * steam or oculus
+   */
+  static QString gameType;
 };
 
 #endif

@@ -117,7 +117,6 @@ int main(int argc, char *argv[])
     }
 
     qDebug() << "Downloading mod...";
-    qDebug() << "TODO: Mod installation is not implemented yet, you'll need to extract the archive yourself";
     auto mod = actions.getNamedMod(parser.positionalArguments()[0]);
     if( mod.mID.size() == 0 ) // TODO: This is nasty
     {

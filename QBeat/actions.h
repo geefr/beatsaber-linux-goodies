@@ -47,12 +47,12 @@ public:
   /**
    * Install a mod to the specified directory
    */
-  Q_INVOKABLE bool installMod( Mod mod, QString directory );
+  Q_INVOKABLE bool installMod( Mod mod, QString directory, bool includeDependencies = true );
 
   /**
    * Download a mod to the specified directory
    */
-  Q_INVOKABLE bool downloadMod( Mod mod, QString directory );
+  Q_INVOKABLE bool downloadMod( Mod mod, QString directory, bool includeDependencies = true );
 
   /**
    * @brief Filter a list of mods to a specific game version
