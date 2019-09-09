@@ -45,9 +45,9 @@ public:
   Q_INVOKABLE Mod getNamedMod( QString name );
 
   /**
-   * Install a mod
+   * Install a mod to the specified directory
    */
-  Q_INVOKABLE bool installMod( Mod mod, QString fileName );
+  Q_INVOKABLE bool installMod( Mod mod, QString directory );
 
   /**
    * Download a mod to the specified directory

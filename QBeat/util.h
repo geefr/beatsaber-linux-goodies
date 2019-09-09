@@ -1,20 +1,12 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <QObject>
+#include <QString>
 
-class Util : public QObject
+class Util
 {
-  Q_OBJECT
 public:
-  explicit Util(QObject *parent = nullptr);
-
-  Q_INVOKABLE bool isBeatSaberModded( QString path );
-  Q_INVOKABLE bool isWinePrefixValue( QString prefix );
-
-signals:
-
-public slots:
+  static bool extractArchive( QString archivePath, QString destDirectory );
 };
 
-#endif // UTIL_H
+#endif

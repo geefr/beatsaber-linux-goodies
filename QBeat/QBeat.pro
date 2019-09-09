@@ -41,3 +41,5 @@ HEADERS += \
   json/mod.h \
   settings.h \
   util.h
+
+LIBS += -lminizip

@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
   QCommandLineOption actionLinuxModFix = {"linux-patch", "Patch game with BSIPA"};
   QCommandLineOption actionList = {"list", "List available mods"};
   QCommandLineOption actionDownload = {"download", "Download a mod but don't install it"};
-  //QCommandLineOption actionInstall = {"install", "Install a mod"};
+  QCommandLineOption actionInstall = {"install", "Install a mod"};
 
   /*
   QCommandLineOption actionValidate = {"validate", "Validate Beat Saber/Mod Installation"};
@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
     actionLinuxModFix,
     actionList,
     actionDownload,
+    actionInstall,
   /*
-   actionInstall,
     actionValidate,
     actionListInstalled,
     actionUpdateInstalled,
@@ -131,6 +131,30 @@ int main(int argc, char *argv[])
       return EXIT_SUCCESS;
     } else {
       qOut << "ERROR: Failed to download mod: ";
+      return EXIT_FAILURE;
+    }
+  }
+  else if( parser.isSet(actionInstall) )
+  {
+    if( parser.positionalArguments().size() < 2 ) {
+      qDebug() << "USAGE: --install <mod name> <Destination Directory>";
+      return EXIT_FAILURE;
+    }
+
+    qDebug() << "Installing mod...";
+    auto mod = actions.getNamedMod(parser.positionalArguments()[0]);
+    if( mod.mID.size() == 0 ) // TODO: This is nasty
+    {
+      qOut << "ERROR: Unable to find mod named: " + parser.positionalArguments()[0];
+      return EXIT_FAILURE;
+    }
+
+    if( actions.installMod( mod, parser.positionalArguments()[1] ) )
+    {
+      qOut << "SUCCESS: Mod installed to: " + parser.positionalArguments()[1];
+      return EXIT_SUCCESS;
+    } else {
+      qOut << "ERROR: Failed to installed mod: ";
       return EXIT_FAILURE;
     }
   }
