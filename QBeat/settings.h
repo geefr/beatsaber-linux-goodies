@@ -10,13 +10,6 @@ public:
   static Settings instance;
 
   /**
-   * Directory containing shell scripts
-   * Defaults to application directory
-   */
-  void scriptDir(QString dir);
-  QString scriptDir() const;
-
-  /**
    * Game version
    */
   void gameVersion(QString version);
@@ -51,7 +44,6 @@ public:
   QString bsInstall() const;
 
   // Keys for settings
-  static const char* kScriptDir;
   static const char* kGameVersion;
   static const char* kGameType;
   static const char* kWinePrefix;

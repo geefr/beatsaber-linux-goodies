@@ -1,7 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QCommandLineParser>
-#include <QDebug>
 
 #include "actions.h"
 #include "util.h"
@@ -10,6 +9,10 @@
 
 int main(int argc, char *argv[])
 {
+  // TODO: This suppresses a debug log whenever QBeat is run on my system, not sure why it exists
+  qputenv("QT_LOGGING_RULES", "qt5ct.debug=false");
+
+
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
 
@@ -24,7 +27,6 @@ int main(int argc, char *argv[])
   parser.addHelpOption();
 
   // TODO: For now must be specified on the command line each time
-  // TODO: In all of this I'm being naughty and using qDebug for what should be in stdout - FIXME!
   // TODO: Some kind of config backup system - does the mod api list which files are considered 'config' or just copy the whole userdata folder?
   // TODO: Support backdoor/injection via 2nd api - disabled by default but like a directory of json files or somesuch, to allow handling unapproved mods at user's risk
 
@@ -163,11 +165,11 @@ int main(int argc, char *argv[])
   else if( parser.isSet(actionDownload) )
   {
     if( parser.positionalArguments().size() < 2 ) {
-      qDebug() << "USAGE: --download <mod name> <Destination Directory>";
+      qOut << "USAGE: --download <mod name> <Destination Directory>\n";
       return EXIT_FAILURE;
     }
 
-    qDebug() << "Downloading mod...";
+    qOut << "Downloading mod...\n";
     auto mod = actions.getNamedMod(parser.positionalArguments()[0]);
     if( mod.mID.size() == 0 ) // TODO: This is nasty
     {

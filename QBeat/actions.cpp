@@ -1,8 +1,8 @@
 #include "actions.h"
 #include <QProcess>
-#include <QDebug>
 #include <QFile>
 #include <QTemporaryDir>
+#include <QCoreApplication>
 
 #include "settings.h"
 #include "apis/beatmodsv1.h"
@@ -32,23 +32,23 @@ void Actions::setConfig(QString key, QString val) {
 bool Actions::isWinePrefixValid()
 {
   QProcess process;
+  QTextStream qOut( stdout );
 
-  auto script = Settings::instance.scriptDir() + "/bs-linux-is-wine-valid.sh";
+  auto script = QCoreApplication::applicationDirPath() + "/bs-linux-is-wine-valid.sh";
   if( !QFile::exists(script) )
   {
-    qDebug() << "ERROR: Failed to find script: " << script;
+    qOut << "ERROR: Failed to find script: " << script << "\n";
     return false;
   }
 
-  process.setWorkingDirectory(Settings::instance.scriptDir());
+  qOut << "Executing: " << script << "\n";
+
+  process.setWorkingDirectory(QCoreApplication::applicationDirPath());
   process.start(script, {Settings::instance.winePrefix()});
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
   process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
-
-  //QByteArray str = process.readAll();
-  //qDebug() << str;
 
   return process.exitCode() == EXIT_SUCCESS;
 }
@@ -57,23 +57,23 @@ bool Actions::isWinePrefixValid()
 bool Actions::setupWine()
 {
   QProcess process;
+  QTextStream qOut( stdout );
 
-  auto script = Settings::instance.scriptDir() + "/bs-linux-setup-wine.sh";
+  auto script = QCoreApplication::applicationDirPath()  + "/bs-linux-setup-wine.sh";
   if( !QFile::exists(script) )
   {
-    qDebug() << "ERROR: Failed to find script: " << script;
+    qOut << "ERROR: Failed to find script: " << script << "\n";
     return false;
   }
 
-  process.setWorkingDirectory(Settings::instance.scriptDir());
+  qOut << "Executing: " << script << "\n";
+
+  process.setWorkingDirectory(QCoreApplication::applicationDirPath() );
   process.start(script, {Settings::instance.winePrefix()});
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
   process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
-
-  //QByteArray str = process.readAll();
-  //qDebug() << str;
 
   return process.exitCode() == EXIT_SUCCESS;
 }
@@ -82,15 +82,18 @@ bool Actions::setupWine()
 bool Actions::patchBeatSaber()
 {
   QProcess process;
+  QTextStream qOut( stdout );
 
-  auto script = Settings::instance.scriptDir() + "/bs-linux-modfix.sh";
+  auto script = QCoreApplication::applicationDirPath()  + "/bs-linux-modfix.sh";
   if( !QFile::exists(script) )
   {
-    qDebug() << "ERROR: Failed to find script: " << script;
+    qOut << "ERROR: Failed to find script: " << script << "\n";
     return false;
   }
 
-  process.setWorkingDirectory(Settings::instance.scriptDir());
+  qOut << "Executing: " << script << "\n";
+
+  process.setWorkingDirectory(QCoreApplication::applicationDirPath() );
   process.start(script, {
     Settings::instance.bsInstall(),
     Settings::instance.bsProtonDir(),
@@ -100,9 +103,6 @@ bool Actions::patchBeatSaber()
   process.waitForFinished(-1);
 
   process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
-
-  //QByteArray str = process.readAll();
-  //qDebug() << str;
 
   return process.exitCode() == EXIT_SUCCESS;
 }
@@ -138,8 +138,9 @@ bool Actions::installMod( Mod mod, bool includeDependencies )
 
   // Download the mod's payload to a temporary file
   QTemporaryDir tempDir;
+  QTextStream qOut( stdout );
   if (!tempDir.isValid()) {
-      qDebug() << "ERROR: Failed to create temporary dir for mod download";
+      qOut << "ERROR: Failed to create temporary dir for mod download\n";
       return false;
   }
 
@@ -155,7 +156,7 @@ bool Actions::installMod( Mod mod, bool includeDependencies )
   for( auto& file : files ) {
     auto fullPath = dir.path() + "/" + file;
     if( !Util::extractArchive(fullPath, Settings::instance.bsInstall()) ) {
-      qDebug() << "ERROR: Failed to extract archive: " << fullPath;
+      qOut << "ERROR: Failed to extract archive: " << fullPath << "\n";
       return false;
     }
   }
@@ -172,6 +173,7 @@ bool Actions::downloadMod( Mod mod, QString directory, bool includeDependencies 
 
   // TODO: Make this reliable and such
   BeatModsV1 api;
+  QTextStream qOut( stdout );
   for( auto download : mod.mDownloads )
   {
     if( download.mType != Settings::instance.gameType() &&
@@ -182,12 +184,12 @@ bool Actions::downloadMod( Mod mod, QString directory, bool includeDependencies 
     QFile tempFile(directory + "/" + split.last());
     tempFile.open(QFile::OpenModeFlag::ReadWrite);
     if( !tempFile.isOpen() ) {
-      qDebug() << "ERROR: Failed to open file for mod download: " + tempFile.fileName();
+      qOut << "ERROR: Failed to open file for mod download: " + tempFile.fileName() << "\n";
       return false;
     }
 
     if( !api.downloadModFile( download, tempFile ) ) {
-      qDebug() << "ERROR: Failed to download mod: " + mod.mName;
+      qOut << "ERROR: Failed to download mod: " + mod.mName << "\n";
       return false;
     }
 
@@ -202,7 +204,7 @@ bool Actions::downloadMod( Mod mod, QString directory, bool includeDependencies 
       // and if we can't find it then fall back to the information provided as part of the mod we're installing.
       auto latestDep = api.getMods({{"name", dep.mName}, {"gameVersion", Settings::instance.gameVersion()}});
       if( latestDep.empty() ) {
-        qDebug() << "ERROR: Failed to fetch " << dep.mName << " for mod dependency";
+        qOut << "ERROR: Failed to fetch " << dep.mName << " for mod dependency\n";
         return false;
         /*
         // Fall over to the listed version

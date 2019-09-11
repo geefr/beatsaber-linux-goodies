@@ -1,7 +1,6 @@
 #include "settings.h"
 
 Settings Settings::instance;
-const char* Settings::kScriptDir = "scriptDir";
 const char* Settings::kGameVersion = "gameVersion";
 const char* Settings::kGameType = "gameType";
 const char* Settings::kWinePrefix = "winePrefix";
@@ -12,7 +11,6 @@ Settings::Settings()
   : QSettings ("gfrancisdev", "QBeat")
 {
   // Init settings if needed
-  if( !contains(kScriptDir) ) setValue(kScriptDir, ".");
   if( !contains(kGameVersion) ) setValue(kGameVersion, "1.3.0");
   if( !contains(kGameType) ) setValue(kGameType, "steam");
 #ifndef Q_OS_WIN32
@@ -24,14 +22,6 @@ Settings::Settings()
 
 Settings::~Settings()
 {
-}
-
-void Settings::scriptDir(QString dir) {
-  setValue(kScriptDir, dir);
-}
-
-QString Settings::scriptDir() const {
-  return value(kScriptDir).toString();
 }
 
 void Settings::gameVersion(QString version) {
