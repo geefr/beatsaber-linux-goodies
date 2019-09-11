@@ -1,16 +1,21 @@
 # Beat Saber Linux Goodies
 
-# Recommended Install Method
-
+# Install Method 1: Beatdrop + script hacks
 At the moment there's no fully integrated solution, but if you know how to run a shell script you'll be fine ;)
 
-For downloading mods the recommended method is [My BeatDrop Fork](https://github.com/geefr/BeatDrop/releases). This is a native Linux port of BeatDrop with a few tweaks here and there.
-
-An alternative for mod downloads is QBeat, currently a very early prototype. See [Here](https://github.com/geefr/beatsaber-linux-goodies/tree/QBeat/QBeat) if you want to try it but I make no promise that it'll work properly.
+For downloading mods probably the simplest method is [My BeatDrop Fork](https://github.com/geefr/BeatDrop/releases). This is a Linux port of BeatDrop with a few tweaks here and there.
 
 In addition to mod downloads you'll need to ensure your system's wine installation is up to scratch, as a default install can't run BSIPA.
 
 See the [scripts directory](scripts/README.md) for instructions/further detail.
+
+# Install Method 2: QBeat
+An alternative for mod downloads is QBeat. This is currently under development but is functional enough to install get things running.
+
+The advantage of QBeat is that it includes everything needed for the setup in one tool; It can be used to setup your wine/proton installations, download mods, and patch beat saber without needing to directly use the scripts.
+
+See [Here](https://github.com/geefr/beatsaber-linux-goodies/tree/QBeat/QBeat) if you want to try it, I'd greatly appreciate feedback on this so get in touch if there's any questions.
+
 
 # What
 Mod installation scripts and other goodies for running Beat Saber on Linux.

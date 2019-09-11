@@ -7,7 +7,28 @@ Current state is fairly primitive, but does provide an alternative to BeatDrop/M
 - Just a command line interface at first, gui will come once base actions are implemented
 
 # Mod Setup Walkthrough
-QBeat includes everything needed to setup mods on Linux, so no need to download the scripts separately. Either build from source (requires Qt5, ZLIB/minizip), or take a prebuilt version from the releases page
+QBeat includes everything needed to setup mods on Linux, so no need to download the scripts separately. 
+
+## Getting QBeat
+QBeat requires Qt and minizip as dependencies. I haven't setup a proper release system yet, but can provide binaries if needed.
+The binaries on the releases page are most likely built for Linux Mint/Ubuntu, against Qt 5.9.
+
+Alternatively you'll have to build from source until I can provide some nice packages
+```
+# Ensure your system has cmake, gcc, minizip, and Qt5 development libraries
+sudo apt install gcc g++ cmake libQt5*-dev libminizip-dev git
+
+# Grab the source
+git clone https://github.com/geefr/beatsaber-linux-goodies
+cd beatsaber-linux-goodies/QBeat
+
+# Configure and build QBeat. By default the install prefix will be /usr/local, so you might want to change it
+# If any dependencies are missing you should get a fairly obvious error
+cmake -DCMAKE_INSTALL_PREFIX=<installation prefix>
+make install
+```
+
+Either build from source (requires Qt5, ZLIB/minizip), or take a prebuilt version from the releases page
 
 ## First Time Setup
 These steps should only need to be run once on your machine.
