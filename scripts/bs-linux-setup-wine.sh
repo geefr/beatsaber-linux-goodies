@@ -34,14 +34,12 @@
 # Environment: WINEPREFIX should be set to the prefix to check
 # Returns: 0 if installation was successful
 
-echo "USAGE: ${0} : Sets up \$WINEPREFIX for running BSIPA"
-
-if [ -z "${WINEPREFIX}" ]; then
-  echo "WARNING: WINEPREFIX not set, assuming ~/.wine"
-  WINEPREFIX="${HOME}/.wine"
+if [ $# -ne 1 ]; then
+  echo "USAGE: ${0} <Wine Prefix> : Sets up a wine prefix for running BSIPA"
+  exit 1
 fi
 
-export WINEPREFIX=$(realpath ${WINEPREFIX})
+winePrefix=$(realpath ${1})
 
 which wine > /dev/null
 if [ $? -ne 0 ]; then
@@ -55,8 +53,8 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-mkdir -p ${WINEPREFIX} 2> /dev/null
-pushd ${WINEPREFIX} > /dev/null
+mkdir -p ${winePrefix} 2> /dev/null
+pushd ${winePrefix} > /dev/null
 if ! wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks 2> /dev/null; then
   echo "ERROR: Failed to download winetricks, please log this as a bug at https://github.com/geefr/beatsaber-linux-goodies"
   exit 1
@@ -64,15 +62,15 @@ fi
 chmod +x winetricks
 popd > /dev/null
 
-if ! ${WINEPREFIX}/winetricks dotnet461 2> /dev/null; then
+if ! WINEPREFIX=${winePrefix} ${winePrefix}/winetricks dotnet461 2> /dev/null; then
 	echo "ERROR: Failed to install .Net 4.6.1"
 	exit 1
 fi
 
-if ! ./bs-linux-is-wine-valid.sh &> /dev/null; then
+if ! ./bs-linux-is-wine-valid.sh ${winePrefix} &> /dev/null; then
   echo "ERROR: .Net installation succeeded but wine prefix doesn't appear valid"
   exit 1
 fi
 
-echo "SUCCESS: Wine prefix at ${WINEPREFIX} setup to run BSIPA"
+echo "SUCCESS: Wine prefix at ${winePrefix} setup to run BSIPA"
 exit 0

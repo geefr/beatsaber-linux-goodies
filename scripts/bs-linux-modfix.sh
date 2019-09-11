@@ -26,7 +26,6 @@
 
 #set -x
 
-ipaWinePrefix="${HOME}/.wine/wineprefix/beatsaber-linux-goodies-ipa"
 bsProtonName="Proton BeatSaber"
 compatTools="${HOME}/.steam/root/compatibilitytools.d/"
 bsProtonDir="${compatTools}/${bsProtonName}"
@@ -53,21 +52,23 @@ echo " - Restart Steam"
 echo " - Change the proton version user for beat saber to 'Proton BeatSaber'"
 echo " - Go have fun <3"
 
-if [ $# -ne 2 ]; then
-	echo "USAGE: ./bs-linux-modfix.sh <Beat Saber Install directory> <Beat Saber Proton Installation>"
+if [ $# -lt 2 ]; then
+  echo "USAGE: ./bs-linux-modfix.sh <Beat Saber Install directory> <Beat Saber Proton Installation> [Wine Prefix (Optional)]"
 	exit 1
 fi
 
-if ! ./bs-linux-is-wine-valid.sh > /dev/null; then
-  echo "ERROR: Your wine installation doesn't appear to be valid, please ensure you have wine installed, and .Net 4.6.1 is installed in \$WINEPREFIX"
-  exit 1
+if [ $# -ne 3 ]; then
+  winePrefix=${WINEPREFIX}
+  if [ ! -d ${winePrefix} ]; then
+    winePrefix="$HOME/.wine"
+  fi
+else
+  winePrefix=${3}
 fi
 
-read -n 1 -p "Are you sure you want to continue? [Y/n] " reply; 
-if [ "$reply" != "" ]; then echo; fi
-if [ "$reply" != "${reply#[Nn]}" ]; then
-    echo "Okay I won't touch anything"
-    exit 0
+if ! ./bs-linux-is-wine-valid.sh ${winePrefix} > /dev/null; then
+  echo "ERROR: Your wine installation doesn't appear to be valid, please ensure you have wine installed, and .Net 4.6.1 is installed in \$WINEPREFIX"
+  exit 1
 fi
 
 bsInstall=$(realpath "${1}")
@@ -110,7 +111,7 @@ pushd "${bsInstall}" &> /dev/null
 #WINEPATH="${bsProtonDir}/dist/bin/wine64" WINEPREFIX="${bsProtonDir}/dist/share/default_pfx" "${bsProtonDir}/dist/bin/wine64" IPA.exe
 # TODO: Would be nice to be able to detect if .net 4.6.1 is supported by wine and quit otherwise
 # For now system wine must be setup with at least dotnet461 installed
-wine IPA.exe -n 2> /dev/null
+WINEPREFIX=${winePrefix} wine IPA.exe -n 2> /dev/null
 
 if [ $? -ne 0 ]; then
 	echo "WARNING: IPA.exe returned non-zero result"
