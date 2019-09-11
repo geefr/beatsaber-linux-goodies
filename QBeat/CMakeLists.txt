@@ -26,8 +26,8 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONF
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Quick minizip)
 
 install( TARGETS ${PROJECT_NAME}
-	 RUNTIME DESTINATION bin
-	 ARCHIVE DESTINATION lib
+   RUNTIME DESTINATION .
+   ARCHIVE DESTINATION .
 	)
 
 # TODO: Bit nasty
@@ -35,7 +35,7 @@ install( FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-is-wine-valid.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-modfix.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-setup-wine.sh
-   DESTINATION bin
+   DESTINATION .
    PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ
    )
 
