@@ -14,20 +14,34 @@ Actions::Actions(QObject *parent) : QObject(parent)
 
 }
 
-bool Actions::isWinePrefixValid( QString winePrefix )
+void Actions::printAllConfig(QTextStream& qOut) {
+  auto keys = Settings::instance.allKeys();
+  for( auto& key : keys ) printConfig(qOut, key);
+}
+
+void Actions::printConfig(QTextStream& qOut, QString key) {
+  qOut << key << " : " << Settings::instance.value(key).toString() << "\n";
+}
+
+void Actions::setConfig(QString key, QString val) {
+  if( Settings::instance.contains(key) ) {
+    Settings::instance.setValue(key, val);
+  }
+}
+
+bool Actions::isWinePrefixValid()
 {
   QProcess process;
 
-
-  auto script = Settings::scriptDir + "/bs-linux-is-wine-valid.sh";
+  auto script = Settings::instance.scriptDir() + "/bs-linux-is-wine-valid.sh";
   if( !QFile::exists(script) )
   {
-    qDebug() << "ERROR: Failed to find script, is QBEAT_SCRIPT_DIR set?: " << script;
+    qDebug() << "ERROR: Failed to find script: " << script;
     return false;
   }
 
-  process.setWorkingDirectory(Settings::scriptDir);
-  process.start(script, {winePrefix});
+  process.setWorkingDirectory(Settings::instance.scriptDir());
+  process.start(script, {Settings::instance.winePrefix()});
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
@@ -40,19 +54,19 @@ bool Actions::isWinePrefixValid( QString winePrefix )
 }
 
 
-bool Actions::setupWine( QString winePrefix )
+bool Actions::setupWine()
 {
   QProcess process;
 
-  auto script = Settings::scriptDir + "/bs-linux-setup-wine.sh";
+  auto script = Settings::instance.scriptDir() + "/bs-linux-setup-wine.sh";
   if( !QFile::exists(script) )
   {
-    qDebug() << "ERROR: Failed to find script, is QBEAT_SCRIPT_DIR set?: " << script;
+    qDebug() << "ERROR: Failed to find script: " << script;
     return false;
   }
 
-  process.setWorkingDirectory(Settings::scriptDir);
-  process.start(script, {winePrefix});
+  process.setWorkingDirectory(Settings::instance.scriptDir());
+  process.start(script, {Settings::instance.winePrefix()});
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
@@ -64,20 +78,24 @@ bool Actions::setupWine( QString winePrefix )
   return process.exitCode() == EXIT_SUCCESS;
 }
 
-
-bool Actions::linuxModFix( QString bsInstall, QString protonInstall, QString winePrefix )
+#ifndef Q_OS_WIN32
+bool Actions::patchBeatSaber()
 {
   QProcess process;
 
-  auto script = Settings::scriptDir + "/bs-linux-modfix.sh";
+  auto script = Settings::instance.scriptDir() + "/bs-linux-modfix.sh";
   if( !QFile::exists(script) )
   {
-    qDebug() << "ERROR: Failed to find script, is QBEAT_SCRIPT_DIR set?: " << script;
+    qDebug() << "ERROR: Failed to find script: " << script;
     return false;
   }
 
-  process.setWorkingDirectory(Settings::scriptDir);
-  process.start(script, {bsInstall, protonInstall, winePrefix});
+  process.setWorkingDirectory(Settings::instance.scriptDir());
+  process.start(script, {
+    Settings::instance.bsInstall(),
+    Settings::instance.bsProtonDir(),
+    Settings::instance.winePrefix()
+  });
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
@@ -88,6 +106,7 @@ bool Actions::linuxModFix( QString bsInstall, QString protonInstall, QString win
 
   return process.exitCode() == EXIT_SUCCESS;
 }
+#endif
 
 std::list<Mod> Actions::listAvailableMods()
 {
@@ -95,7 +114,7 @@ std::list<Mod> Actions::listAvailableMods()
   // TODO: Support for github downloads/similar, for things that aren't approved on beatmods yet (Obviously at the users override)
   BeatModsV1 api;
   auto mods = api.getMods({{
-    "gameVersion", Settings::gameVersion},
+    "gameVersion", Settings::instance.gameVersion()},
   });
 
   return mods;
@@ -105,7 +124,7 @@ Mod Actions::getNamedMod( QString name )
 {
   BeatModsV1 api;
   auto mods = api.getMods({
-    {"gameVersion", Settings::gameVersion},
+    {"gameVersion", Settings::instance.gameVersion()},
     {"name", name},
   });
 
@@ -113,7 +132,7 @@ Mod Actions::getNamedMod( QString name )
   return *(mods.begin());
 }
 
-bool Actions::installMod( Mod mod, QString directory, bool includeDependencies )
+bool Actions::installMod( Mod mod, bool includeDependencies )
 {
   // Alright this is the first tough one
 
@@ -135,7 +154,7 @@ bool Actions::installMod( Mod mod, QString directory, bool includeDependencies )
 
   for( auto& file : files ) {
     auto fullPath = dir.path() + "/" + file;
-    if( !Util::extractArchive(fullPath, directory) ) {
+    if( !Util::extractArchive(fullPath, Settings::instance.bsInstall()) ) {
       qDebug() << "ERROR: Failed to extract archive: " << fullPath;
       return false;
     }
@@ -155,7 +174,7 @@ bool Actions::downloadMod( Mod mod, QString directory, bool includeDependencies 
   BeatModsV1 api;
   for( auto download : mod.mDownloads )
   {
-    if( download.mType != Settings::gameType &&
+    if( download.mType != Settings::instance.gameType() &&
         download.mType != "universal" ) continue;
 
     auto split = download.mURL.split("/", QString::SplitBehavior::SkipEmptyParts);
@@ -181,7 +200,7 @@ bool Actions::downloadMod( Mod mod, QString directory, bool includeDependencies 
       // versions.
       // So here we need to explicitly fetch the latest version of the dependency from the api,
       // and if we can't find it then fall back to the information provided as part of the mod we're installing.
-      auto latestDep = api.getMods({{"name", dep.mName}, {"gameVersion", Settings::gameVersion}});
+      auto latestDep = api.getMods({{"name", dep.mName}, {"gameVersion", Settings::instance.gameVersion()}});
       if( latestDep.empty() ) {
         qDebug() << "ERROR: Failed to fetch " << dep.mName << " for mod dependency";
         return false;

@@ -10,9 +10,6 @@
 
 int main(int argc, char *argv[])
 {
-  /// Check for environment overrides and debug options
-  Settings::initSettings();
-
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QGuiApplication app(argc, argv);
 
@@ -28,16 +25,26 @@ int main(int argc, char *argv[])
 
   // TODO: For now must be specified on the command line each time
   // TODO: In all of this I'm being naughty and using qDebug for what should be in stdout - FIXME!
+  // TODO: Some kind of config backup system - does the mod api list which files are considered 'config' or just copy the whole userdata folder?
+  // TODO: Support backdoor/injection via 2nd api - disabled by default but like a directory of json files or somesuch, to allow handling unapproved mods at user's risk
+
+
   // In the future should use application storage to cache this, similar style to git config
   parser.addPositionalArgument("arg1", "First argument to action");
   parser.addPositionalArgument("arg2", "Second argument to action");
   parser.addPositionalArgument("arg3", "Third argument to action");
+  parser.addPositionalArgument("arg4", "Fourth argument to action");
 
+  QCommandLineOption actionConfig = {"config", "Get/Set QBeat configuration variables"};
+#ifndef Q_OS_WIN32
   QCommandLineOption actionValidateWine = {"validate-wine", "Validate wine installation"};
   QCommandLineOption actionSetupWine = {"setup-wine", "Setup a wine installation for BSIPA"};
-  QCommandLineOption actionLinuxModFix = {"linux-patch", "Patch game with BSIPA"};
+#endif
+  QCommandLineOption actionPatch = {"patch", "Patch game with BSIPA"};
   QCommandLineOption actionList = {"list", "List available mods"};
-  QCommandLineOption actionDownload = {"download", "Download a mod but don't install it"};
+#ifdef Q_DEBUG
+  QCommandLineOption actionDownload = {"download", "(Debug builds only) Download a mod but don't install it"};
+#endif
   QCommandLineOption actionInstall = {"install", "Install a mod"};
 
   /*
@@ -47,11 +54,16 @@ int main(int argc, char *argv[])
   QCommandLineOption actionUpdateInstalled = {"update", "Update installed mods"};
   */
   parser.addOptions({
+    actionConfig,
+#ifndef Q_OS_WIN32
     actionValidateWine,
     actionSetupWine,
-    actionLinuxModFix,
+#endif
+    actionPatch,
     actionList,
+#ifdef Q_DEBUG
     actionDownload,
+#endif
     actionInstall,
   /*
     actionValidate,
@@ -67,48 +79,87 @@ int main(int argc, char *argv[])
   Actions actions;
   QTextStream qOut( stdout );
 
-  if( parser.isSet(actionValidateWine ))
+  if( parser.isSet(actionConfig) )
   {
     if( parser.positionalArguments().size() < 1 ) {
-      qDebug() << "USAGE: --validate-wine <wine prefix>";
+      qOut << "Get all variables  : --config get\n"
+              "Get named variable : --config get <variable name>\n"
+              "Set named variable : --config set <variable name> <new value>\n";
+      return EXIT_SUCCESS;
+    }
+    auto configMode = parser.positionalArguments()[0];
+    if( configMode == "get" && parser.positionalArguments().size() == 1) {
+        actions.printAllConfig(qOut);
+        return EXIT_SUCCESS;
+    } else if( configMode == "get" && parser.positionalArguments().size() == 2 ) {
+        actions.printConfig(qOut, parser.positionalArguments()[1]);
+        return EXIT_SUCCESS;
+    } else if( configMode == "set" && parser.positionalArguments().size() == 3) {
+        actions.setConfig(parser.positionalArguments()[1], parser.positionalArguments()[2]);
+        return EXIT_SUCCESS;
+    } else {
+      qOut << "Get all variables  : --config get\n"
+              "Get named variable : --config get <variable name>\n"
+              "Set named variable : --config set <variable name> <new value>\n";
       return EXIT_FAILURE;
     }
-    if( actions.isWinePrefixValid( parser.positionalArguments()[0] ) ) {
-      qDebug() << "SUCCESS: Wine prefix at " + parser.positionalArguments()[0] + " seem valid";
+  }
+#ifndef Q_OS_WIN32
+  if( parser.isSet(actionValidateWine ))
+  {
+    if( Settings::instance.winePrefix().isEmpty() ) {
+      qOut << "ERROR: Wine prefix not set, run QBeat --config set " << Settings::kWinePrefix << " <prefix> to configure\n";
+      return EXIT_FAILURE;
+    }
+    if( actions.isWinePrefixValid() ) {
+      qOut << "SUCCESS: Wine prefix at " + Settings::instance.winePrefix() + " seem valid\n";
       return EXIT_SUCCESS;
     } else {
-      qDebug() << "FAILURE: Wine prefix at " + parser.positionalArguments()[0] + " does not seem valid";
+      qOut << "FAILURE: Wine prefix at " + Settings::instance.winePrefix() + " does not seem valid\n";
       return EXIT_FAILURE;
     }
   }
   else if( parser.isSet(actionSetupWine))
   {
-    if( parser.positionalArguments().size() < 1 ) {
-      qDebug() << "USAGE: --setup-wine <wine prefix>";
+    if( Settings::instance.winePrefix().isEmpty() ) {
+      qOut << "ERROR: Wine prefix not set, run QBeat --config set " << Settings::kWinePrefix << " <prefix> to configure\n";
       return EXIT_FAILURE;
     }
-    qDebug() << "Running wine setup script. Please be patient and choose the default option in all of the setup wizards. A status message will be printed once setup is complete";
-    if( actions.setupWine( parser.positionalArguments()[0] ) ) {
-      qDebug() << "SUCCESS: Wine prefix setup for running BSIPA";
+    qOut << "Running wine setup script. Please be patient and choose the default option in all of the setup wizards. A status message will be printed once setup is complete\n";
+    qOut.flush();
+    if( actions.setupWine() ) {
+      qOut << "SUCCESS: Wine prefix setup for running BSIPA\n";
     } else {
-      qDebug() << "FAILURE: Setup of wine prefix failed";
+      qOut << "FAILURE: Setup of wine prefix failed\n";
     }
   }
-  else if( parser.isSet(actionLinuxModFix))
+#endif
+  else if( parser.isSet(actionPatch))
   {
-    if( parser.positionalArguments().size() < 2 ) {
-      qDebug() << "USAGE: --linux-patch <Beat Saber Install> <Proton Install> [Wine Prefix (Optional)]";
+#ifndef Q_OS_WIN32
+    if( Settings::instance.winePrefix().isEmpty() ) {
+      qOut << "ERROR: Wine prefix not set, run QBeat --config set " << Settings::kWinePrefix << " <prefix> to configure\n";
+      return EXIT_FAILURE;
+    }
+    if( Settings::instance.bsProtonDir().isEmpty() ) {
+      qOut << "ERROR: Beat Saber Proton dir not set, run QBeat --config set " << Settings::kBSProtonDir << " <dir> to configure\n";
+      return EXIT_FAILURE;
+    }
+#endif
+    if( Settings::instance.bsInstall().isEmpty() ) {
+      qOut << "ERROR: Beat Saber directory not set, run QBeat --config set " << Settings::kBSInstall << " <dir> to configure\n";
       return EXIT_FAILURE;
     }
 
-    qDebug() << "Patching game with BSIPA. Please be patient. A status message will be printed once setup is complete";
-    if( actions.linuxModFix( parser.positionalArguments()[0], parser.positionalArguments()[1],
-                             parser.positionalArguments().size() >= 3 ? parser.positionalArguments()[2] : "" ) ) {
-      qDebug() << "SUCCESS: Game patched with BSIPA";
+    qOut << "Patching game with BSIPA. Please be patient. A status message will be printed once setup is complete\n";
+    if( actions.patchBeatSaber() ) {
+      qOut << "SUCCESS: Game patched with BSIPA\n";
     } else {
-      qDebug() << "FAILURE: Patching game failed";
+      qOut << "FAILURE: Patching game failed\n";
     }
   }
+
+#ifdef Q_DEBUG
   else if( parser.isSet(actionDownload) )
   {
     if( parser.positionalArguments().size() < 2 ) {
@@ -133,27 +184,32 @@ int main(int argc, char *argv[])
       return EXIT_FAILURE;
     }
   }
+#endif
   else if( parser.isSet(actionInstall) )
   {
-    if( parser.positionalArguments().size() < 2 ) {
-      qDebug() << "USAGE: --install <mod name> <Destination Directory>";
+    if( Settings::instance.bsInstall().isEmpty() ) {
+      qOut << "ERROR: Beat Saber directory not set, run QBeat --config set " << Settings::kBSInstall << " <dir> to configure\n";
       return EXIT_FAILURE;
     }
-
-    qDebug() << "Installing mod...";
-    auto mod = actions.getNamedMod(parser.positionalArguments()[0]);
+    if( parser.positionalArguments().size() < 1 ) {
+      qOut << "USAGE: --install <mod name>\n";
+      return EXIT_FAILURE;
+    }
+    auto modName = parser.positionalArguments()[0];
+    qOut << "Installing mod: " << modName << "\n";
+    auto mod = actions.getNamedMod(modName);
     if( mod.mID.size() == 0 ) // TODO: This is nasty
     {
-      qOut << "ERROR: Unable to find mod named: " + parser.positionalArguments()[0];
+      qOut << "ERROR: Unable to find mod named: " << modName << "\n";
       return EXIT_FAILURE;
     }
 
-    if( actions.installMod( mod, parser.positionalArguments()[1] ) )
+    if( actions.installMod( mod ) )
     {
-      qOut << "SUCCESS: Mod installed to: " + parser.positionalArguments()[1];
+      qOut << "SUCCESS: Mod installed: " << modName << "\n";
       return EXIT_SUCCESS;
     } else {
-      qOut << "ERROR: Failed to installed mod: ";
+      qOut << "ERROR: Failed to install mod: " << modName << "\n";
       return EXIT_FAILURE;
     }
   }

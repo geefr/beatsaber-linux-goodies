@@ -2,6 +2,7 @@
 #define ACTIONS_H
 
 #include <QObject>
+#include <QTextStream>
 
 #include <json/mod.h>
 
@@ -11,8 +12,14 @@ class Actions : public QObject
 public:
   explicit Actions(QObject *parent = nullptr);
 
+  /// Access the QBeat configuration
+  void printAllConfig(QTextStream& qOut);
+  void printConfig(QTextStream& qOut, QString key);
+  void setConfig(QString key, QString val);
+
+#ifndef Q_OS_WIN32
   /// Check if the wine prefix is valid for running BSIPA
-  Q_INVOKABLE bool isWinePrefixValid( QString winePrefix );
+  Q_INVOKABLE bool isWinePrefixValid();
 
   /**
    * Setup a wine prefix in order to run BSIPA
@@ -21,7 +28,7 @@ public:
    *
    * @note This may take a very long time. The user will need to follow the prompts in several setup wizards as .net is installed
    */
-  Q_INVOKABLE bool setupWine( QString winePrefix );
+  Q_INVOKABLE bool setupWine();
 
   /**
    * Run actions needed to patch beat saber
@@ -29,7 +36,10 @@ public:
    * This is a linux-specific method, don't call it on windows ;)
    *
    */
-  Q_INVOKABLE bool linuxModFix( QString bsInstall, QString protonInstall, QString winePrefix );
+  Q_INVOKABLE bool patchBeatSaber();
+#else
+# error "Actions::patchBeatSaber not implemented for Windows"
+#endif
 
   /**
    * List all available mods
@@ -47,7 +57,7 @@ public:
   /**
    * Install a mod to the specified directory
    */
-  Q_INVOKABLE bool installMod( Mod mod, QString directory, bool includeDependencies = true );
+  Q_INVOKABLE bool installMod( Mod mod, bool includeDependencies = true );
 
   /**
    * Download a mod to the specified directory
