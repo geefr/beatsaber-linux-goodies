@@ -1,5 +1,5 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.5
+import QtQuick 2.8
+import QtQuick.Controls 2.2
 
 ApplicationWindow {
     id: window
@@ -42,7 +42,7 @@ ApplicationWindow {
                 text: qsTr("Settings")
                 width: parent.width
                 onClicked: {
-                    stackView.push("SettingsPageForm.ui.qml")
+                    stackView.push("SettingsPageForm.qml")
                     drawer.close()
                 }
             }

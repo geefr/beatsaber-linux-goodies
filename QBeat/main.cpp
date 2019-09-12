@@ -223,14 +223,13 @@ int main(int argc, char *argv[])
     }
     return EXIT_SUCCESS;
   }
-  else {
-    // Fall back to --help and exit
-    parser.showHelp();
-  }
 
-// TODO: GUI support will come after command line ;)
-#if 0
+
+  // If nothing specific was requested on the command line start the GUI
   QQmlApplicationEngine engine;
+
+  qmlRegisterType<Settings>("uk.co.gfrancisdev.qbeat.settings", 1, 0, "Settings");
+
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                    &app, [url](QObject *obj, const QUrl &objUrl) {
@@ -239,8 +238,5 @@ int main(int argc, char *argv[])
   }, Qt::QueuedConnection);
   engine.load(url);
 
-
   return app.exec();
-#endif
-  return EXIT_SUCCESS;
 }

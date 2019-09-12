@@ -1,5 +1,5 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.5
+import QtQuick 2.8
+import QtQuick.Controls 2.2
 
 Page {
     width: 600
@@ -8,7 +8,7 @@ Page {
     title: qsTr("Page 2")
 
     Label {
-        text: qsTr("You are on Page 2.")
+        text: qsTr("You are on the mods page.")
         anchors.centerIn: parent
     }
 }
