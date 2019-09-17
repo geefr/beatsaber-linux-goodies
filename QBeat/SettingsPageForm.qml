@@ -24,6 +24,10 @@ Page {
 
     Column {
         id: column
+        anchors.bottomMargin: 25
+        anchors.rightMargin: 0
+        anchors.leftMargin: 0
+        anchors.topMargin: 25
         anchors.fill: parent
         spacing: 25
 
@@ -46,7 +50,7 @@ Page {
             TextField {
                 id: textBSInstall
                 text: settings.bsInstall
-                width: 450
+                width: parent.width - labelBSInstall.width - parent.anchors.leftMargin
                 Binding {
                     target: settings
                     property: "bsInstall"
@@ -99,7 +103,7 @@ Page {
             TextField {
                 id: textProtonInstall
                 text: settings.bsProtonDir
-                width: 450
+                width: parent.width - labelProtonInstall.width - parent.anchors.leftMargin
                 Binding {
                     target: settings
                     property: "bsProtonDir"
@@ -126,7 +130,7 @@ Page {
             TextField {
                 id: textWinePrefix
                 text: settings.winePrefix
-                width: 450
+                width: parent.width - labelWinePrefix.width - parent.anchors.leftMargin
                 Binding {
                     target: settings
                     property: "winePrefix"
@@ -164,14 +168,3 @@ Page {
     }
 }
 
-
-
-
-/*##^## Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
- ##^##*
-/*##^## Designer {
-    D{i:0;autoSize:true;height:480;width:640}
-}
- ##^##*/

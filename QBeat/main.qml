@@ -4,8 +4,8 @@ import QtQuick.Controls 2.2
 ApplicationWindow {
     id: window
     visible: true
-    width: 640
-    height: 480
+    width: 1280
+    height: 800
     title: qsTr("QBeat")
 
     header: ToolBar {
@@ -32,7 +32,7 @@ ApplicationWindow {
 
     Drawer {
         id: drawer
-        width: window.width * 0.66
+        width: window.width * 0.33
         height: window.height
 
         Column {
