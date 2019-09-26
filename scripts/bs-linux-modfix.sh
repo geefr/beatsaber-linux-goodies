@@ -123,6 +123,7 @@ echo "SUCCESS: Beat Saber has been modded successfully, have fun hitting block <
 popd &> /dev/null
 
 # Configure wine registry to ensure winhttp.dll loads correctly
-# TODO: If using geefr/beatdrop this isn't needed, maybe do it anyway?
-
+userRegFile="${bsInstall}/../../compatdata/620980/pfx/user.reg"
+echo '[Software\\Wine\\DllOverrides]' >> ${userRegFile}
+echo '"winhttp"="native,builtin"' >> ${userRegFile}
 
