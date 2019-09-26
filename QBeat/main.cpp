@@ -48,9 +48,9 @@ int main(int argc, char *argv[])
   QCommandLineOption actionDownload = {"download", "(Debug builds only) Download a mod but don't install it"};
 #endif
   QCommandLineOption actionInstall = {"install", "Install a mod"};
+  QCommandLineOption actionValidate = {"validate", "Validate that a mod is installed correctly"};
 
   /*
-  QCommandLineOption actionValidate = {"validate", "Validate Beat Saber/Mod Installation"};
 
   QCommandLineOption actionListInstalled = {"list-installed", "List installed mods"};
   QCommandLineOption actionUpdateInstalled = {"update", "Update installed mods"};
@@ -67,8 +67,8 @@ int main(int argc, char *argv[])
     actionDownload,
 #endif
     actionInstall,
+   actionValidate,
   /*
-    actionValidate,
     actionListInstalled,
     actionUpdateInstalled,
                         */
@@ -156,8 +156,10 @@ int main(int argc, char *argv[])
     qOut << "Patching game with BSIPA. Please be patient. A status message will be printed once setup is complete\n";
     if( actions.patchBeatSaber() ) {
       qOut << "SUCCESS: Game patched with BSIPA\n";
+      return EXIT_SUCCESS;
     } else {
       qOut << "FAILURE: Patching game failed\n";
+      return EXIT_FAILURE;
     }
   }
 
@@ -215,6 +217,34 @@ int main(int argc, char *argv[])
       return EXIT_FAILURE;
     }
   }
+  else if( parser.isSet(actionValidate) )
+  {
+    if( Settings::instance.bsInstall().isEmpty() ) {
+      qOut << "ERROR: Beat Saber directory not set, run QBeat --config set " << Settings::kBSInstall << " <dir> to configure\n";
+      return EXIT_FAILURE;
+    }
+    if( parser.positionalArguments().size() < 1 ) {
+      qOut << "USAGE: --validate <mod name>\n";
+      return EXIT_FAILURE;
+    }
+    auto modName = parser.positionalArguments()[0];
+    qOut << "Validating mod: " << modName << "\n";
+    auto mod = actions.getNamedMod(modName);
+    if( mod.mID.size() == 0 ) // TODO: This is nasty
+    {
+      qOut << "ERROR: Unable to find mod named: " << modName << "\n";
+      return EXIT_FAILURE;
+    }
+
+    if( actions.validateMod( mod ) )
+    {
+      qOut << "SUCCESS: Mod valid: " << modName << "\n";
+      return EXIT_SUCCESS;
+    } else {
+      qOut << "ERROR: Mod not valid, run QBeat --install " << modName << " to fix \n";
+      return EXIT_FAILURE;
+    }
+  }
   else if( parser.isSet(actionList))
   {
     auto mods = actions.listAvailableMods();
@@ -223,14 +253,13 @@ int main(int argc, char *argv[])
     }
     return EXIT_SUCCESS;
   }
-  else {
-    // Fall back to --help and exit
-    parser.showHelp();
-  }
 
-// TODO: GUI support will come after command line ;)
-#if 0
+
+  // If nothing specific was requested on the command line start the GUI
   QQmlApplicationEngine engine;
+
+  qmlRegisterType<Settings>("uk.co.gfrancisdev.qbeat.settings", 1, 0, "Settings");
+
   const QUrl url(QStringLiteral("qrc:/main.qml"));
   QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                    &app, [url](QObject *obj, const QUrl &objUrl) {
@@ -239,8 +268,5 @@ int main(int argc, char *argv[])
   }, Qt::QueuedConnection);
   engine.load(url);
 
-
   return app.exec();
-#endif
-  return EXIT_SUCCESS;
 }

@@ -1,11 +1,11 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.5
+import QtQuick 2.8
+import QtQuick.Controls 2.2
 
 ApplicationWindow {
     id: window
     visible: true
-    width: 640
-    height: 480
+    width: 1280
+    height: 800
     title: qsTr("QBeat")
 
     header: ToolBar {
@@ -32,7 +32,7 @@ ApplicationWindow {
 
     Drawer {
         id: drawer
-        width: window.width * 0.66
+        width: window.width * 0.33
         height: window.height
 
         Column {
@@ -42,7 +42,7 @@ ApplicationWindow {
                 text: qsTr("Settings")
                 width: parent.width
                 onClicked: {
-                    stackView.push("SettingsPageForm.ui.qml")
+                    stackView.push("SettingsPageForm.qml")
                     drawer.close()
                 }
             }

@@ -65,6 +65,11 @@ public:
   Q_INVOKABLE bool downloadMod( Mod mod, QString directory, bool includeDependencies = true );
 
   /**
+   * Validate a mod
+   */
+  Q_INVOKABLE bool validateMod( Mod mod, bool includeDependencies = true );
+
+  /**
    * @brief Filter a list of mods to a specific game version
    * @param mods List of mods to filter
    * @param version Game version to filter to

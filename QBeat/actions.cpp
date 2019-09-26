@@ -226,6 +226,72 @@ bool Actions::downloadMod( Mod mod, QString directory, bool includeDependencies 
   return true;
 }
 
+bool Actions::validateMod(Mod mod, bool includeDependencies )
+{
+  BeatModsV1 api;
+  QTextStream qOut( stdout );
+  for( auto download : mod.mDownloads )
+  {
+    if( download.mType != Settings::instance.gameType() &&
+        download.mType != "universal" ) continue;
+
+    if( download.mFileHashes.empty() ) {
+      qOut << "ERROR: Mod doesn't list any file hashes\n";
+      return false;
+    }
+
+    for( auto& fileToHash : download.mFileHashes ) {
+      QFile tempFile(Settings::instance.bsInstall() + "/" + fileToHash.first );
+      tempFile.open(QFile::OpenModeFlag::ReadOnly);
+      if( !tempFile.isOpen() ) {
+        qOut << "ERROR: Failed to open file for mod verification: " + tempFile.fileName() << "\n";
+        return false;
+      }
+
+      QCryptographicHash hash(QCryptographicHash::Md5);
+      if( !hash.addData(&tempFile) ) {
+        qOut << "ERROR: Failed to calculate hash for file: " + tempFile.fileName() << "\n";
+        return false;
+      }
+
+      auto md5Str = hash.result().toHex();
+
+      qOut << "File: " << fileToHash.first << " Expected: " << fileToHash.second << " Got: " << md5Str << "\n";
+
+      if( md5Str != fileToHash.second ) {
+        qOut << "ERROR: File failed validation (" << fileToHash.first << "), please run QBeat --install " + mod.mName << "\n";
+        return false;
+      }
+    }
+  }
+
+  if( includeDependencies ) {
+    for( auto& dep : mod.mDependencies ) {
+      // If multiple mods are installed, requiring the same dependency they may require different
+      // versions.
+      // So here we need to explicitly fetch the latest version of the dependency from the api,
+      // and if we can't find it then fall back to the information provided as part of the mod we're installing.
+      auto latestDep = api.getMods({{"name", dep.mName}, {"gameVersion", Settings::instance.gameVersion()}});
+      if( latestDep.empty() ) {
+        qOut << "ERROR: Failed to fetch " << dep.mName << " for mod dependency\n";
+        return false;
+        /*
+        // Fall over to the listed version
+        if( !downloadMod(dep, directory, includeDependencies ) ) {
+          return false;
+        }*/
+      } else {
+        // Download the latest available version of the mod
+        if( !validateMod(latestDep.front(), includeDependencies) ) {
+          return false;
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
 std::list<Mod> Actions::filterModsToVersion(std::list<Mod> mods, QString version)
 {
   std::list<Mod> res;
