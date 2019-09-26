@@ -117,13 +117,18 @@ if [ $? -ne 0 ]; then
 	echo "WARNING: IPA.exe returned non-zero result"
 fi
 
-echo ""
-echo "SUCCESS: Beat Saber has been modded successfully, have fun hitting block <3"
-
-popd &> /dev/null
-
 # Configure wine registry to ensure winhttp.dll loads correctly
 userRegFile="${bsInstall}/../../compatdata/620980/pfx/user.reg"
 echo '[Software\\Wine\\DllOverrides]' >> ${userRegFile}
 echo '"winhttp"="native,builtin"' >> ${userRegFile}
+
+if [ $? -ne 0 ]; then
+        echo "ERROR: Failed to add Wine DllOverrides to ${userRegFile}"
+	exit 1
+fi
+
+echo ""
+echo "SUCCESS: Beat Saber has been modded successfully, have fun hitting block <3"
+
+popd &> /dev/null
 
