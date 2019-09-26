@@ -74,6 +74,27 @@ void BeatModsV1::processModJson( std::list<Mod>& res, QJsonObject obj )
     urlStr = downloadObj["url"].toString();
     typeStr = downloadObj["type"].toString();
 
+    auto hashes = downloadObj["hashMd5"].toArray();
+    foreach( QJsonValue hash, hashes) {
+      auto hashObj = hash.toObject();
+      auto file = hashObj["file"].toString();
+      auto md5 = hashObj["hash"].toString();
+      fileHashes[file] = md5;
+    }
+
+/*
+
+    "downloads":[
+      {"type":"universal","url":"/uploads/5d815bfe626a455aff49554e/universal/LibConf-1.0.0.zip",
+        "hashMd5":[
+          {"hash":"31f95ec35fe1573ddda70db877298d0a","file":"Libs/LibConf.1.0.0.0.dll"},
+          {"hash":"986d90bab82d2389fd77849b0308a032","file":"Libs/LibConf.xml"},
+          {"hash":"a6cba0995cc4e8430dd2677fe058e5f1","file":"Plugins/LibConf.manifest"}
+      ]}
+    ],
+    "category":"Libraries","required":false,"dependencies":["5d681028be34f5432f209d42","5d6bfbedbe34f5432f209e5e","5d6bfc1abe34f5432f209e61"]}],"_id":"5d8835c3626a455aff495585"}
+
+*/
     Download jsonDownload = {
       .mType = typeStr,
       .mURL = urlStr,
