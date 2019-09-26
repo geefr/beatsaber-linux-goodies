@@ -164,6 +164,51 @@ bool Actions::installMod( Mod mod, bool includeDependencies )
   return true;
 }
 
+bool Actions::installAllMods()
+{
+  // Alright this is the first tough one
+
+  // Download the mod's payload to a temporary file
+  BeatModsV1 api;
+  QTemporaryDir tempDir;
+  QTextStream qOut( stdout );
+  if (!tempDir.isValid()) {
+      qOut << "ERROR: Failed to create temporary dir for mod download\n";
+      return false;
+  }
+
+  auto mods = api.getMods({{
+    "gameVersion", Settings::instance.gameVersion()},
+  });
+
+  for( auto& mod : mods ) {
+    // Don't include dependencies, we're downloading everything so it should be fine right?
+    if( !downloadMod(mod, tempDir.path(), false) ) {
+      qOut << "ERROR: Failed to download mod: " << mod.mName << "\n";
+      return false;
+    }
+
+    // Iterate over the downloaded files
+    QDir dir(tempDir.path());
+    dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+    auto files = dir.entryList();
+
+    for( auto& file : files ) {
+      auto fullPath = dir.path() + "/" + file;
+      if( !Util::extractArchive(fullPath, Settings::instance.bsInstall()) ) {
+        qOut << "ERROR: Failed to extract archive: " << fullPath << "\n";
+        return false;
+      }
+    }
+
+    qOut << "Installed mod: " << mod.mName << "\n";
+    qOut.flush();
+  }
+
+  return true;
+
+}
+
 bool Actions::downloadMod( Mod mod, QString directory, bool includeDependencies )
 {
   // Alright this is the first tough one
