@@ -109,7 +109,10 @@ bool BeatModsV1::downloadModFile( Download download, QFile& file )
 {
   // Download a mod through the api and save it to the temporary dir
   // TODO: Hard coding approved here, maybe that should be on Settings
-  QString urlStr = "https://beatmods.com/" + download.mURL;
+  QString urlStr = "https://beatmods.com";
+  if( download.mURL[0] != '/' ) urlStr += "/";
+  urlStr += download.mURL;
+
   QTextStream qOut( stdout );
 
   QUrl url(urlStr);
@@ -125,7 +128,7 @@ bool BeatModsV1::downloadModFile( Download download, QFile& file )
 
   if( response->error() != QNetworkReply::NoError )
   {
-    qOut << "ERROR: Failed to download mod file from beatmods\n";
+    qOut << "ERROR: Failed to download mod file from beatmods: " << urlStr << "\n";
     return {};
   }
 
