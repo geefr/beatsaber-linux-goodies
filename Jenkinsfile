@@ -1,20 +1,19 @@
 pipeline {
   agent {
     dockerfile {
-      filename 'source/Dockerfile'
+      filename 'Dockerfile'
       label 'docker-host-dev'
     }
   }
   options {
     buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
-    checkoutToSubdirectory('source')
     timeout(time: 1, unit: 'HOURS')
   }
 
   stages {
     stage('CMake') { steps {
       dir("${env.WORKSPACE}/build") {
-        sh '''cmake -DCMAKE_INSTALL_PREFIX=../install ../source/QBeat'''
+        sh "cmake -DCMAKE_INSTALL_PREFIX=${env.WORKSPACE}/install ./"
       }
     } }
     stage('Build') {
@@ -26,10 +25,8 @@ pipeline {
     }
     stage('Artifacts') {
       steps {
-        dir("${env.WORKSPACE}/install") {
-          sh '''tar -cvzf ../QBeat-Debian.tar.gz ./*'''
-archiveArtifacts artifacts: '../QBeat-Debian.tar.gz', fingerprint: true, onlyIfSuccessful: true
-        }      
+          sh "tar -C install -cvzf QBeat-Debian.tar.gz"
+archiveArtifacts artifacts: 'QBeat-Debian.tar.gz', fingerprint: true, onlyIfSuccessful: true
       }
     }
   }
