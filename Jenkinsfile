@@ -12,20 +12,20 @@ pipeline {
 
   stages {
     stage('CMake') { steps {
-      dir("${env.WORKSPACE}/build") {
-        sh "cmake -DCMAKE_INSTALL_PREFIX=${env.WORKSPACE}/install ../"
+      dir("${env.WORKSPACE}/QBeat/build") {
+        sh "cmake -DCMAKE_INSTALL_PREFIX=${env.WORKSPACE}/QBeat/install ${env.WORKSPACE}/QBeat/"
       }
     } }
     stage('Build') {
       steps {
-        dir("${env.WORKSPACE}/build") {
+        dir("${env.WORKSPACE}/QBeat/build") {
           sh '''make install'''
         }
       }
     }
     stage('Artifacts') {
       steps {
-          sh "tar -C install -cvzf QBeat-Debian.tar.gz"
+          sh "tar -C ${env.WORKSPACE}/QBeat/install -cvzf ${env.WORKSPACE}/QBeat-Debian.tar.gz ."
 archiveArtifacts artifacts: 'QBeat-Debian.tar.gz', fingerprint: true, onlyIfSuccessful: true
       }
     }
