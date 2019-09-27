@@ -58,6 +58,7 @@ public:
    * Install a mod to the specified directory
    */
   Q_INVOKABLE bool installMod( Mod mod, bool includeDependencies = true );
+  Q_INVOKABLE bool installAllMods();
 
   /**
    * Download a mod to the specified directory
