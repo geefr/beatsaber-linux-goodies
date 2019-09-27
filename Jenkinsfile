@@ -13,7 +13,7 @@ pipeline {
   stages {
     stage('CMake') { steps {
       dir("${env.WORKSPACE}/build") {
-        sh "cmake -DCMAKE_INSTALL_PREFIX=${env.WORKSPACE}/install ./"
+        sh "cmake -DCMAKE_INSTALL_PREFIX=${env.WORKSPACE}/install ../"
       }
     } }
     stage('Build') {
