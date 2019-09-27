@@ -27,8 +27,8 @@ pipeline {
     stage('Artifacts') {
       steps {
         dir("${env.WORKSPACE}/install") {
-          sh '''tar -cvzf QBeat-Debian.tar.gz *'''
-archiveArtifacts artifacts: 'QBeat-Debian.tar.gz', fingerprint: true, onlyIfSuccessful: true
+          sh '''tar -cvzf ../QBeat-Debian.tar.gz ./*'''
+archiveArtifacts artifacts: '../QBeat-Debian.tar.gz', fingerprint: true, onlyIfSuccessful: true
         }      
       }
     }
