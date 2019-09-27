@@ -6,29 +6,19 @@ Current state is fairly primitive, but does provide an alternative to BeatDrop/M
 - Not heavily tested, only test on Linux (/should/ build and run on windows, might break things)
 - Just a command line interface at first, gui will come once base actions are implemented
 
+
+If you're playing beat saber on Linux let me know how it goes, feel free to raise feature requests/bugs through github.
+
+Like all early software this might break your beatsaber installation, delete your files, and make the kittens cry.
+If you're unfamiliar with Linux in general or don't know what you're doing please ask first, or wait until the repo hits version 1.0 ;)
+
+
 # Mod Setup Walkthrough
 QBeat includes everything needed to setup mods on Linux, so no need to download the scripts separately. 
 
 ## Getting QBeat
-QBeat requires Qt and minizip as dependencies. I haven't setup a proper release system yet, but can provide binaries if needed.
-The binaries on the releases page are most likely built for Linux Mint/Ubuntu, against Qt 5.9.
-
-Alternatively you'll have to build from source until I can provide some nice packages
-```
-# Ensure your system has cmake, gcc, minizip, and Qt5 development libraries
-sudo apt install gcc g++ cmake libQt5*-dev libminizip-dev git
-
-# Grab the source
-git clone https://github.com/geefr/beatsaber-linux-goodies
-cd beatsaber-linux-goodies/QBeat
-
-# Configure and build QBeat. By default the install prefix will be /usr/local, so you might want to change it
-# If any dependencies are missing you should get a fairly obvious error
-cmake -DCMAKE_INSTALL_PREFIX=<installation prefix>
-make install
-```
-
-Either build from source (requires Qt5, ZLIB/minizip), or take a prebuilt version from the releases page
+Head over to the [Release Page](https://github.com/geefr/beatsaber-linux-goodies/releases)  and grab the latest QBeat tarball.
+These binaries should work on most systems, will be built against Qt 5.9 or thereabouts.
 
 ## First Time Setup
 These steps should only need to be run once on your machine.
@@ -48,8 +38,10 @@ QBeat --setup-wine
 # List available mods
 QBeat --list
 
-# Install mods
+# Install the mods you need
 QBeat --install "BSIPA"
+# Or just install everything like some crazy person
+QBeat --install-all
 
 # Run BSIPA to patch the game (Remember, you need to have run BS once before doing this)
 QBeat --patch
@@ -62,7 +54,6 @@ QBeat --install "Perfection Display"
 QBeat --install "HTTP Status"
 ```
 
-
 # Features
 - Installation of mods on Linux, package manager style interface
 - Ability to setup wine prefix for running BSIPA
@@ -72,13 +63,23 @@ QBeat --install "HTTP Status"
 
 # Limitations
 - QBeat --install : Will install latest version of a mod and it's dependencies, no checking of current version, will overwrite if already present
-- There's no way to list currently installed mods, or verify that a mod is valid (yet)
+- There's no way to list currently installed mods
 - There's no way to uninstall mods (yet)
 - BSIPA will not be run automatically
 - No gui (yet)
 
+## Building QBeat
 
+```
+# Ensure your system has cmake, gcc, minizip, and Qt5 development libraries
+sudo apt install gcc g++ cmake libQt5*-dev libminizip-dev git
 
-If you want to try this feel free, let me know how it goes.
+# Grab the source
+git clone https://github.com/geefr/beatsaber-linux-goodies
+cd beatsaber-linux-goodies/QBeat
 
-Like all early software this might break your beatsaber installation, delete your files, and make the kittens cry. If you don't know what you're doing ask first, or wait until things are ready :)
+# Configure and build QBeat. By default the install prefix will be /usr/local, so you might want to change it
+# If any dependencies are missing you should get a fairly obvious error
+cmake -DCMAKE_INSTALL_PREFIX=<installation prefix>
+make install
+```
