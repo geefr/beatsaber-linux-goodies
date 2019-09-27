@@ -1,20 +1,23 @@
 # Beat Saber Linux Goodies
 
-# Install Method 1: Beatdrop + script hacks
-At the moment there's no fully integrated solution, but if you know how to run a shell script you'll be fine ;)
+# Install Method 1: QBeat
+QBeat is currently under development still but is functional enough to get things working. 
+If you'd prefer a GUI for installing mods then see method 2 instead.
 
-For downloading mods probably the simplest method is [My BeatDrop Fork](https://github.com/geefr/BeatDrop/releases). This is a Linux port of BeatDrop with a few tweaks here and there.
+QBeat can be used to setup wine/proton, download mods, and patch beat saber in a relatively easy manner.
+The scripts from method 2 are included with QBeat and will continue to be maintained for use with other mod installers.
 
-In addition to mod downloads you'll need to ensure your system's wine installation is up to scratch, as a default install can't run BSIPA.
+QBeat releases: [Github release page](https://github.com/geefr/beatsaber-linux-goodies/releases) 
+QBeat Docs:  [See Here, scroll down](https://github.com/geefr/beatsaber-linux-goodies/tree/QBeat/QBeat)
 
-See the [scripts directory](scripts/README.md) for instructions/further detail.
+# Install Method 2: Beatdrop + script hacks
+Beatdrop can also be used for mod installation, there's a work in progress port for Linux.
 
-# Install Method 2: QBeat
-An alternative for mod downloads is QBeat. This is currently under development but is functional enough to install get things running.
+This is close to complete but I don't think I'll be finishing the port. If you're good with electron/node.js and want to help it shouldn't be too difficult. Going forward I plan to maintain QBeat instead, fresh start and a more familiar language.
 
-The advantage of QBeat is that it includes everything needed for the setup in one tool; It can be used to setup your wine/proton installations, download mods, and patch beat saber without needing to directly use the scripts.
+[My BeatDrop Fork](https://github.com/geefr/BeatDrop/releases). This is a Linux port of BeatDrop with a few tweaks here and there.
 
-See [Here](https://github.com/geefr/beatsaber-linux-goodies/tree/QBeat/QBeat) if you want to try it, I'd greatly appreciate feedback on this so get in touch if there's any questions.
+In addition to the mod downloads you'll need to patch the game correctly, see the [scripts directory](scripts/README.md) for instructions/further detail.
 
 
 # What
@@ -35,4 +38,4 @@ There are some folks that want to use their Linux boxes for BS, however can't li
 
 # Bugs/Support
 If you're having issues on Linux it's probably best if you don't pester the BeatDrop/ModAssistant/Mod devs directly for now.
-Raising a ticket here or on my BeatDrop fork is probably a better plan, and will keep the Linux-specific hacks in one place.
+Raising a ticket here is probably a better plan, and will keep the Linux-specific hacks in one place.
