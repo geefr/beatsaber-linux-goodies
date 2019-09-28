@@ -99,6 +99,8 @@ public:
 
   Settings();
   ~Settings();
+private:
+  void sanitisePath( QString& path );
 };
 
 #endif
