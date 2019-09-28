@@ -1,4 +1,5 @@
 #include "settings.h"
+#include <QDir>
 
 Settings Settings::instance;
 const char* Settings::kGameVersion = "gameVersion";
@@ -42,6 +43,7 @@ QString Settings::gameType() const {
 
 #ifndef Q_OS_WIN32
 void Settings::winePrefix(QString prefix) {
+  sanitisePath(prefix);
   setValue(kWinePrefix, prefix);
 }
 
@@ -50,6 +52,7 @@ QString Settings::winePrefix() const {
 }
 
 void Settings::bsProtonDir(QString dir) {
+  sanitisePath(dir);
   setValue(kBSProtonDir, dir);
 }
 
@@ -59,9 +62,18 @@ QString Settings::bsProtonDir() const {
 #endif
 
 void Settings::bsInstall(QString dir) {
+  sanitisePath(dir);
   setValue(kBSInstall, dir);
 }
 
 QString Settings::bsInstall() const {
   return value(kBSInstall).toString();
+}
+
+void Settings::sanitisePath( QString& path ) {
+  if( path.isEmpty() ) return;
+  if( path[0] == '~' ) {
+    path.remove(0,1);
+    path.prepend(QDir::homePath());
+  }
 }
