@@ -7,6 +7,22 @@
 
 #include "minizip/unzip.h"
 
+QString Util::mBSPathsToFix[] = {
+  "Beat Saber_Data",
+  "DLC",
+  "MonoBleedingEdge",
+  "Plugins",
+  "UserData",
+  "IPA",
+  "Libs",
+  "CustomAvatars",
+  "CustomSabers",
+  "CustomNotes",
+  "CustomCampaigns",
+  "CustomPlatforms",
+  "Playlists",
+};
+
 bool Util::extractArchive( QString archivePath, QString destDirectory )
 {
   auto zFile = unzOpen(archivePath.toUtf8());
@@ -48,6 +64,14 @@ bool Util::extractArchive( QString archivePath, QString destDirectory )
     QString fileNameStr( fileName );
     if( fileNameStr.size() == 0 ) continue;
 
+    // Ensure paths such as 'plugins' and corrected to 'Plugins'
+    // Otherwise mods won't be loaded if the path in the zip
+    // has one letter the wrong case -_-
+    //
+    // Alternative would be to fix the mod loading runtime, simpler
+    // to just handle it here
+    fixPath( fileNameStr );
+
     if( fileNameStr[fileNameLen-1] == '/' )
     {
       // Directory
@@ -64,6 +88,7 @@ bool Util::extractArchive( QString archivePath, QString destDirectory )
       }
 
       auto outFileName = destDirectory + "/" + fileNameStr;
+
       QFileInfo outFileInfo(outFileName);
       outFileInfo.absoluteDir().mkpath(".");
       if( !outFileInfo.isDir() ) {
@@ -113,4 +138,16 @@ bool Util::extractArchive( QString archivePath, QString destDirectory )
   return true;
 }
 
+void Util::fixPath( QString& path )
+{
+    for( auto& correctPath : mBSPathsToFix ) {
+        if( path.size() < correctPath.size() ) continue;
+        QString firstBit = path;
+        firstBit.chop(path.size() - correctPath.size());
 
+        if( firstBit.compare( correctPath, Qt::CaseSensitivity::CaseInsensitive ) == 0 ) {
+            path.remove(0, correctPath.size());
+            path.prepend(correctPath);
+        }
+    }
+}

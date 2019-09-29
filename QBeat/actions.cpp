@@ -286,7 +286,11 @@ bool Actions::validateMod(Mod mod, bool includeDependencies )
     }
 
     for( auto& fileToHash : download.mFileHashes ) {
-      QFile tempFile(Settings::instance.bsInstall() + "/" + fileToHash.first );
+
+      QString path = fileToHash.first;
+      Util::fixPath(path);
+
+      QFile tempFile(Settings::instance.bsInstall() + "/" + path );
       tempFile.open(QFile::OpenModeFlag::ReadOnly);
       if( !tempFile.isOpen() ) {
         qOut << "ERROR: Failed to open file for mod verification: " + tempFile.fileName() << "\n";
