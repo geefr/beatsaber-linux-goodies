@@ -44,11 +44,14 @@ bool Actions::isWinePrefixValid()
   qOut << "Executing: " << script << "\n";
 
   process.setWorkingDirectory(QCoreApplication::applicationDirPath());
+  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
   process.start(script, {Settings::instance.winePrefix()});
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
-  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
+  if( process.exitCode() != EXIT_SUCCESS ) {
+      qOut << "Script execution failed: \n" << process.readAll() << "\n";
+  }
 
   return process.exitCode() == EXIT_SUCCESS;
 }
@@ -69,11 +72,14 @@ bool Actions::setupWine()
   qOut << "Executing: " << script << "\n";
 
   process.setWorkingDirectory(QCoreApplication::applicationDirPath() );
+  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
   process.start(script, {Settings::instance.winePrefix()});
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
-  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
+  if( process.exitCode() != EXIT_SUCCESS ) {
+      qOut << "Script execution failed: \n" << process.readAll() << "\n";
+  }
 
   return process.exitCode() == EXIT_SUCCESS;
 }
@@ -92,7 +98,7 @@ bool Actions::patchBeatSaber()
   }
 
   qOut << "Executing: " << script << "\n";
-
+  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
   process.setWorkingDirectory(QCoreApplication::applicationDirPath() );
   process.start(script, {
     Settings::instance.bsInstall(),
@@ -102,7 +108,9 @@ bool Actions::patchBeatSaber()
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
-  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
+  if( process.exitCode() != EXIT_SUCCESS ) {
+      qOut << "Script execution failed: \n" << process.readAll() << "\n";
+  }
 
   return process.exitCode() == EXIT_SUCCESS;
 }
