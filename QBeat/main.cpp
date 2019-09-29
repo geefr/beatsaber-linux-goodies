@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
   QCommandLineOption actionInstall = {"install", "Install a mod"};
   QCommandLineOption actionValidate = {"validate", "Validate that a mod is installed correctly"};
   QCommandLineOption actionInstallEverything = {"install-all", "Install every mod (WARNING: This is probably a bad idea :O)"};
+  QCommandLineOption actionGUI = {"GUI", "Start the GUI (Incomplete)"};
 
   /*
   QCommandLineOption actionListInstalled = {"list-installed", "List installed mods"};
@@ -69,6 +70,7 @@ int main(int argc, char *argv[])
     actionInstall,
     actionValidate,
     actionInstallEverything,
+    actionGUI,
   /*
     actionListInstalled,
     actionUpdateInstalled,
@@ -270,20 +272,21 @@ int main(int argc, char *argv[])
     }
     return EXIT_SUCCESS;
   }
+  else if( parser.isSet(actionGUI) )
+  {
+    // If nothing specific was requested on the command line start the GUI
+    QQmlApplicationEngine engine;
 
+    qmlRegisterType<Settings>("uk.co.gfrancisdev.qbeat.settings", 1, 0, "Settings");
 
-  // If nothing specific was requested on the command line start the GUI
-  QQmlApplicationEngine engine;
+    const QUrl url(QStringLiteral("qrc:/main.qml"));
+    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+                     &app, [url](QObject *obj, const QUrl &objUrl) {
+      if (!obj && url == objUrl)
+        QCoreApplication::exit(-1);
+    }, Qt::QueuedConnection);
+    engine.load(url);
 
-  qmlRegisterType<Settings>("uk.co.gfrancisdev.qbeat.settings", 1, 0, "Settings");
-
-  const QUrl url(QStringLiteral("qrc:/main.qml"));
-  QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                   &app, [url](QObject *obj, const QUrl &objUrl) {
-    if (!obj && url == objUrl)
-      QCoreApplication::exit(-1);
-  }, Qt::QueuedConnection);
-  engine.load(url);
-
-  return app.exec();
+    return app.exec();
+  }
 }
