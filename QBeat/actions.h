@@ -15,7 +15,6 @@ public:
   /// Access the QBeat configuration
   void printAllConfig(QTextStream& qOut);
   void printConfig(QTextStream& qOut, QString key);
-  void setConfig(QString key, QString val);
 
 #ifndef Q_OS_WIN32
   /// Check if the wine prefix is valid for running BSIPA

@@ -25,6 +25,17 @@ Settings::~Settings()
 {
 }
 
+void Settings::setConfig(QString key, QString val) {
+    if( key == kBSInstall ||
+        key == kWinePrefix ||
+        key == kBSProtonDir ) {
+        sanitisePath(val);
+    }
+  if( contains(key) ) {
+    setValue(key, val);
+  }
+}
+
 void Settings::gameVersion(QString version) {
   setValue(kGameVersion, version);
 }

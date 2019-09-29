@@ -23,12 +23,6 @@ void Actions::printConfig(QTextStream& qOut, QString key) {
   qOut << key << " : " << Settings::instance.value(key).toString() << "\n";
 }
 
-void Actions::setConfig(QString key, QString val) {
-  if( Settings::instance.contains(key) ) {
-    Settings::instance.setValue(key, val);
-  }
-}
-
 bool Actions::isWinePrefixValid()
 {
   QProcess process;

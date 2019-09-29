@@ -42,6 +42,8 @@ signals:
   void bsInstallChanged();
 
 public:
+  void setConfig(QString key, QString value);
+
   /**
    * Game version
    */

@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
         actions.printConfig(qOut, parser.positionalArguments()[1]);
         return EXIT_SUCCESS;
     } else if( configMode == "set" && parser.positionalArguments().size() == 3) {
-        actions.setConfig(parser.positionalArguments()[1], parser.positionalArguments()[2]);
+        Settings::instance.setConfig(parser.positionalArguments()[1], parser.positionalArguments()[2]);
         return EXIT_SUCCESS;
     } else {
       qOut << "Get all variables  : --config get\n"
