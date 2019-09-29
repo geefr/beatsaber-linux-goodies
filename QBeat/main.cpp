@@ -48,8 +48,9 @@ int main(int argc, char *argv[])
   QCommandLineOption actionDownload = {"download", "(Debug builds only) Download a mod but don't install it"};
 #endif
   QCommandLineOption actionInstall = {"install", "Install a mod"};
-  QCommandLineOption actionValidate = {"validate", "Validate that a mod is installed correctly"};
   QCommandLineOption actionInstallEverything = {"install-all", "Install every mod (WARNING: This is probably a bad idea :O)"};
+  QCommandLineOption actionValidate = {"validate", "Validate that a mod is installed correctly"};
+  QCommandLineOption actionRemove = {"remove", "Uninstall a mod"};
   QCommandLineOption actionGUI = {"GUI", "Start the GUI (Incomplete)"};
 
   /*
@@ -69,6 +70,7 @@ int main(int argc, char *argv[])
 #endif
     actionInstall,
     actionValidate,
+    actionRemove,
     actionInstallEverything,
     actionGUI,
   /*
@@ -245,6 +247,34 @@ int main(int argc, char *argv[])
       return EXIT_SUCCESS;
     } else {
       qOut << "ERROR: Mod not valid, run QBeat --install " << modName << " to fix \n";
+      return EXIT_FAILURE;
+    }
+  }
+  else if( parser.isSet(actionRemove) )
+  {
+    if( Settings::instance.bsInstall().isEmpty() ) {
+      qOut << "ERROR: Beat Saber directory not set, run QBeat --config set " << Settings::kBSInstall << " <dir> to configure\n";
+      return EXIT_FAILURE;
+    }
+    if( parser.positionalArguments().size() < 1 ) {
+      qOut << "USAGE: --remove <mod name>\n";
+      return EXIT_FAILURE;
+    }
+    auto modName = parser.positionalArguments()[0];
+    qOut << "Removing mod: " << modName << "\n";
+    auto mod = actions.getNamedMod(modName);
+    if( mod.mID.size() == 0 ) // TODO: This is nasty
+    {
+      qOut << "ERROR: Unable to find mod named: " << modName << "\n";
+      return EXIT_FAILURE;
+    }
+
+    if( actions.removeMod( mod ) )
+    {
+      qOut << "SUCCESS: Mod removed: " << modName << "\n";
+      return EXIT_SUCCESS;
+    } else {
+      qOut << "ERROR: Failed to remove mod: " << modName << "\n";
       return EXIT_FAILURE;
     }
   }

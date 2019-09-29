@@ -343,6 +343,35 @@ bool Actions::validateMod(Mod mod, bool includeDependencies )
   return true;
 }
 
+bool Actions::removeMod(Mod mod)
+{
+  BeatModsV1 api;
+  QTextStream qOut( stdout );
+  for( auto download : mod.mDownloads )
+  {
+    if( download.mType != Settings::instance.gameType() &&
+        download.mType != "universal" ) continue;
+
+    if( download.mFileHashes.empty() ) {
+      qOut << "ERROR: Mod doesn't list any file hashes\n";
+      return false;
+    }
+
+    for( auto& fileToHash : download.mFileHashes ) {
+
+      QString path = fileToHash.first;
+      Util::fixPath(path);
+
+      QFile tempFile(Settings::instance.bsInstall() + "/" + path );
+
+      // Delete the file (and don't worry if it fails)
+      tempFile.remove();
+    }
+  }
+
+  return true;
+}
+
 std::list<Mod> Actions::filterModsToVersion(std::list<Mod> mods, QString version)
 {
   std::list<Mod> res;

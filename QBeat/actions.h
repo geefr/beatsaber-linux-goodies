@@ -70,6 +70,11 @@ public:
   Q_INVOKABLE bool validateMod( Mod mod, bool includeDependencies = true );
 
   /**
+   * Remove a mod
+   */
+  Q_INVOKABLE bool removeMod( Mod mod );
+
+  /**
    * @brief Filter a list of mods to a specific game version
    * @param mods List of mods to filter
    * @param version Game version to filter to
