@@ -68,6 +68,7 @@ public:
    * Validate a mod
    */
   Q_INVOKABLE bool validateMod( Mod mod, bool includeDependencies = true );
+  Q_INVOKABLE bool validateAllMods();
 
   /**
    * Remove a mod

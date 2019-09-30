@@ -50,6 +50,7 @@ int main(int argc, char *argv[])
   QCommandLineOption actionInstall = {"install", "Install a mod"};
   QCommandLineOption actionInstallEverything = {"install-all", "Install every mod (WARNING: This is probably a bad idea :O)"};
   QCommandLineOption actionValidate = {"validate", "Validate that a mod is installed correctly"};
+  QCommandLineOption actionValidateAll = {"validate-all", "Validate all mods"};
   QCommandLineOption actionRemove = {"remove", "Uninstall a mod"};
   QCommandLineOption actionGUI = {"GUI", "Start the GUI (Incomplete)"};
 
@@ -70,6 +71,7 @@ int main(int argc, char *argv[])
 #endif
     actionInstall,
     actionValidate,
+    actionValidateAll,
     actionRemove,
     actionInstallEverything,
     actionGUI,
@@ -247,6 +249,21 @@ int main(int argc, char *argv[])
       return EXIT_SUCCESS;
     } else {
       qOut << "ERROR: Mod not valid, run QBeat --install " << modName << " to fix \n";
+      return EXIT_FAILURE;
+    }
+  }
+  else if( parser.isSet(actionValidateAll) )
+  {
+    if( Settings::instance.bsInstall().isEmpty() ) {
+      qOut << "ERROR: Beat Saber directory not set, run QBeat --config set " << Settings::kBSInstall << " <dir> to configure\n";
+      return EXIT_FAILURE;
+    }
+
+    if( actions.validateAllMods() )
+    {
+      qOut << "SUCCESS: All mods valid\n";
+      return EXIT_SUCCESS;
+    } else {
       return EXIT_FAILURE;
     }
   }
