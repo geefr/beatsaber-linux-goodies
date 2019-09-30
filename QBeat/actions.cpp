@@ -23,12 +23,6 @@ void Actions::printConfig(QTextStream& qOut, QString key) {
   qOut << key << " : " << Settings::instance.value(key).toString() << "\n";
 }
 
-void Actions::setConfig(QString key, QString val) {
-  if( Settings::instance.contains(key) ) {
-    Settings::instance.setValue(key, val);
-  }
-}
-
 bool Actions::isWinePrefixValid()
 {
   QProcess process;
@@ -44,11 +38,14 @@ bool Actions::isWinePrefixValid()
   qOut << "Executing: " << script << "\n";
 
   process.setWorkingDirectory(QCoreApplication::applicationDirPath());
+  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
   process.start(script, {Settings::instance.winePrefix()});
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
-  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
+  if( process.exitCode() != EXIT_SUCCESS ) {
+      qOut << "Script execution failed: \n" << process.readAll() << "\n";
+  }
 
   return process.exitCode() == EXIT_SUCCESS;
 }
@@ -69,11 +66,14 @@ bool Actions::setupWine()
   qOut << "Executing: " << script << "\n";
 
   process.setWorkingDirectory(QCoreApplication::applicationDirPath() );
+  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
   process.start(script, {Settings::instance.winePrefix()});
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
-  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
+  if( process.exitCode() != EXIT_SUCCESS ) {
+      qOut << "Script execution failed: \n" << process.readAll() << "\n";
+  }
 
   return process.exitCode() == EXIT_SUCCESS;
 }
@@ -92,7 +92,7 @@ bool Actions::patchBeatSaber()
   }
 
   qOut << "Executing: " << script << "\n";
-
+  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
   process.setWorkingDirectory(QCoreApplication::applicationDirPath() );
   process.start(script, {
     Settings::instance.bsInstall(),
@@ -102,7 +102,9 @@ bool Actions::patchBeatSaber()
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
-  process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
+  if( process.exitCode() != EXIT_SUCCESS ) {
+      qOut << "Script execution failed: \n" << process.readAll() << "\n";
+  }
 
   return process.exitCode() == EXIT_SUCCESS;
 }
@@ -335,6 +337,35 @@ bool Actions::validateMod(Mod mod, bool includeDependencies )
           return false;
         }
       }
+    }
+  }
+
+  return true;
+}
+
+bool Actions::removeMod(Mod mod)
+{
+  BeatModsV1 api;
+  QTextStream qOut( stdout );
+  for( auto download : mod.mDownloads )
+  {
+    if( download.mType != Settings::instance.gameType() &&
+        download.mType != "universal" ) continue;
+
+    if( download.mFileHashes.empty() ) {
+      qOut << "ERROR: Mod doesn't list any file hashes\n";
+      return false;
+    }
+
+    for( auto& fileToHash : download.mFileHashes ) {
+
+      QString path = fileToHash.first;
+      Util::fixPath(path);
+
+      QFile tempFile(Settings::instance.bsInstall() + "/" + path );
+
+      // Delete the file (and don't worry if it fails)
+      tempFile.remove();
     }
   }
 
