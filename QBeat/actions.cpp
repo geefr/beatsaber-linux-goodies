@@ -287,17 +287,22 @@ bool Actions::validateMod(Mod mod, bool includeDependencies )
       return false;
     }
 
-    for( auto& fileToHash : download.mFileHashes ) {
+    auto allMissing = true;
+    auto anyMissing = false;
 
+    for( auto& fileToHash : download.mFileHashes ) {
       QString path = fileToHash.first;
       Util::fixPath(path);
 
       QFile tempFile(Settings::instance.bsInstall() + "/" + path );
       tempFile.open(QFile::OpenModeFlag::ReadOnly);
+
       if( !tempFile.isOpen() ) {
-        qOut << "ERROR: Failed to open file for mod verification: " + tempFile.fileName() << "\n";
-        return false;
+        anyMissing = true;
+        continue;
       }
+
+      allMissing = false;
 
       QCryptographicHash hash(QCryptographicHash::Md5);
       if( !hash.addData(&tempFile) ) {
@@ -313,6 +318,14 @@ bool Actions::validateMod(Mod mod, bool includeDependencies )
         qOut << "ERROR: File failed validation (" << fileToHash.first << "), please run QBeat --install \"" + mod.mName << "\"\n";
         return false;
       }
+    }
+
+    // If everything is missing then that's fine, the mod isn't installed
+    // If only some are missing then the mod is invalid
+    if( allMissing == false &&
+        anyMissing == true ) {
+      qOut << "ERROR: Failed to open a file for mod verification \n";
+      return false;
     }
   }
 
@@ -337,6 +350,31 @@ bool Actions::validateMod(Mod mod, bool includeDependencies )
           return false;
         }
       }
+    }
+  }
+
+  return true;
+}
+
+bool Actions::validateAllMods()
+{
+  BeatModsV1 api;
+  QTemporaryDir tempDir;
+  QTextStream qOut( stdout );
+  if (!tempDir.isValid()) {
+      qOut << "ERROR: Failed to create temporary dir for mod download\n";
+      return false;
+  }
+
+  auto mods = api.getMods({{
+    "gameVersion", Settings::instance.gameVersion()},
+  });
+
+  for( auto& mod : mods ) {
+    // Don't include dependencies, we're downloading everything so it should be fine right?
+    if( !validateMod(mod, false) ) {
+      qOut << "ERROR: Mod validation failed, run QBeat --install " << mod.mName << " to fix\n";
+      return false;
     }
   }
 
