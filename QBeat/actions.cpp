@@ -310,7 +310,7 @@ bool Actions::validateMod(Mod mod, bool includeDependencies )
       qOut << "File: " << fileToHash.first << " Expected: " << fileToHash.second << " Got: " << md5Str << "\n";
 
       if( md5Str != fileToHash.second ) {
-        qOut << "ERROR: File failed validation (" << fileToHash.first << "), please run QBeat --install " + mod.mName << "\n";
+        qOut << "ERROR: File failed validation (" << fileToHash.first << "), please run QBeat --install \"" + mod.mName << "\"\n";
         return false;
       }
     }
