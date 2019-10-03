@@ -46,6 +46,12 @@ QBeat --install-all
 # Run BSIPA to patch the game (Remember, you need to have run BS once before doing this)
 QBeat --patch
 ```
+With any luck you should have a modded copy of Beat Saber now, only one this left to do
+- Restart Steam
+- Right click Beat Saber -> Properties
+- Check 'Force the use of a specific Steam Play compatibility tool
+- Select the tool called 'Proton BeatSaber'
+- Go have fun
 
 ## Adding More Mods
 ```
