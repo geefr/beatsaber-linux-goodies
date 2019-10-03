@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
       qOut << "SUCCESS: Mod valid: " << modName << "\n";
       return EXIT_SUCCESS;
     } else {
-      qOut << "ERROR: Mod not valid, run QBeat --install " << modName << " to fix \n";
+      qOut << "ERROR: Mod not valid, run QBeat --install \"" << modName << "\" to fix \n";
       return EXIT_FAILURE;
     }
   }
