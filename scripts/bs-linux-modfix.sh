@@ -119,8 +119,8 @@ fi
 
 # Configure wine registry to ensure winhttp.dll loads correctly
 userRegFile="${bsInstall}/../../compatdata/620980/pfx/user.reg"
-echo '[Software\\Wine\\DllOverrides]' >> ${userRegFile}
-echo '"winhttp"="native,builtin"' >> ${userRegFile}
+echo '[Software\\Wine\\DllOverrides]' >> "${userRegFile}"
+echo '"winhttp"="native,builtin"' >> "${userRegFile}"
 
 if [ $? -ne 0 ]; then
         echo "ERROR: Failed to add Wine DllOverrides to ${userRegFile}"
