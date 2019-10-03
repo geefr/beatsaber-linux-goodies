@@ -17,35 +17,46 @@ If you're unfamiliar with Linux in general or don't know what you're doing pleas
 QBeat includes everything needed to setup mods on Linux, so no need to download the scripts separately. 
 
 ## Getting QBeat
-Head over to the [Release Page](https://github.com/geefr/beatsaber-linux-goodies/releases)  and grab the latest QBeat tarball.
+Head over to the [Release Page](https://github.com/geefr/beatsaber-linux-goodies/releases)  and grab the latest QBeat tarball. Extract this to somewhere convenient.
+
 These binaries should work on most systems, will be built against Qt 5.9 or thereabouts.
 
 ## First Time Setup
 These steps should only need to be run once on your machine.
 If there's a beat saber update you'll need to re-install mods/patch again but the config and wine setup should only need to be done once.
 
+**Make sure you have run Beat Saber once before running any of these commands ;)**
+
+These commands need to be run within a terminal, and assume QBeat is in the current working directory
+
 ```
-# If QBeat has never been run you'll need to setup the paths. Will be stored in $HOME/.config/gfrancisdev/QBeat.conf
-QBeat --config set winePrefix "~/.wine"
-QBeat --config set bsProtonDir "~/.steam/steam/steamapps/common/Proton 4.11"
-QBeat --config set bsInstall "~/.steam/steam/steamapps/common/Beat Saber"
+# If QBeat has never been run you'll need to setup the paths.
+./QBeat --config set winePrefix "~/.wine"
+./QBeat --config set bsProtonDir "~/.steam/steam/steamapps/common/Proton 4.11"
+./QBeat --config set bsInstall "~/.steam/steam/steamapps/common/Beat Saber"
 
 # Validate that your wine installation is correct
-QBeat --validate-wine
+./QBeat --validate-wine
 # If this fails then there's a command to set things up. This one may take a while so please be patient
-QBeat --setup-wine
+./QBeat --setup-wine
 
-# List available mods
-QBeat --list
-
-# Install the mods you need
-QBeat --install "BSIPA"
-# Or just install everything like some crazy person
-QBeat --install-all
+# Install the mandatory/base mods
+./QBeat --install "BSIPA"
 
 # Run BSIPA to patch the game (Remember, you need to have run BS once before doing this)
-QBeat --patch
+./QBeat --patch
+
+
+# List available mods, and install others as you like
+./QBeat --list
+./QBeat --install "ScoreSaber"
+./QBeat --install "Custom Avatars"
+
+# Or just install everything like some crazy person. If you do this you might have performance issues in game.
+./QBeat --install-all
+
 ```
+
 With any luck you should have a modded copy of Beat Saber now, only one this left to do
 - Restart Steam
 - Right click Beat Saber -> Properties
@@ -56,8 +67,8 @@ With any luck you should have a modded copy of Beat Saber now, only one this lef
 ## Adding More Mods
 ```
 # Once the game is patched you can just pile more mods into the installation
-QBeat --install "Perfection Display"
-QBeat --install "HTTP Status"
+./QBeat --install "Perfection Display"
+./QBeat --install "HTTP Status"
 ```
 
 # Features
