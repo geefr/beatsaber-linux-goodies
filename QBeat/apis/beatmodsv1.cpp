@@ -25,7 +25,7 @@ std::list<Mod> BeatModsV1::getMods( std::map<QString, QString> filters)
   QString urlStr = "https://beatmods.com/api/v1/mod?status=approved";
   for( auto& filter : filters )
   {
-    urlStr = urlStr + "&" + filter.first + "=" + filter.second;
+    urlStr = urlStr + "&" + filter.first + "=" + QUrl::toPercentEncoding(filter.second);
   }
 
   QUrl url(urlStr);
