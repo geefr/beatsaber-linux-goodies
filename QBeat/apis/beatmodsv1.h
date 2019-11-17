@@ -8,6 +8,8 @@
 #include "json/mod.h"
 #include "json/download.h"
 
+#include <memory>
+
 class BeatModsV1 : public QObject
 {
   Q_OBJECT
@@ -30,6 +32,8 @@ public slots:
 
 private:
   void processModJson( std::list<Mod>& res, QJsonObject obj );
+  void sslWorkarounds( QNetworkRequest& request );
+  bool checkResponse( std::unique_ptr<QNetworkReply>& response );
 
   QNetworkAccessManager mNetMan;
 };
