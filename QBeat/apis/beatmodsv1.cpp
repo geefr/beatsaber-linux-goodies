@@ -186,4 +186,5 @@ bool BeatModsV1::checkResponse( std::unique_ptr<QNetworkReply>& response ) {
     qOut << "ERROR: Failed to fetch mod list from beatmods: " << static_cast<int>(response->error()) << ": URL: " << response->url().toString() << "\n";
     return false;
   }
+  return true;
 }
