@@ -29,7 +29,13 @@ std::list<Mod> BeatModsV1::getMods( std::map<QString, QString> filters)
   }
 
   QUrl url(urlStr);
-  std::unique_ptr<QNetworkReply> response (mNetMan.get(QNetworkRequest(url)));
+  QNetworkRequest request(url);
+
+  auto sslConf = QSslConfiguration::defaultConfiguration();
+  sslConf.setProtocol(QSsl::AnyProtocol);
+  request.setSslConfiguration(sslConf);
+
+  std::unique_ptr<QNetworkReply> response (mNetMan.get(request));
 
   QEventLoop loop;
   QObject::connect(response.get(), SIGNAL(finished()), &loop, SLOT(quit()));
@@ -42,8 +48,6 @@ std::list<Mod> BeatModsV1::getMods( std::map<QString, QString> filters)
   }
 
   auto responseData = response->readAll();
-  qOut << "\n DEBUG: Network response: " << responseData << "\n\n\n\n";
-
   QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
   QJsonObject jsonObj = jsonDoc.object();
   QJsonArray jsonArr = jsonDoc.array();
