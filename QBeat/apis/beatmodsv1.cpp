@@ -15,7 +15,18 @@
 
 BeatModsV1::BeatModsV1()
 {
+  connect(&mNetMan, SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError>&)),
+          this, SLOT(onSslErrors(QNetworkReply*, const QList<QSslError>&)));
+}
 
+void BeatModsV1::onSslErrors(QNetworkReply *reply, const QList<QSslError> &errors) {
+  QTextStream qOut( stdout );
+
+  qOut << "ERROR: SSL Errors during request: \n";
+
+  for( auto& error : errors ) {
+    qOut << "     : " << error.errorString() << "\n";
+  }
 }
 
 std::list<Mod> BeatModsV1::getMods( std::map<QString, QString> filters)
@@ -32,7 +43,16 @@ std::list<Mod> BeatModsV1::getMods( std::map<QString, QString> filters)
   QNetworkRequest request(url);
 
   auto sslConf = QSslConfiguration::defaultConfiguration();
-  sslConf.setProtocol(QSsl::AnyProtocol);
+
+  if( qgetenv("QBEAT_DISABLE_SSLVERIFY").isEmpty() == false ) {
+    qOut << "WARNING: SSL peer verification has been disabled\n";
+    sslConf.setPeerVerifyMode(QSslSocket::PeerVerifyMode::VerifyNone);
+  }
+  if( qgetenv("QBEAT_ALLOW_ANY_SSL").isEmpty() == false ) {
+    qOut << "WARNING: Any SSL protocol has been allowed\n";
+    sslConf.setProtocol(QSsl::AnyProtocol);
+  }
+
   request.setSslConfiguration(sslConf);
 
   std::unique_ptr<QNetworkReply> response (mNetMan.get(request));

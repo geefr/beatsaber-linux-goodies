@@ -25,6 +25,9 @@ public:
    */
   bool downloadModFile( Download mod, QFile& file);
 
+public slots:
+  void onSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+
 private:
   void processModJson( std::list<Mod>& res, QJsonObject obj );
 
