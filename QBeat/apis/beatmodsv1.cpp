@@ -37,11 +37,14 @@ std::list<Mod> BeatModsV1::getMods( std::map<QString, QString> filters)
 
   if( response->error() != QNetworkReply::NoError )
   {
-    qOut << "ERROR: Failed to fetch mod list from beatmods\n";
+    qOut << "ERROR: Failed to fetch mod list from beatmods: " << static_cast<int>(response->error()) << ": URL: " << response->url().toString() << "\n";
     return {};
   }
 
-  QJsonDocument jsonDoc = QJsonDocument::fromJson(response->readAll());
+  auto responseData = response->readAll();
+  qOut << "\n DEBUG: Network response: " << responseData << "\n\n\n\n";
+
+  QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
   QJsonObject jsonObj = jsonDoc.object();
   QJsonArray jsonArr = jsonDoc.array();
 
