@@ -88,6 +88,12 @@ With any luck you should have a modded copy of Beat Saber now, only one this lef
 - BSIPA will not be run automatically
 - No gui (yet)
 
+# Workarounds
+There's a few environment variables that set workarounds. I recommend only setting these if you understand the consequences.
+Workaround will activate if these are set, value doesn't matter.
+- QBEAT_DISABLE_SSLVERIFY : Disable SSL verification, obvious security warning here
+- QBEAT_ALLOW_ANY_SSL : Allow any SSL version
+
 ## Building QBeat
 
 ```

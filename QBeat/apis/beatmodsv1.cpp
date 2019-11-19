@@ -15,7 +15,18 @@
 
 BeatModsV1::BeatModsV1()
 {
+  connect(&mNetMan, SIGNAL(sslErrors(QNetworkReply*, const QList<QSslError>&)),
+          this, SLOT(onSslErrors(QNetworkReply*, const QList<QSslError>&)));
+}
 
+void BeatModsV1::onSslErrors(QNetworkReply *reply, const QList<QSslError> &errors) {
+  QTextStream qOut( stdout );
+
+  qOut << "ERROR: SSL Errors during request: \n";
+
+  for( auto& error : errors ) {
+    qOut << "     : " << error.errorString() << "\n";
+  }
 }
 
 std::list<Mod> BeatModsV1::getMods( std::map<QString, QString> filters)
@@ -29,19 +40,18 @@ std::list<Mod> BeatModsV1::getMods( std::map<QString, QString> filters)
   }
 
   QUrl url(urlStr);
-  std::unique_ptr<QNetworkReply> response (mNetMan.get(QNetworkRequest(url)));
+  QNetworkRequest request(url);
+  sslWorkarounds(request);
+
+  std::unique_ptr<QNetworkReply> response (mNetMan.get(request));
 
   QEventLoop loop;
   QObject::connect(response.get(), SIGNAL(finished()), &loop, SLOT(quit()));
   loop.exec();
+  if( !checkResponse(response) ) return {};
 
-  if( response->error() != QNetworkReply::NoError )
-  {
-    qOut << "ERROR: Failed to fetch mod list from beatmods\n";
-    return {};
-  }
-
-  QJsonDocument jsonDoc = QJsonDocument::fromJson(response->readAll());
+  auto responseData = response->readAll();
+  QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
   QJsonObject jsonObj = jsonDoc.object();
   QJsonArray jsonArr = jsonDoc.array();
 
@@ -137,7 +147,9 @@ bool BeatModsV1::downloadModFile( Download download, QFile& file )
   QTextStream qOut( stdout );
 
   QUrl url(urlStr);
-  std::unique_ptr<QNetworkReply> response (mNetMan.get(QNetworkRequest(url)));
+  QNetworkRequest request(url);
+  sslWorkarounds(request);
+  std::unique_ptr<QNetworkReply> response (mNetMan.get(request));
 
   connect(response.get(), &QNetworkReply::readyRead, this, [&]() {
     file.write(response->readAll());
@@ -147,12 +159,32 @@ bool BeatModsV1::downloadModFile( Download download, QFile& file )
   connect(response.get(), SIGNAL(finished()), &loop, SLOT(quit()));
   loop.exec();
 
-  if( response->error() != QNetworkReply::NoError )
-  {
-    qOut << "ERROR: Failed to download mod file from beatmods: " << urlStr << "\n";
-    return {};
-  }
-
+  if( !checkResponse(response) ) return false;
   return true;
 }
 
+void BeatModsV1::sslWorkarounds( QNetworkRequest& request ) {
+  QTextStream qOut( stdout );
+  auto sslConf = QSslConfiguration::defaultConfiguration();
+
+  if( qgetenv("QBEAT_DISABLE_SSLVERIFY").isEmpty() == false ) {
+    qOut << "WARNING: SSL peer verification has been disabled\n";
+    sslConf.setPeerVerifyMode(QSslSocket::PeerVerifyMode::VerifyNone);
+  }
+  if( qgetenv("QBEAT_ALLOW_ANY_SSL").isEmpty() == false ) {
+    qOut << "WARNING: Any SSL protocol has been allowed\n";
+    sslConf.setProtocol(QSsl::AnyProtocol);
+  }
+
+  request.setSslConfiguration(sslConf);
+}
+
+bool BeatModsV1::checkResponse( std::unique_ptr<QNetworkReply>& response ) {
+  QTextStream qOut( stdout );
+  if( response->error() != QNetworkReply::NoError )
+  {
+    qOut << "ERROR: Failed to fetch mod list from beatmods: " << static_cast<int>(response->error()) << ": URL: " << response->url().toString() << "\n";
+    return false;
+  }
+  return true;
+}

@@ -8,6 +8,8 @@
 #include "json/mod.h"
 #include "json/download.h"
 
+#include <memory>
+
 class BeatModsV1 : public QObject
 {
   Q_OBJECT
@@ -25,8 +27,13 @@ public:
    */
   bool downloadModFile( Download mod, QFile& file);
 
+public slots:
+  void onSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+
 private:
   void processModJson( std::list<Mod>& res, QJsonObject obj );
+  void sslWorkarounds( QNetworkRequest& request );
+  bool checkResponse( std::unique_ptr<QNetworkReply>& response );
 
   QNetworkAccessManager mNetMan;
 };
