@@ -206,23 +206,30 @@ int main(int argc, char *argv[])
       qOut << "USAGE: --install <mod name>\n";
       return EXIT_FAILURE;
     }
-    auto modName = parser.positionalArguments()[0];
-    qOut << "Installing mod: " << modName << "\n";
-    auto mod = actions.getNamedMod(modName);
-    if( mod.mID.size() == 0 ) // TODO: This is nasty
-    {
-      qOut << "ERROR: Unable to find mod named: " << modName << "\n";
-      return EXIT_FAILURE;
-    }
 
-    if( actions.installMod( mod ) )
-    {
-      qOut << "SUCCESS: Mod installed: " << modName << "\n";
-      return EXIT_SUCCESS;
-    } else {
-      qOut << "ERROR: Failed to install mod: " << modName << "\n";
-      return EXIT_FAILURE;
+    auto modsToInstall = parser.positionalArguments();
+
+    while( !modsToInstall.empty() ) {
+      auto modName = modsToInstall[0];
+      modsToInstall.pop_front();
+
+      qOut << "Installing mod: " << modName << "\n";
+      auto mod = actions.getNamedMod(modName);
+      if( mod.mID.size() == 0 ) // TODO: This is nasty
+      {
+        qOut << "ERROR: Unable to find mod named: " << modName << "\n";
+        return EXIT_FAILURE;
+      }
+
+      if( actions.installMod( mod ) )
+      {
+        qOut << "SUCCESS: Mod installed: " << modName << "\n";
+      } else {
+        qOut << "ERROR: Failed to install mod: " << modName << "\n";
+        return EXIT_FAILURE;
+      }
     }
+    return EXIT_SUCCESS;
   }
   else if( parser.isSet(actionValidate) )
   {
