@@ -11,14 +11,9 @@ QBeat releases: [Github release page](https://github.com/geefr/beatsaber-linux-g
 QBeat Docs:  [See Here, scroll down](https://github.com/geefr/beatsaber-linux-goodies/tree/master/QBeat)
 
 # Install Method 2: Beatdrop + script hacks
-Beatdrop can also be used for mod installation, there's a work in progress port for Linux.
+Beatdrop can also be used for mod installation, it's not something I'll be actively working on but should remain functional.
 
-This is close to complete but I don't think I'll be finishing the port. If you're good with electron/node.js and want to help it shouldn't be too difficult. Going forward I plan to maintain QBeat instead, fresh start and a more familiar language.
-
-[My BeatDrop Fork](https://github.com/geefr/BeatDrop/releases). This is a Linux port of BeatDrop with a few tweaks here and there.
-
-In addition to the mod downloads you'll need to patch the game correctly, see the [scripts directory](scripts/README.md) for instructions/further detail.
-
+[See Here, scroll down](https://github.com/geefr/beatsaber-linux-goodies/tree/master/BeatDrop)
 
 # What
 Mod installation scripts and other goodies for running Beat Saber on Linux.
