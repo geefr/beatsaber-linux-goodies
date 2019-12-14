@@ -23,18 +23,12 @@ In addition to the mod downloads you'll need to patch the game correctly, see th
 # What
 Mod installation scripts and other goodies for running Beat Saber on Linux.
 
-This repository is mainly for gathering information, and implementations of scripts/etc that aren't tied to any one tool.
+This repository is mainly for gathering information, and implementations of tools to make setup easier.
 
-The eventual target is to update existing modding tools to work on Linux directly, and allow 1-click installs for Beat Saber mods.
+The eventual target is to provide Linux native tools, allowing 1-click installs for Beat Saber mods.
 
 # Why
-Beat Saber itself has run perfectly on Linux for quite some time, yet mod installation remains difficult.
-
-There are some folks that want to use their Linux boxes for BS, however can't live without mods.
-
-# How
-- Research and gather information in this repo for the power users.
-- Work on integrating the lower level scripts/etc into popular modding tools for folks that don't want to open the terminal or do things manually.
+Beat Saber itself has run perfectly on Linux for quite some time, but the modding tools mainly target Windows. Some run fine under wine but even then there's a few hacks needed to get mods to load/etc.
 
 # Bugs/Support
 If you're having issues on Linux it's probably best if you don't pester the BeatDrop/ModAssistant/Mod devs directly for now.
