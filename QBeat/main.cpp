@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 #ifdef Q_DEBUG
   QCommandLineOption actionDownload = {"download", "(Debug builds only) Download a mod but don't install it"};
 #endif
-  QCommandLineOption actionInstall = {"install", "Install a mod"};
+  QCommandLineOption actionInstall = {"install", "Install a mod. (Install multiple with --install mod1 mod2 mod3)"};
   QCommandLineOption actionInstallEverything = {"install-all", "Install every mod (WARNING: This is probably a bad idea :O)"};
   QCommandLineOption actionValidate = {"validate", "Validate that a mod is installed correctly"};
   QCommandLineOption actionValidateAll = {"validate-all", "Validate all mods"};
