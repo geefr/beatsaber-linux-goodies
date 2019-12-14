@@ -8,7 +8,7 @@ QBeat can be used to setup wine/proton, download mods, and patch beat saber in a
 The scripts from method 2 are included with QBeat and will continue to be maintained for use with other mod installers.
 
 QBeat releases: [Github release page](https://github.com/geefr/beatsaber-linux-goodies/releases) 
-QBeat Docs:  [See Here, scroll down](https://github.com/geefr/beatsaber-linux-goodies/tree/QBeat/QBeat)
+QBeat Docs:  [See Here, scroll down](https://github.com/geefr/beatsaber-linux-goodies/tree/master/QBeat)
 
 # Install Method 2: Beatdrop + script hacks
 Beatdrop can also be used for mod installation, there's a work in progress port for Linux.
