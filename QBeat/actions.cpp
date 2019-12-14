@@ -28,18 +28,22 @@ bool Actions::isWinePrefixValid()
   QProcess process;
   QTextStream qOut( stdout );
 
-  auto script = QCoreApplication::applicationDirPath() + "/bs-linux-is-wine-valid.sh";
-  if( !QFile::exists(script) )
+  QFile script( QCoreApplication::applicationDirPath() + "/bs-linux-is-wine-valid.sh" );
+  if( !script.exists() )
   {
-    qOut << "ERROR: Failed to find script: " << script << "\n";
+    qOut << "ERROR: Failed to find script: " << script.fileName() << "\n";
+    return false;
+  }
+  if( !script.permissions().testFlag(QFile::Permission::ExeOwner) ) {
+    qOut << "ERROR: Scipt is not executable: " << script.fileName() << "\n";
     return false;
   }
 
-  qOut << "Executing: " << script << "\n";
+  qOut << "Executing: " << script.fileName() << "\n";
 
   process.setWorkingDirectory(QCoreApplication::applicationDirPath());
   process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
-  process.start(script, {Settings::instance.winePrefix()});
+  process.start(script.fileName(), {Settings::instance.winePrefix()});
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
@@ -56,18 +60,22 @@ bool Actions::setupWine()
   QProcess process;
   QTextStream qOut( stdout );
 
-  auto script = QCoreApplication::applicationDirPath()  + "/bs-linux-setup-wine.sh";
-  if( !QFile::exists(script) )
+  QFile script( QCoreApplication::applicationDirPath()  + "/bs-linux-setup-wine.sh" );
+  if( !script.exists() )
   {
-    qOut << "ERROR: Failed to find script: " << script << "\n";
+    qOut << "ERROR: Failed to find script: " << script.fileName() << "\n";
+    return false;
+  }
+  if( !script.permissions().testFlag(QFile::Permission::ExeOwner) ) {
+    qOut << "ERROR: Scipt is not executable: " << script.fileName() << "\n";
     return false;
   }
 
-  qOut << "Executing: " << script << "\n";
+  qOut << "Executing: " << script.fileName() << "\n";
 
   process.setWorkingDirectory(QCoreApplication::applicationDirPath() );
   process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
-  process.start(script, {Settings::instance.winePrefix()});
+  process.start(script.fileName(), {Settings::instance.winePrefix()});
   process.waitForStarted(-1);
   process.waitForFinished(-1);
 
@@ -84,17 +92,21 @@ bool Actions::patchBeatSaber()
   QProcess process;
   QTextStream qOut( stdout );
 
-  auto script = QCoreApplication::applicationDirPath()  + "/bs-linux-modfix.sh";
-  if( !QFile::exists(script) )
+  QFile script( QCoreApplication::applicationDirPath()  + "/bs-linux-modfix.sh" );
+  if( !script.exists() )
   {
-    qOut << "ERROR: Failed to find script: " << script << "\n";
+    qOut << "ERROR: Failed to find script: " << script.fileName() << "\n";
+    return false;
+  }
+  if( !script.permissions().testFlag(QFile::Permission::ExeOwner) ) {
+    qOut << "ERROR: Scipt is not executable: " << script.fileName() << "\n";
     return false;
   }
 
-  qOut << "Executing: " << script << "\n";
+  qOut << "Executing: " << script.fileName() << "\n";
   process.setProcessChannelMode(QProcess::ProcessChannelMode::MergedChannels);
   process.setWorkingDirectory(QCoreApplication::applicationDirPath() );
-  process.start(script, {
+  process.start(script.fileName(), {
     Settings::instance.bsInstall(),
     Settings::instance.bsProtonDir(),
     Settings::instance.winePrefix()
