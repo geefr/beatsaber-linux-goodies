@@ -32,11 +32,11 @@ These commands need to be run within a terminal, and assume QBeat is in the curr
 ```
 # If QBeat has never been run you'll need to setup the paths.
 ./QBeat --config set winePrefix "~/.wine"
-./QBeat --config set bsProtonDir "~/.steam/steam/steamapps/common/Proton 4.11"
+./QBeat --config set bsProtonDir "~/.steam/steam/steamapps/common/Proton 5.0"
 ./QBeat --config set bsInstall "~/.steam/steam/steamapps/common/Beat Saber"
 
 # QBeat doesn't detect the beat saber version, so update if needed
-./QBeat --config set gameVersion "1.5.0"
+./QBeat --config set gameVersion "1.8.0"
 
 # Validate that your wine installation is correct
 ./QBeat --validate-wine
