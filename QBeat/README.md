@@ -36,6 +36,9 @@ These commands need to be run within a terminal, and assume QBeat is in the curr
 ./QBeat --config set bsInstall "~/.steam/steam/steamapps/common/Beat Saber"
 
 # QBeat doesn't detect the beat saber version, so update if needed
+# For the version here it's usually the current game version, but if mods don't need updating then
+# beatmods just lists them under the old version.
+# Best way to be sure here is check what version ModAssistant installs and match that
 ./QBeat --config set gameVersion "1.8.0"
 
 # Validate that your wine installation is correct
