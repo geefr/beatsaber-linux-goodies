@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 # Copyright (c) 2019, Gareth Francis (gfrancis.dev@gmail.com)
 # All rights reserved.
@@ -35,29 +36,27 @@
 # Returns: 0 if installation was successful
 
 if [ $# -ne 1 ]; then
-  echo "USAGE: ${0} <Wine Prefix> : Sets up a wine prefix for running BSIPA"
-  exit 1
+	echo "USAGE: ${0} <Wine Prefix> : Sets up a wine prefix for running BSIPA"
+	exit 1
 fi
 
 winePrefix=$(realpath ${1})
 
-which wine > /dev/null
-if [ $? -ne 0 ]; then
+if ! command -v wine > /dev/null; then
 	echo "ERROR: Wine doesn't appear to be installed on your system, please do so and ensure it's in your PATH"
 	exit 1
 fi
 
-which cabextract > /dev/null
-if [ $? -ne 0 ]; then
+if ! command -v cabextract > /dev/null; then
 	echo "ERROR: cabextract is required to install dotnet 4.6.1, please ensure it's in your PATH"
 	exit 1
 fi
 
 mkdir -p ${winePrefix} 2> /dev/null
 pushd ${winePrefix} > /dev/null
-if ! wget  https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks 2> /dev/null; then
-  echo "ERROR: Failed to download winetricks, please log this as a bug at https://github.com/geefr/beatsaber-linux-goodies"
-  exit 1
+if ! wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks 2> /dev/null; then
+	echo "ERROR: Failed to download winetricks, please log this as a bug at https://github.com/geefr/beatsaber-linux-goodies"
+	exit 1
 fi
 chmod +x winetricks
 popd > /dev/null
@@ -68,9 +67,8 @@ if ! WINEPREFIX=${winePrefix} ${winePrefix}/winetricks dotnet461 2> /dev/null; t
 fi
 
 if ! ./bs-linux-is-wine-valid.sh ${winePrefix} &> /dev/null; then
-  echo "ERROR: .Net installation succeeded but wine prefix doesn't appear valid"
-  exit 1
+	echo "ERROR: .Net installation succeeded but wine prefix doesn't appear valid"
+	exit 1
 fi
 
 echo "SUCCESS: Wine prefix at ${winePrefix} setup to run BSIPA"
-exit 0
