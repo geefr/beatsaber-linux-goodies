@@ -56,22 +56,22 @@ After running this script you will need to
 EOF
 
 if [ $# -lt 2 ]; then
-	echo "USAGE: ./bs-linux-modfix.sh <Beat Saber Install directory> <Beat Saber Proton Installation> [Wine Prefix (Optional)]"
-	exit 1
+  echo "USAGE: ./bs-linux-modfix.sh <Beat Saber Install directory> <Beat Saber Proton Installation> [Wine Prefix (Optional)]"
+  exit 1
 fi
 
 if [ $# -ne 3 ]; then
-	winePrefix=${WINEPREFIX}
-	if [ ! -d ${winePrefix} ]; then
-		winePrefix="$HOME/.wine"
-	fi
+  winePrefix=${WINEPREFIX}
+  if [ ! -d ${winePrefix} ]; then
+    winePrefix="$HOME/.wine"
+  fi
 else
-	winePrefix=${3}
+  winePrefix=${3}
 fi
 
 if ! ./bs-linux-is-wine-valid.sh ${winePrefix} > /dev/null; then
-	echo "ERROR: Your wine installation doesn't appear to be valid, please ensure you have wine installed, and .Net 4.6.1 is installed in \$WINEPREFIX"
-	exit 1
+  echo "ERROR: Your wine installation doesn't appear to be valid, please ensure you have wine installed, and .Net 4.6.1 is installed in \$WINEPREFIX"
+  exit 1
 fi
 
 bsInstall=$(realpath "${1}")
@@ -82,8 +82,8 @@ rm -rf "${bsProtonDir}" || true
 mkdir -p "${compatTools}"
 
 if ! cp -r "${protonInstall}" "${bsProtonDir}"; then
-	echo "Failed to copy Proton installation"
-	exit 1
+  echo "Failed to copy Proton installation"
+  exit 1
 fi
 
 # Setup the tool config for steam
@@ -114,7 +114,7 @@ pushd "${bsInstall}" &> /dev/null
 # TODO: Would be nice to be able to detect if .net 4.6.1 is supported by wine and quit otherwise
 # For now system wine must be setup with at least dotnet461 installed
 if ! WINEPREFIX=${winePrefix} wine IPA.exe -n 2> /dev/null; then
-	echo "WARNING: IPA.exe returned non-zero result"
+  echo "WARNING: IPA.exe returned non-zero result"
 fi
 
 # Configure wine registry to ensure winhttp.dll loads correctly
@@ -123,8 +123,8 @@ echo '[Software\\Wine\\DllOverrides]' >> "${userRegFile}"
 echo '"winhttp"="native,builtin"' >> "${userRegFile}"
 
 if [ $? -ne 0 ]; then
-	echo "ERROR: Failed to add Wine DllOverrides to ${userRegFile}"
-	exit 1
+  echo "ERROR: Failed to add Wine DllOverrides to ${userRegFile}"
+  exit 1
 fi
 
 echo ""

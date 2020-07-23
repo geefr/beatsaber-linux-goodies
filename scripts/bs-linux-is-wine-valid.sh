@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+#set -euo pipefail
 
 # Copyright (c) 2019, Gareth Francis (gfrancis.dev@gmail.com)
 # All rights reserved.
@@ -37,25 +37,25 @@ set -euo pipefail
 # Returns: 0 if the prefix seems valid
 
 if [ $# -ne 1 ]; then
-	echo "USAGE: ${0} <Wine Prefix>: Validates whether a wine prefix is setup for running BSIPA"
-	exit 1
+  echo "USAGE: ${0} <Wine Prefix>: Validates whether a wine prefix is setup for running BSIPA"
+  exit 1
 fi
 
 if ! command -v wine > /dev/null; then
-	echo "ERROR: Wine doesn't appear to be installed on your system, please do so and ensure it's in your PATH"
-	exit 1
+  echo "ERROR: Wine doesn't appear to be installed on your system, please do so and ensure it's in your PATH"
+  exit 1
 fi
 
 winePrefix=$(realpath ${1})
 
 if [ ! -d "${winePrefix}" ]; then
-	echo "ERROR: Wine prefix at ${winePrefix} doesn't exist"
-	exit 1
+  echo "ERROR: Wine prefix at ${winePrefix} doesn't exist"
+  exit 1
 fi
 
 if [ ! -f "${winePrefix}/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/Microsoft.CSharp.dll" ]; then
-	echo "ERROR: Wine prefix at ${winePrefix} doesn't contain the expected .Net installation"
-	exit 1
+  echo "ERROR: Wine prefix at ${winePrefix} doesn't contain the expected .Net installation"
+  exit 1
 fi
 
 echo "SUCCESS: Wine prefix at ${winePrefix} should be able to run BSIPA"
