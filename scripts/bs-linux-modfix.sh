@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #set -euo pipefail
 
-# Copyright (c) 2019, Gareth Francis (gfrancis.dev@gmail.com)
+# Copyright (c) 2020, Gareth Francis (gfrancis.dev@gmail.com)
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -39,12 +39,17 @@ Before running make sure the following have been done:
  - Your wine installation supports .Net 4.6.1 or higher
  - Beat Saber has been installed through steam
  - Beat Saber has been run/played at least once
- - BeatDrop or ModAssistant has been run, and the BSIPA mod has been installed (Don't worry if IPA.exe didn't patch correctly, we'll handle that here
- - Ideally that the copy of proton passed to this script has not been modified, or if so has been reinstalled through steam first (Feel free to try with a dirty copy, might be bugs in that case)
+ - That the BSIPA mod has been installed
+   - Can be installed manually, or using a mod installer such as QBeat, ModAssistant, or BeatDrop
+   - If the mod installer failed to run IPA.exe don't worry, this script will perform the patching step
+ - That you have a clean install of proton available for the script to use
+   - Ideally a fresh install of proton 5.x, as installed by steam
+   - This script will copy the proton install in order to apply some fixes
 
 To run this script you need to pass 2 arguments:
  - The installation folder of beat saber itself e.g SteamApps/common/Beat Saber
  - The installation folder of the Proton version you want to use e.g SteamApps/common/Proton 4.11
+ - (Optional) The wine prefix to use for running IPA.exe. Use bs-linux-is-wine-valid.sh and bs-linux-setup-wine.sh to configure. If not provided the script will try WINEPREFIX, or ~/.wine
 
 The Proton installation will be copied to ~/.steam/root/compatibilitytools.d/Proton BeatSaber
 TODO: To workaround https://github.com/beat-saber-modding-group/BeatSaber-IPA-Reloaded/issues/18 this script will modify SteamApps/compatdata/620980. If something doesn't work right just delete this folder and validate your beat saber installation

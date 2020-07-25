@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #set -euo pipefail
 
-# Copyright (c) 2019, Gareth Francis (gfrancis.dev@gmail.com)
+# Copyright (c) 2020, Gareth Francis (gfrancis.dev@gmail.com)
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,9 +31,10 @@
 # That means installing:
 # - dotnet461 through winetricks
 #
-# Arguments: None
-# Environment: WINEPREFIX should be set to the prefix to check
-# Returns: 0 if installation was successful
+# Arguments:
+# - wine prefix, required
+# Returns:
+# 0 if installation was successful
 
 if [ $# -ne 1 ]; then
   echo "USAGE: ${0} <Wine Prefix> : Sets up a wine prefix for running BSIPA"

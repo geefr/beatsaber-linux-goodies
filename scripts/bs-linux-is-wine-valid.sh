@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #set -euo pipefail
 
-# Copyright (c) 2019, Gareth Francis (gfrancis.dev@gmail.com)
+# Copyright (c) 2020, Gareth Francis (gfrancis.dev@gmail.com)
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -32,8 +32,8 @@
 # - The wine installation requires .net 4.6.1 installed
 # - TODO: This script may not be perfect. It may return true for other similar versions of .net
 #
-# Arguments: None
-# Environment: WINEPREFIX should be set to the prefix to check
+# Arguments:
+# - wine prefix, required
 # Returns: 0 if the prefix seems valid
 
 if [ $# -ne 1 ]; then
