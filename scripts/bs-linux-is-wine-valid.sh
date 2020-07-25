@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#set -euo pipefail
 
 # Copyright (c) 2019, Gareth Francis (gfrancis.dev@gmail.com)
 # All rights reserved.
@@ -40,10 +41,9 @@ if [ $# -ne 1 ]; then
   exit 1
 fi
 
-which wine > /dev/null
-if [ $? -ne 0 ]; then
-	echo "ERROR: Wine doesn't appear to be installed on your system, please do so and ensure it's in your PATH"
-	exit 1
+if ! command -v wine > /dev/null; then
+  echo "ERROR: Wine doesn't appear to be installed on your system, please do so and ensure it's in your PATH"
+  exit 1
 fi
 
 winePrefix=$(realpath ${1})
@@ -59,4 +59,3 @@ if [ ! -f "${winePrefix}/drive_c/windows/Microsoft.NET/Framework/v4.0.30319/Micr
 fi
 
 echo "SUCCESS: Wine prefix at ${winePrefix} should be able to run BSIPA"
-exit 0
