@@ -108,7 +108,6 @@ bool Actions::patchBeatSaber()
   process.setWorkingDirectory(QCoreApplication::applicationDirPath() );
   process.start(script.fileName(), {
     Settings::instance.bsInstall(),
-    Settings::instance.bsProtonDir(),
     Settings::instance.winePrefix()
   });
   process.waitForStarted(-1);
@@ -279,7 +278,6 @@ bool Actions::downloadMod( Mod mod, QString directory, bool includeDependencies 
     }
   }
 
-  // TODO: Beat saber dir from settings/cache
   // TODO: Don't assume everything is a zip
   // TODO: Actually validate the mod after the download - skipping the install if something doesn't match would be kind useful here
   return true;

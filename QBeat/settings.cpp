@@ -5,7 +5,6 @@ Settings Settings::instance;
 const char* Settings::kGameVersion = "gameVersion";
 const char* Settings::kGameType = "gameType";
 const char* Settings::kWinePrefix = "winePrefix";
-const char* Settings::kBSProtonDir = "bsProtonDir";
 const char* Settings::kBSInstall = "bsInstall";
 
 Settings::Settings()
@@ -16,7 +15,6 @@ Settings::Settings()
   if( !contains(kGameType) ) setValue(kGameType, "steam");
 #ifndef Q_OS_WIN32
   if( !contains(kWinePrefix) ) setValue(kWinePrefix, "");
-  if( !contains(kBSProtonDir) ) setValue(kBSProtonDir, "");
 #endif
   if( !contains(kBSInstall) ) setValue(kBSInstall, "");
 }
@@ -27,8 +25,7 @@ Settings::~Settings()
 
 void Settings::setConfig(QString key, QString val) {
     if( key == kBSInstall ||
-        key == kWinePrefix ||
-        key == kBSProtonDir ) {
+        key == kWinePrefix ) {
         sanitisePath(val);
     }
   if( contains(key) ) {
@@ -60,15 +57,6 @@ void Settings::winePrefix(QString prefix) {
 
 QString Settings::winePrefix() const {
   return value(kWinePrefix).toString();
-}
-
-void Settings::bsProtonDir(QString dir) {
-  sanitisePath(dir);
-  setValue(kBSProtonDir, dir);
-}
-
-QString Settings::bsProtonDir() const {
-  return value(kBSProtonDir).toString();
 }
 #endif
 

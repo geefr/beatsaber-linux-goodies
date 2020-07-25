@@ -25,11 +25,9 @@
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#set -x
+set -x
 
-bsProtonName="Proton BeatSaber"
 compatTools="${HOME}/.steam/root/compatibilitytools.d/"
-bsProtonDir="${compatTools}/${bsProtonName}"
 compatData="${bsInstall}/../../compatdata/620980"
 
 cat << EOF
@@ -42,36 +40,24 @@ Before running make sure the following have been done:
  - That the BSIPA mod has been installed
    - Can be installed manually, or using a mod installer such as QBeat, ModAssistant, or BeatDrop
    - If the mod installer failed to run IPA.exe don't worry, this script will perform the patching step
- - That you have a clean install of proton available for the script to use
-   - Ideally a fresh install of proton 5.x, as installed by steam
-   - This script will copy the proton install in order to apply some fixes
 
-To run this script you need to pass 2 arguments:
+To run this script you need to pass some arguments:
  - The installation folder of beat saber itself e.g SteamApps/common/Beat Saber
- - The installation folder of the Proton version you want to use e.g SteamApps/common/Proton 4.11
- - (Optional) The wine prefix to use for running IPA.exe. Use bs-linux-is-wine-valid.sh and bs-linux-setup-wine.sh to configure. If not provided the script will try WINEPREFIX, or ~/.wine
-
-The Proton installation will be copied to ~/.steam/root/compatibilitytools.d/Proton BeatSaber
-TODO: To workaround https://github.com/beat-saber-modding-group/BeatSaber-IPA-Reloaded/issues/18 this script will modify SteamApps/compatdata/620980. If something doesn't work right just delete this folder and validate your beat saber installation
-
-After running this script you will need to
- - Restart Steam
- - Change the proton version user for beat saber to 'Proton BeatSaber'
- - Go have fun <3
+ - (Optional) Wine prefix - Script will use WINEPREFIX or ~/.wine if not provided
 EOF
 
-if [ $# -lt 2 ]; then
-  echo "USAGE: ./bs-linux-modfix.sh <Beat Saber Install directory> <Beat Saber Proton Installation> [Wine Prefix (Optional)]"
+if [ $# -lt 1 ]; then
+  echo "USAGE: ./bs-linux-modfix.sh <Beat Saber Install directory> [Wine Prefix (Optional)]"
   exit 1
 fi
 
-if [ $# -ne 3 ]; then
+if [ $# -ne 2 ]; then
   winePrefix=${WINEPREFIX}
   if [ ! -d ${winePrefix} ]; then
     winePrefix="$HOME/.wine"
   fi
 else
-  winePrefix=${3}
+  winePrefix=${2}
 fi
 
 if ! ./bs-linux-is-wine-valid.sh ${winePrefix} > /dev/null; then
@@ -79,39 +65,8 @@ if ! ./bs-linux-is-wine-valid.sh ${winePrefix} > /dev/null; then
   exit 1
 fi
 
-bsInstall=$(realpath "${1}")
-protonInstall=$(realpath "${2}")
-
-echo "Creating custom Proton installation for Beat Saber use"
-rm -rf "${bsProtonDir}" || true
-mkdir -p "${compatTools}"
-
-if ! cp -r "${protonInstall}" "${bsProtonDir}"; then
-  echo "Failed to copy Proton installation"
-  exit 1
-fi
-
-# Setup the tool config for steam
-cat <<EOM >"${bsProtonDir}/compatibilitytool.vdf"
-"compatibilitytools"
-{
-  "compat_tools"
-  {
-    "${bsProtonName}"
-    {
-      "install_path" "."
-      "display_name" "${bsProtonName}"
-      "from_oslist"  "windows"
-      "to_oslist"    "linux"
-    }
-  }
-}
-EOM
-
-mv "${bsProtonDir}/dist/lib64/wine/winhttp.dll.so" "${bsProtonDir}/dist/lib64/wine/winhttp_alt.dll.so" &> /dev/null || true
-mv "${compatData}/pfx/drive_c/windows/syswow64/winhttp.dll" "${compatData}/pfx/drive_c/windows/syswow64/winhttp_alt.dll" &> /dev/null || true
-
 # Patching BS with IPA.exe
+bsInstall=$(realpath "${1}")
 pushd "${bsInstall}" &> /dev/null
 
 # TODO: Would be nice to exploit the Proton installation here, or otherwise not require the user to deal with winetricks

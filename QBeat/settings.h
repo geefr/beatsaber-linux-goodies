@@ -19,7 +19,6 @@ public:
   Q_PROPERTY(QString gameType READ gameType WRITE gameType NOTIFY gameTypeChanged)
 #ifndef Q_OS_WIN32
   Q_PROPERTY(QString winePrefix READ winePrefix WRITE winePrefix NOTIFY winePrefixChanged)
-  Q_PROPERTY(QString bsProtonDir READ bsProtonDir WRITE bsProtonDir NOTIFY bsProtonDirChanged)
 #endif
   Q_PROPERTY(QString bsInstall READ bsInstall WRITE bsInstall NOTIFY bsInstallChanged)
   Q_PROPERTY(QString bsInstall READ bsInstall WRITE bsInstall NOTIFY bsInstallChanged)
@@ -37,7 +36,6 @@ signals:
   void gameTypeChanged();
 #ifndef Q_OS_WIN32
   void winePrefixChanged();
-  void bsProtonDirChanged();
 #endif
   void bsInstallChanged();
 
@@ -63,13 +61,6 @@ public:
    */
   void winePrefix(QString prefix);
   QString winePrefix() const;
-
-  /**
-   * Base proton installation to use
-   * with beat saber
-   */
-  void bsProtonDir(QString dir);
-  QString bsProtonDir() const;
 #endif
 
   /**
@@ -83,7 +74,6 @@ public:
   static const char* kGameVersion;
   static const char* kGameType;
   static const char* kWinePrefix;
-  static const char* kBSProtonDir;
   static const char* kBSInstall;
 
   /**
@@ -92,7 +82,7 @@ public:
    * users to override if needed (Say if I'm late updating QBeat)
    */
   QStringList gameVersionList = {
-    "1.3.0",
+    "1.8.0",
   };
   QStringList gameTypeList = {
     "steam",

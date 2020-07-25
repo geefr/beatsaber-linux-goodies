@@ -6,12 +6,10 @@ Current state is fairly primitive, but does provide an alternative to BeatDrop/M
 - Not heavily tested, only test on Linux (/should/ build and run on windows, might break things)
 - Just a command line interface at first, gui will come once base actions are implemented
 
-
 If you're playing beat saber on Linux let me know how it goes, feel free to raise feature requests/bugs through github.
 
 Like all early software this might break your beatsaber installation, delete your files, and make the kittens cry.
 If you're unfamiliar with Linux in general or don't know what you're doing please ask first, or wait until the repo hits version 1.0 ;)
-
 
 # Mod Setup Walkthrough
 QBeat includes everything needed to setup mods on Linux, so no need to download the scripts separately. 
@@ -25,14 +23,13 @@ These binaries should work on most systems, will be built against Qt 5.9 or ther
 These steps should only need to be run once on your machine.
 If there's a beat saber update you'll need to re-install mods/patch again but the config and wine setup should only need to be done once.
 
-**Make sure you have run Beat Saber once before running any of these commands ;)**
+**Make sure you have run Beat Saber once before running any of these commands**
 
 These commands need to be run within a terminal, and assume QBeat is in the current working directory
 
 ```
 # If QBeat has never been run you'll need to setup the paths.
 ./QBeat --config set winePrefix "~/.wine"
-./QBeat --config set bsProtonDir "~/.steam/steam/steamapps/common/Proton 5.0"
 ./QBeat --config set bsInstall "~/.steam/steam/steamapps/common/Beat Saber"
 
 # QBeat doesn't detect the beat saber version, so update if needed
@@ -50,6 +47,7 @@ These commands need to be run within a terminal, and assume QBeat is in the curr
 ./QBeat --install "BSIPA"
 
 # Run BSIPA to patch the game (Remember, you need to have run BS once before doing this)
+# Once the game has been patched you don't need to re-run this, at least until there's an update
 ./QBeat --patch
 
 
@@ -63,12 +61,7 @@ These commands need to be run within a terminal, and assume QBeat is in the curr
 
 ```
 
-With any luck you should have a modded copy of Beat Saber now, only one this left to do
-- Restart Steam
-- Right click Beat Saber -> Properties
-- Check 'Force the use of a specific Steam Play compatibility tool
-- Select the tool called 'Proton BeatSaber'
-- Go have fun
+With any luck you should have a modded copy of Beat Saber now
 
 ## Adding More Mods
 ```
@@ -87,7 +80,6 @@ With any luck you should have a modded copy of Beat Saber now, only one this lef
 # Limitations
 - QBeat --install : Will install latest version of a mod and it's dependencies, no checking of current version, will overwrite if already present
 - There's no way to list currently installed mods
-- There's no way to uninstall mods (yet)
 - BSIPA will not be run automatically
 - No gui (yet)
 

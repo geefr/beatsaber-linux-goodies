@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
    * GUI will call through to the same underlying code
    */
   QCommandLineParser parser;
-  parser.setApplicationDescription("QBeat: Cross Platform mod installer for Beat Saber");
+  parser.setApplicationDescription("QBeat: Linux mod installer for Beat Saber");
   parser.addHelpOption();
 
   // TODO: For now must be specified on the command line each time
@@ -148,10 +148,6 @@ int main(int argc, char *argv[])
 #ifndef Q_OS_WIN32
     if( Settings::instance.winePrefix().isEmpty() ) {
       qOut << "ERROR: Wine prefix not set, run QBeat --config set " << Settings::kWinePrefix << " <prefix> to configure\n";
-      return EXIT_FAILURE;
-    }
-    if( Settings::instance.bsProtonDir().isEmpty() ) {
-      qOut << "ERROR: Beat Saber Proton dir not set, run QBeat --config set " << Settings::kBSProtonDir << " <dir> to configure\n";
       return EXIT_FAILURE;
     }
 #endif
