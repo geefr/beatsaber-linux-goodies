@@ -15,4 +15,5 @@ If any dependencies are missing you should get a fairly obvious error
 
 
 `cmake -DCMAKE_INSTALL_PREFIX=<installation prefix> .`
+
 `make install`
