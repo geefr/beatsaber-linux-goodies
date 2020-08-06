@@ -89,5 +89,6 @@ Workaround will activate if these are set, value doesn't matter.
 - QBEAT_DISABLE_SSLVERIFY : Disable SSL verification, obvious security warning here
 - QBEAT_ALLOW_ANY_SSL : Allow any SSL version
 
-{% include_relative BUILD.md %}
+# Building QBeat
+See [BUILD.md](BUILD.md)
 
