@@ -3,7 +3,6 @@
 `sudo apt install gcc g++ cmake libQt5*-dev libminizip-dev git`
 
 ## Grab the source
-
 ```
 git clone https://github.com/geefr/beatsaber-linux-goodies
 cd beatsaber-linux-goodies/QBeat
