@@ -82,7 +82,7 @@ public:
    * users to override if needed (Say if I'm late updating QBeat)
    */
   QStringList gameVersionList = {
-    "1.8.0",
+    "1.11.0",
   };
   QStringList gameTypeList = {
     "steam",
