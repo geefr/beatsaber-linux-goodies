@@ -31,6 +31,8 @@
 # That means installing:
 # - dotnet461 through winetricks
 #
+# Variables:
+# - WINETRICKSURL, optional
 # Arguments:
 # - wine prefix, required
 # Returns:
@@ -55,7 +57,10 @@ fi
 
 mkdir -p ${winePrefix} 2> /dev/null
 pushd ${winePrefix} > /dev/null
-if ! wget https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks 2> /dev/null; then
+if [ -z $WINETRICKSURL ]; then
+  WINETRICKSURL=https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+fi
+if ! wget $WINETRICKSURL 2> /dev/null; then
   echo "ERROR: Failed to download winetricks, please log this as a bug at https://github.com/geefr/beatsaber-linux-goodies"
   exit 1
 fi
