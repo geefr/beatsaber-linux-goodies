@@ -60,7 +60,7 @@ pushd ${winePrefix} > /dev/null
 if [ -z $WINETRICKSURL ]; then
   WINETRICKSURL=https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
 fi
-if ! wget $WINETRICKSURL 2> /dev/null; then
+if ! wget $WINETRICKSURL -O winetricks 2> /dev/null; then
   echo "ERROR: Failed to download winetricks, please log this as a bug at https://github.com/geefr/beatsaber-linux-goodies"
   exit 1
 fi
