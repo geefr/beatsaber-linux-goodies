@@ -44,6 +44,7 @@ if [ $# -ne 1 ]; then
 fi
 
 winePrefix=$(realpath ${1})
+prefixExists=0
 
 if ! command -v wine > /dev/null; then
   echo "ERROR: Wine doesn't appear to be installed on your system, please do so and ensure it's in your PATH"
@@ -54,6 +55,18 @@ if ! command -v cabextract > /dev/null; then
   echo "ERROR: cabextract is required to install dotnet 4.6.1, please ensure it's in your PATH"
   exit 1
 fi
+
+function prefixwarn {
+  if [ $prefixExists -eq 1 ]; then
+    echo "WARN: A Wine prefix already exists at ${winePrefix}. If you experience any issues, please delete the prefix, or use a different prefix."
+  fi
+}
+
+if [ -d "${winePrefix}" ]; then
+  prefixExists=1
+fi
+
+prefixwarn
 
 mkdir -p ${winePrefix} 2> /dev/null
 pushd ${winePrefix} > /dev/null
@@ -69,12 +82,15 @@ popd > /dev/null
 
 if ! WINEPREFIX=${winePrefix} ${winePrefix}/winetricks dotnet461 2> /dev/null; then
   echo "ERROR: Failed to install .Net 4.6.1"
+  prefixwarn
   exit 1
 fi
 
 if ! ./bs-linux-is-wine-valid.sh ${winePrefix} &> /dev/null; then
   echo "ERROR: .Net installation succeeded but wine prefix doesn't appear valid"
+  prefixwarn
   exit 1
 fi
 
+prefixwarn
 echo "SUCCESS: Wine prefix at ${winePrefix} setup to run BSIPA"
