@@ -13,7 +13,6 @@ These scripts checks to see if your wine prefix is setup for running BSIPA, and 
 
 # This script will double-check if the prefix is valid at the end, if it doesn't work please raise a github issue
 ```
-**NOTE: An issue ([#1596](https://github.com/Winetricks/winetricks/issues/1596)) with winetricks, known since the 26th of August 2020 has made dotnet4xx installation fail. Until PR [#1599](https://github.com/Winetricks/winetricks/pull/1599) is merged, set the `WINETRICKSURL` environment variable to `https://raw.githubusercontent.com/SwimmingTiger/winetricks/master/src/winetricks` when running `./bs-linux-setup-wine.sh`.**
 
 ## Beat Saber Mod Fix
 This script needs to be run after you've downloaded mods (BSIPA) through a mod installer

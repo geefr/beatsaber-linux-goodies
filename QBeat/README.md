@@ -61,8 +61,6 @@ These commands need to be run within a terminal, and assume QBeat is in the curr
 
 ```
 
-**NOTE: An issue ([#1596](https://github.com/Winetricks/winetricks/issues/1596)) with winetricks, known since the 26th of August 2020 has made dotnet4xx installation fail. Until PR [#1599](https://github.com/Winetricks/winetricks/pull/1599) is merged, set the `WINETRICKSURL` environment variable to `https://raw.githubusercontent.com/SwimmingTiger/winetricks/master/src/winetricks` when running `./QBeat --setup-wine`.**
-
 With any luck you should have a modded copy of Beat Saber now
 
 ## Adding More Mods
