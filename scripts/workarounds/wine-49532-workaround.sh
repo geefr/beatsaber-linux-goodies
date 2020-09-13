@@ -26,7 +26,7 @@ do
     if [ "$?" = "0" ]
     then
       newpids+=("$pid")
-      ./proc-stopper.sh $pid 60 &
+      ./workarounds/proc-stopper.sh $pid 60 &
     fi
   done
   #echo "PID DEBUG BELOW"
