@@ -8,7 +8,7 @@ These scripts checks to see if your wine prefix is setup for running BSIPA, and 
 ./bs-linux-is-wine-valid.sh ~/.wine
 
 # If this script returns non-zero, or shows an error your wine won't be able to patch beat saber
-# For this just run the other script, and follow the prompts when the various setup wizards appear
+# For this just run the other script
 ./bs-linux-setup-wine.sh
 
 # This script will double-check if the prefix is valid at the end, if it doesn't work please raise a github issue
