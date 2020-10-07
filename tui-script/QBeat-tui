@@ -1,0 +1,648 @@
+#!/bin/bash
+
+args=$@
+
+function usage {
+  cat <<EOF
+Usage: ${0} [options]
+
+-h/? | Output this help page.
+
+EOF
+}
+
+# Menus
+
+function menu-main {
+  while [ true ]
+  do
+    clear
+    cat <<EOF
+=============================
+  #       Main Menu       #
+-----------------------------
+  Select an option:
+    1. First-time setup
+    2. Wine / BSIPA
+    3. Mods
+    4. Config
+    5. Exit
+-----------------------------
+EOF
+
+    echo -ne "Your input: "
+    read selectedoption
+
+    case $selectedoption in
+      1)
+      menu-first-time-setup;;
+      2)
+      menu-wine;;
+      3)
+      menu-mods;;
+      4)
+      menu-config;;
+      5)
+      echo "============================="
+      break;;
+      *)
+      echo "-----------------------------"
+      echo "Invalid option!"
+      echo "============================="
+      sleep 1;;
+    esac
+  done
+
+  exit 0
+}
+
+function menu-first-time-setup {
+  while [ true ]
+  do
+    while [ true ]
+    do
+      clear
+      cat <<EOF
+=============================
+  #   First-time Setup    #
+-----------------------------
+  Welcome to QBeat-tui!
+  The first-time setup will
+  guide you through setting
+  up your config, and will
+  automatically setup wine
+  and patch your game with
+  BSIPA.
+-----------------------------
+EOF
+
+      echo -ne "Continue (y/n)? "
+      read selectedoption
+
+      case $selectedoption in
+        y|Y)
+        break 1;;
+        n|N)
+        break 2;;
+        *)
+        echo "-----------------------------"
+        echo "Invalid option"
+        echo "============================="
+        sleep 1;;
+      esac
+    done
+
+    while [ true ]
+    do
+      clear
+      cat <<EOF
+=============================
+  Firstly, you will need to
+  set up your config. Hit
+  enter without typing
+  anything to select the
+  default option.
+-----------------------------
+EOF
+
+      action-installer-set-config "~/.wine" "winePrefix"
+      echo "-----------------------------"
+      action-installer-set-config "~/.steam/steam/steamapps/common/Beat Saber" "bsInstall"
+      echo "-----------------------------"
+      action-installer-set-config "1.11.0" "gameVersion"
+      echo "-----------------------------"
+
+      break
+    done
+
+    while [ true ]
+    do
+      clear
+      cat <<EOF
+=============================
+  Now, the installer will
+  attempt to validate your
+  wine prefix, set it up if
+  necessary, and patch Beat
+  Saber with BSIPA.
+-----------------------------
+EOF
+
+      ./QBeat --setup-wine
+      if [ $? == 1 ]
+      then
+        echo "-----------------------------"
+        echo "ERROR: Setting up wine failed."
+        error=1
+        break
+      fi
+
+      ./QBeat --validate-wine
+      if [ $? == 1 ]
+      then
+        echo "-----------------------------"
+        echo "ERROR: Wine prefix did not pass validation."
+        error=1
+        break
+      fi
+
+      ./QBeat --install "BSIPA"
+      if [ $? == 1 ]
+      then
+        echo "-----------------------------"
+        echo "ERROR: Installing BSIPA failed."
+        error=1
+        break
+      fi
+
+      ./QBeat --patch
+      if [ $? == 1 ]
+      then
+        echo "-----------------------------"
+        echo "ERROR: Patching Beat Saber failed."
+        error=1
+        break
+      fi
+
+      echo "-----------------------------"
+      echo "All operations seemed successful!"
+      error=0
+      break
+    done
+
+    echo "-----------------------------"
+    read -n 1 -s -r -p "Press any key to contine..."
+
+    if [ $error == 0 ]
+    then
+      while [ true ]
+      do
+        clear
+        cat <<EOF
+=============================
+  Congratulations!
+  Everything seemed to
+  work correctly. You may
+  now proceed to install
+  any mods you wish.
+-----------------------------
+EOF
+
+      read -n 1 -s -r -p "Press any key to contine..."
+      break 2
+      done
+    else
+      while [ true ]
+      do
+        clear
+        cat <<EOF
+=============================
+  The installation failed
+  at some step. Would you
+  like to retry (y/n)?
+-----------------------------
+EOF
+
+        echo -ne "Your input: "
+        read selectedoption
+
+        case $selectedoption in
+          y|Y)
+          break 1;;
+          n|N)
+          break 2;;
+          *)
+          echo "-----------------------------"
+          echo "Invalid option"
+          echo "============================="
+          sleep 1;;
+        esac
+      done
+    fi
+  done
+}
+
+function menu-wine {
+  while [ true ]
+  do
+    clear
+    cat <<EOF
+=============================
+  #     Wine / BSIPA      #
+-----------------------------
+  Select an option:
+    1. Validate wine
+    2. Setup wine
+    3. Install BSIPA
+    4. Patch the game with
+       BSIPA
+    5. Back
+-----------------------------
+EOF
+
+    echo -ne "Your input: "
+    read selectedoption
+
+    case $selectedoption in
+      1)
+      action-validate-wine;;
+      2)
+      action-setup-wine;;
+      3)
+      action-install-bsipa;;
+      4)
+      action-patch-game;;
+      5)
+      break;;
+      *)
+      echo "-----------------------------"
+      echo "Invalid option"
+      echo "============================="
+      sleep 1;;
+    esac
+  done
+}
+
+function menu-mods {
+  while [ true ]
+  do
+    clear
+    cat <<EOF
+=============================
+  #         Mods          #
+-----------------------------
+  Select an option:
+    1. List all available
+       mods
+    2. Validate mod(s)
+    3. Install mod(s)
+    4. Uninstall mod(s)
+    5. Back
+-----------------------------
+EOF
+
+    echo -ne "Your input: "
+    read selectedoption
+
+    case $selectedoption in
+      1)
+      action-list-mods;;
+      2)
+      menu-validate-mods;;
+      3)
+      action-install-mods;;
+      4)
+      action-uninstall-mods;;
+      5)
+      break;;
+      *)
+      echo "-----------------------------"
+      echo "Invalid option"
+      echo "============================="
+      sleep 1;;
+    esac
+  done
+}
+
+function menu-validate-mods {
+  while [ true ]
+  do
+    clear
+    cat <<EOF
+=============================
+  #    Validate Mods      #
+-----------------------------
+  Select an option:
+    1. Validate all mods
+    2. Validate a specific
+       mod
+    3. Back
+-----------------------------
+EOF
+
+    echo -ne "Your input: "
+    read selectedoption
+
+    case $selectedoption in
+      1)
+      action-validate-mods;;
+      2)
+      action-validate-mod;;
+      3)
+      break;;
+      *)
+      echo "-----------------------------"
+      echo "Invalid option"
+      echo "============================="
+      sleep 1;;
+    esac
+  done
+}
+
+function menu-config {
+  while [ true ]
+  do
+    clear
+    cat <<EOF
+=============================
+  #         Config         #
+-----------------------------
+  Select an option:
+    1. Output all config
+       variables
+    2. Output a specific
+       config variable
+    3. Set a config variable
+    4. Back
+-----------------------------
+EOF
+
+    echo -ne "Your input: "
+    read selectedoption
+
+    case $selectedoption in
+      1)
+      action-config-get;;
+      2)
+      menu-config-get-specific;;
+      3)
+      menu-config-set;;
+      4)
+      break;;
+      *)
+      echo "-----------------------------"
+      echo "Invalid option"
+      echo "============================="
+      sleep 1;;
+    esac
+  done
+}
+
+
+function menu-config-get-specific {
+  while [ true ]
+  do
+    clear
+    cat <<EOF
+=============================
+  #    Which variable?     #
+-----------------------------
+  Select an option:
+    1. bsInstall
+    2. gameType
+    3. gameVersion
+    4. winePrefix
+    5. Back
+-----------------------------
+EOF
+
+    echo -ne "Your input: "
+    read selectedoption
+
+    case $selectedoption in
+      1)
+      action-config-get bsInstall;;
+      2)
+      action-config-get gameType;;
+      3)
+      action-config-get gameVersion;;
+      4)
+      action-config-get winePrefix;;
+      5)
+      break;;
+      *)
+      echo "-----------------------------"
+      echo "Invalid option"
+      echo "============================="
+      sleep 1;;
+    esac
+  done
+}
+
+function menu-config-set {
+  while [ true ]
+  do
+    clear
+    cat <<EOF
+=============================
+  #    Which variable?     #
+-----------------------------
+  Select an option:
+    1. bsInstall
+    2. gameType
+    3. gameVersion
+    4. winePrefix
+    5. Back
+-----------------------------
+EOF
+
+    echo -ne "Your input: "
+    read selectedoption
+
+    case $selectedoption in
+      1)
+      action-config-set bsInstall;;
+      2)
+      action-config-set gameType;;
+      3)
+      action-config-set gameVersion;;
+      4)
+      action-config-set winePrefix;;
+      5)
+      break;;
+      *)
+      echo "-----------------------------"
+      echo "Invalid option"
+      echo "============================="
+      sleep 1;;
+    esac
+  done
+}
+
+# Actions
+
+function action-installer-set-config {
+  echo "Default: $1"
+  echo -ne "$2: "
+  read configvalue
+  if [ -z "$configvalue" ]
+  then
+    configvalue=$1
+    echo -ne "\033[1A"
+    echo "$2: $configvalue"
+  fi
+  ./QBeat --config set $2 "$configvalue"
+}
+
+function action-validate-wine {
+  clear
+  cat <<EOF
+=============================
+  #   Validating Wine:    #
+-----------------------------
+EOF
+  ./QBeat --validate-wine
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+function action-setup-wine {
+  clear
+  cat <<EOF
+=============================
+  #   Setting up Wine:    #
+-----------------------------
+EOF
+  ./QBeat --setup-wine
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+function action-patch-game {
+  clear
+  cat <<EOF
+=============================
+  #    Patching game:     #
+-----------------------------
+EOF
+  ./QBeat --install "BSIPA"
+  ./QBeat --patch
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+function action-validate-mods {
+  clear
+  cat <<EOF
+=============================
+  #  Validating all mods:  #
+-----------------------------
+EOF
+  ./QBeat --validate-all
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+function action-validate-mod {
+  clear
+  cat <<EOF
+=============================
+  #  Validating mod(s):   #
+-----------------------------
+State which mod you would
+like to validate.
+-----------------------------
+EOF
+  echo -ne "Your input: "
+  read validatemod
+  ./QBeat --validate $validatemod
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+function action-list-mods {
+  clear
+  cat <<EOF
+=============================
+  #   Listing all mods:   #
+-----------------------------
+EOF
+  ./QBeat --list
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+function action-install-mods {
+  clear
+  cat <<EOF
+=============================
+  #  Installing mod(s):   #
+-----------------------------
+State which mods you would
+like to install, separated
+by commas.
+-----------------------------
+EOF
+  echo -ne "Your input: "
+  read installmods
+  IFS=',' modarray=(${installmods//, /,})
+  for mod in "${modarray[@]}"
+  do
+    ./QBeat --install $mod
+  done
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+function action-uninstall-mods {
+  clear
+  cat <<EOF
+=============================
+  # Uninstalling mod(s):  #
+-----------------------------
+State which mods you would
+like to uninstall, separated
+by commas.
+-----------------------------
+EOF
+  echo -ne "Your input: "
+  read uninstallmods
+  IFS=',' modarray=(${uninstallmods//, /,})
+  for mod in "${modarray[@]}"
+  do
+    ./QBeat --remove $mod
+  done
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+function action-config-get {
+  clear
+  cat <<EOF
+=============================
+  #   Outputting config:   #
+-----------------------------
+EOF
+  ./QBeat --config get $1
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+function action-config-set {
+  clear
+  cat <<EOF
+=============================
+  #    Setting config:     #
+-----------------------------
+EOF
+  echo "Current value: "
+  ./QBeat --config get $1
+  echo "-----------------------------"
+  echo -ne "Input new value: "
+  read configvalue
+  ./QBeat --config set $1 "$configvalue"
+  echo "-----------------------------"
+  echo "New value: "
+  ./QBeat --config get $1
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+GETHELP=0
+
+while getopts "h\?" opts
+do
+  case $opts in
+    h|\?) GETHELP=1;;
+  esac
+done
+
+shift $(( "$OPTIND"-1 ))
+
+if [ $GETHELP == 1 ]
+then
+  usage
+  exit 0
+fi
+
+menu-main
