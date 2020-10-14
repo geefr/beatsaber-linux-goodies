@@ -159,7 +159,7 @@ EOF
       if [ $? == 1 ]
       then
         echo "-----------------------------"
-        echo "ERROR: Patching Beat Saber failed."
+        echo "ERROR: Patching the game failed."
         error=1
         break
       fi
@@ -234,9 +234,7 @@ function menu-wine {
     1. Validate wine
     2. Setup wine
     3. Install BSIPA
-    4. Patch the game with
-       BSIPA
-    5. Back
+    4. Back
 -----------------------------
 EOF
 
@@ -249,10 +247,8 @@ EOF
       2)
       action-setup-wine;;
       3)
-      action-install-bsipa;;
-      4)
       action-patch-game;;
-      5)
+      4)
       break;;
       *)
       echo "-----------------------------"
@@ -482,6 +478,11 @@ function action-validate-wine {
 -----------------------------
 EOF
   ./QBeat --validate-wine
+  if [ $? == 1 ]
+  then
+    echo "-----------------------------"
+    echo "ERROR: Validating wine failed."
+  fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
 }
@@ -494,6 +495,11 @@ function action-setup-wine {
 -----------------------------
 EOF
   ./QBeat --setup-wine
+  if [ $? == 1 ]
+  then
+    echo "-----------------------------"
+    echo "ERROR: Setting up wine failed."
+  fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
 }
@@ -506,7 +512,18 @@ function action-patch-game {
 -----------------------------
 EOF
   ./QBeat --install "BSIPA"
-  ./QBeat --patch
+  if [ $? == 1 ]
+  then
+    echo "-----------------------------"
+    echo "ERROR: Installing BSIPA failed."
+  else
+    ./QBeat --patch
+    if [ $? == 1 ]
+    then
+      echo "-----------------------------"
+      echo "ERROR: Patching the game failed."
+    fi
+  fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
 }
@@ -519,6 +536,11 @@ function action-validate-mods {
 -----------------------------
 EOF
   ./QBeat --validate-all
+  if [ $? == 1 ]
+  then
+    echo "-----------------------------"
+    echo "ERROR: Validating mods failed."
+  fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
 }
@@ -536,6 +558,11 @@ EOF
   echo -ne "Your input: "
   read validatemod
   ./QBeat --validate $validatemod
+  if [ $? == 1 ]
+  then
+    echo "-----------------------------"
+    echo "ERROR: Validating mod failed."
+  fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
 }
@@ -548,6 +575,11 @@ function action-list-mods {
 -----------------------------
 EOF
   ./QBeat --list
+  if [ $? == 1 ]
+  then
+    echo "-----------------------------"
+    echo "ERROR: Listing mods failed."
+  fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
 }
@@ -565,10 +597,17 @@ by commas.
 EOF
   echo -ne "Your input: "
   read installmods
+
   IFS=',' modarray=(${installmods//, /,})
   for mod in "${modarray[@]}"
   do
     ./QBeat --install $mod
+    if [ $? == 1 ]
+    then
+      echo "-----------------------------"
+      echo "ERROR: Installing $mod failed."
+    fi
+    echo "-----------------------------"
   done
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
@@ -587,10 +626,17 @@ by commas.
 EOF
   echo -ne "Your input: "
   read uninstallmods
+  echo "-----------------------------"
   IFS=',' modarray=(${uninstallmods//, /,})
   for mod in "${modarray[@]}"
   do
     ./QBeat --remove $mod
+    if [ $? == 1 ]
+    then
+      echo "-----------------------------"
+      echo "ERROR: Removing $mod failed."
+    fi
+    echo "-----------------------------"
   done
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
@@ -604,6 +650,11 @@ function action-config-get {
 -----------------------------
 EOF
   ./QBeat --config get $1
+  if [ $? == 1 ]
+  then
+    echo "-----------------------------"
+    echo "ERROR: Outputting $1 failed."
+  fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
 }
@@ -621,9 +672,15 @@ EOF
   echo -ne "Input new value: "
   read configvalue
   ./QBeat --config set $1 "$configvalue"
-  echo "-----------------------------"
-  echo "New value: "
-  ./QBeat --config get $1
+  if [ $? == 1 ]
+  then
+    echo "-----------------------------"
+    echo "ERROR: Setting $1 failed."
+  else
+    echo "-----------------------------"
+    echo "New value: "
+    ./QBeat --config get $1
+  fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
 }
