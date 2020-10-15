@@ -82,7 +82,7 @@ popd > /dev/null
 
 wineVersion=`wine --version | cut -d ' ' -f1 | sed -e 's/wine-//' -e 's/-rc.*//'` # Get Wine version
 workaround49532=0
-if [[ $wineVersion > 5.12 ]]; then
+if [[ $( bc<<<"${wineVersion}>=5.12" ) -eq 1 ]] && [[ $( bc<<<"${wineVersion}<5.18" ) -eq 1 ]]; then
   echo "WARN: Wine version is wine-${wineVersion}; working around wine bug 49532."
   workaround49532=1
   ./workarounds/wine-49532-workaround.sh & # Execute workaround script as background process
