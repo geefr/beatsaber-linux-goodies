@@ -597,18 +597,23 @@ by commas.
 EOF
   echo -ne "Your input: "
   read installmods
-
   IFS=',' modarray=(${installmods//, /,})
-  for mod in "${modarray[@]}"
-  do
-    ./QBeat --install $mod
-    if [ $? == 1 ]
-    then
-      echo "-----------------------------"
-      echo "ERROR: Installing $mod failed."
-    fi
+  if [ ${#modarray[@]} -eq 0 ]
+  then
     echo "-----------------------------"
-  done
+    echo "ERROR: No mods specified."
+  else
+    for mod in "${modarray[@]}"
+    do
+      ./QBeat --install $mod
+      if [ $? == 1 ]
+      then
+        echo "-----------------------------"
+        echo "ERROR: Installing $mod failed."
+      fi
+      echo "-----------------------------"
+    done
+  fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
 }
@@ -626,18 +631,23 @@ by commas.
 EOF
   echo -ne "Your input: "
   read uninstallmods
-  echo "-----------------------------"
   IFS=',' modarray=(${uninstallmods//, /,})
-  for mod in "${modarray[@]}"
-  do
-    ./QBeat --remove $mod
-    if [ $? == 1 ]
-    then
-      echo "-----------------------------"
-      echo "ERROR: Removing $mod failed."
-    fi
+  if [ ${#modarray[@]} -eq 0 ]
+  then
     echo "-----------------------------"
-  done
+    echo "ERROR: No mods specified."
+  else
+    for mod in "${modarray[@]}"
+    do
+      ./QBeat --remove $mod
+      if [ $? == 1 ]
+      then
+        echo "-----------------------------"
+        echo "ERROR: Removing $mod failed."
+      fi
+      echo "-----------------------------"
+    done
+  fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
 }
@@ -671,15 +681,21 @@ EOF
   echo "-----------------------------"
   echo -ne "Input new value: "
   read configvalue
-  ./QBeat --config set $1 "$configvalue"
-  if [ $? == 1 ]
+  if [ -z "$configvalue" ]
   then
     echo "-----------------------------"
-    echo "ERROR: Setting $1 failed."
+    echo "ERROR: No value provided."
   else
-    echo "-----------------------------"
-    echo "New value: "
-    ./QBeat --config get $1
+    ./QBeat --config set $1 "$configvalue"
+    if [ $? == 1 ]
+    then
+      echo "-----------------------------"
+      echo "ERROR: Setting $1 failed."
+    else
+      echo "-----------------------------"
+      echo "New value: "
+      ./QBeat --config get $1
+    fi
   fi
   echo "-----------------------------"
   read -n 1 -s -r -p "Press any key to contine..."
