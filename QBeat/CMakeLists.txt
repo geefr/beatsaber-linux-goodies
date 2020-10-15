@@ -12,7 +12,7 @@ find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 find_package(ZLIB REQUIRED)
 
 set( CMAKE_CXX_STANDARD 11 )
-set( CMAKE_CXX_FLAGS "-Werror" )
+set( CMAKE_CXX_FLAGS "-Werror -Wno-error=deprecated-declarations" )
 
 add_executable(${PROJECT_NAME} 
   util.cpp
