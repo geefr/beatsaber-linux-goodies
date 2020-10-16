@@ -112,7 +112,7 @@ EOF
       echo "-----------------------------"
       action-installer-set-config "~/.steam/steam/steamapps/common/Beat Saber" "bsInstall"
       echo "-----------------------------"
-      action-installer-set-config "1.11.0" "gameVersion"
+      action-version-set
       echo "-----------------------------"
 
       break
