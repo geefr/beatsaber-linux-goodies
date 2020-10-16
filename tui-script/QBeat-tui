@@ -3,6 +3,7 @@
 args=$@
 
 function usage {
+  # Outputs help menu; more to be added to in future, perhaps with more options.
   cat <<EOF
 Usage: ${0} [options]
 
@@ -14,6 +15,7 @@ EOF
 # Menus
 
 function menu-main {
+  # Outputs main menu
   while [ true ]
   do
     clear
@@ -57,6 +59,7 @@ EOF
 }
 
 function menu-first-time-setup {
+  # Output first-time setup wizard
   while [ true ]
   do
     while [ true ]
@@ -223,6 +226,7 @@ EOF
 }
 
 function menu-wine {
+  # Outputs Wine & BSIPA menu
   while [ true ]
   do
     clear
@@ -260,6 +264,7 @@ EOF
 }
 
 function menu-mods {
+  # Output mod menu
   while [ true ]
   do
     clear
@@ -301,6 +306,7 @@ EOF
 }
 
 function menu-validate-mods {
+  # Output mod validation menu
   while [ true ]
   do
     clear
@@ -336,6 +342,7 @@ EOF
 }
 
 function menu-config {
+  # Output config menu
   while [ true ]
   do
     clear
@@ -376,6 +383,7 @@ EOF
 
 
 function menu-config-get-specific {
+  # Output specific config get menu
   while [ true ]
   do
     clear
@@ -416,6 +424,7 @@ EOF
 }
 
 function menu-config-set {
+  # Output specific config set menu
   while [ true ]
   do
     clear
@@ -458,6 +467,8 @@ EOF
 # Actions
 
 function action-installer-set-config {
+  # Sets config as part of first-time setup. First argument is the default value,
+  # and the second argument is the variable name to be changed.
   echo "Default: $1"
   echo -ne "$2: "
   read configvalue
@@ -471,6 +482,7 @@ function action-installer-set-config {
 }
 
 function action-validate-wine {
+  # Validates a Wine prefix
   clear
   cat <<EOF
 =============================
@@ -488,6 +500,7 @@ EOF
 }
 
 function action-setup-wine {
+  # Sets up a Wine prefix
   clear
   cat <<EOF
 =============================
@@ -505,6 +518,7 @@ EOF
 }
 
 function action-patch-game {
+  # Installs BSIPA, and patches the game.
   clear
   cat <<EOF
 =============================
@@ -529,6 +543,7 @@ EOF
 }
 
 function action-validate-mods {
+  # Validates all installed mods
   clear
   cat <<EOF
 =============================
@@ -546,6 +561,7 @@ EOF
 }
 
 function action-validate-mod {
+  # Validates a specific mod
   clear
   cat <<EOF
 =============================
@@ -568,6 +584,7 @@ EOF
 }
 
 function action-list-mods {
+  # Lists all mods
   clear
   cat <<EOF
 =============================
@@ -585,6 +602,7 @@ EOF
 }
 
 function action-install-mods {
+  # Installs a single mod, or a list of mods separated by commas.
   clear
   cat <<EOF
 =============================
@@ -597,7 +615,7 @@ by commas.
 EOF
   echo -ne "Your input: "
   read installmods
-  IFS=',' modarray=(${installmods//, /,})
+  IFS=',' modarray=(${installmods//, /,}) # Splits input up into array
   if [ ${#modarray[@]} -eq 0 ]
   then
     echo "-----------------------------"
@@ -619,6 +637,7 @@ EOF
 }
 
 function action-uninstall-mods {
+  # Removes a single mod, or a list of mods separated by commas.
   clear
   cat <<EOF
 =============================
@@ -631,7 +650,7 @@ by commas.
 EOF
   echo -ne "Your input: "
   read uninstallmods
-  IFS=',' modarray=(${uninstallmods//, /,})
+  IFS=',' modarray=(${uninstallmods//, /,}) # Splits input up into array
   if [ ${#modarray[@]} -eq 0 ]
   then
     echo "-----------------------------"
@@ -653,6 +672,7 @@ EOF
 }
 
 function action-config-get {
+  # Outputs config variable, determined by the first argument.
   clear
   cat <<EOF
 =============================
@@ -670,6 +690,8 @@ EOF
 }
 
 function action-config-set {
+  # Sets a specific config variable to value determined by user input, with the
+  # variable name determined by an argument.
   clear
   cat <<EOF
 =============================
@@ -701,9 +723,11 @@ EOF
   read -n 1 -s -r -p "Press any key to contine..."
 }
 
+# Execution begins...
+
 GETHELP=0
 
-while getopts "h\?" opts
+while getopts "h\?" opts # Look for options passed.
 do
   case $opts in
     h|\?) GETHELP=1;;
@@ -712,10 +736,10 @@ done
 
 shift $(( "$OPTIND"-1 ))
 
-if [ $GETHELP == 1 ]
+if [ $GETHELP == 1 ] # Outputs help menu
 then
   usage
   exit 0
 fi
 
-menu-main
+menu-main # Start main menu function
