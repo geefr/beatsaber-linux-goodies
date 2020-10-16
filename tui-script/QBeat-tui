@@ -450,7 +450,7 @@ EOF
       2)
       action-config-set gameType;;
       3)
-      action-config-set gameVersion;;
+      action-version-set;;
       4)
       action-config-set winePrefix;;
       5)
@@ -717,6 +717,58 @@ EOF
       echo "-----------------------------"
       echo "New value: "
       ./QBeat --config get $1
+    fi
+  fi
+  echo "-----------------------------"
+  read -n 1 -s -r -p "Press any key to contine..."
+}
+
+function action-version-set {
+  # Sets the gameVersion config variable to value selected by user from beatmods
+  # api.
+  clear
+  cat <<EOF
+=============================
+#    Setting config:     #
+-----------------------------
+EOF
+  echo "Current value: "
+  ./QBeat --config get gameVersion
+  echo "-----------------------------"
+
+  versionsarray=( $( curl -sL https://beatmods.com/api/v1/version | sed -e 's/\[//' -e 's/\]//' -e 's/,/\n/g' ) )
+  echo "  Select a version:"
+  for i in ${!versionsarray[@]}
+  do
+    echo "    $((i+1))) ${versionsarray[${i}]//\"/}"
+  done
+
+  echo "-----------------------------"
+  echo -ne "Your input: "
+  read selectedoption
+
+  if ! [[ "$selectedoption" -eq "$selectedoption" ]] 2> /dev/null
+  then
+    echo "-----------------------------"
+    echo "ERROR: Invalid input."
+  elif ! [[ -n "${selectedoption}" ]]
+  then
+    echo "-----------------------------"
+    echo "ERROR: No value provided."
+  elif [[ $( bc<<<"${selectedoption}<1" ) -eq 1 ]] || [[ $( bc<<<"${selectedoption}>${#versionsarray[@]}" ) -eq 1 ]]
+  then
+    echo "-----------------------------"
+    echo "ERROR: Invalid input."
+  else
+    ./QBeat --config set gameVersion "${versionsarray[$((selectedoption-1))]}"
+    if [ $? == 1 ]
+    then
+      echo "-----------------------------"
+      echo "ERROR: Setting gameVersion failed."
+    else
+      echo "-----------------------------"
+      echo "New value: "
+      ./QBeat --config get gameVersion
     fi
   fi
   echo "-----------------------------"
