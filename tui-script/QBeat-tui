@@ -471,7 +471,7 @@ function action-installer-set-config {
   # and the second argument is the variable name to be changed.
   echo "Default: $1"
   echo -ne "$2: "
-  read configvalue
+  read -e configvalue # -e enables bash autocompletion
   if [ -z "$configvalue" ]
   then
     configvalue=$1
@@ -702,7 +702,7 @@ EOF
   ./QBeat --config get $1
   echo "-----------------------------"
   echo -ne "Input new value: "
-  read configvalue
+  read -e configvalue # -e enables bash autocompletion
   if [ -z "$configvalue" ]
   then
     echo "-----------------------------"
