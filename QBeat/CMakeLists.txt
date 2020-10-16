@@ -12,7 +12,7 @@ find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 find_package(ZLIB REQUIRED)
 
 set( CMAKE_CXX_STANDARD 11 )
-set( CMAKE_CXX_FLAGS "-Werror" )
+set( CMAKE_CXX_FLAGS "-Werror -Wno-error=deprecated-declarations" )
 
 add_executable(${PROJECT_NAME}
   util.cpp
@@ -43,7 +43,9 @@ install( FILES
    )
 install( FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/../tui-script/QBeat-tui
-   DESTINATION .
+  ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/workarounds/wine-49532-workaround.sh
+  ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/workarounds/proc-stopper.sh
+   DESTINATION ./workarounds
    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
    )
 install( FILES
