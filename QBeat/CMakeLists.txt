@@ -38,11 +38,11 @@ install( FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-is-wine-valid.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-modfix.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-setup-wine.sh
+  ${CMAKE_CURRENT_SOURCE_DIR}/../tui-script/QBeat-tui
    DESTINATION .
    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
    )
 install( FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/../tui-script/QBeat-tui
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/workarounds/wine-49532-workaround.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/workarounds/proc-stopper.sh
    DESTINATION ./workarounds
