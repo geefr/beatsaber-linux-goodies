@@ -471,7 +471,7 @@ function action-installer-set-config {
   # and the second argument is the variable name to be changed.
   echo "Default: $1"
   echo -ne "$2: "
-  read -e configvalue # -e enables bash autocompletion
+  read configvalue # No bash autocompletion - breaks in-line default replacement
   if [ -z "$configvalue" ]
   then
     configvalue=$1
