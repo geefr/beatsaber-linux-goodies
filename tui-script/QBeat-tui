@@ -95,6 +95,8 @@ EOF
       esac
     done
 
+    error=0
+
     while [ true ]
     do
       clear
@@ -109,17 +111,31 @@ EOF
 EOF
 
       action-installer-set-config "~/.wine" "winePrefix"
+      if [ $error == 1 ]
+      then
+        break
+      fi
       echo "-----------------------------"
       action-installer-set-config "~/.steam/steam/steamapps/common/Beat Saber" "bsInstall"
+      if [ $error == 1 ]
+      then
+        break
+      fi
       echo "-----------------------------"
-      action-version-set
-      echo "-----------------------------"
+      action-installer-set-version
 
+      echo "-----------------------------"
+      read -n 1 -s -r -p "Press any key to contine..."
       break
     done
 
     while [ true ]
     do
+      if [ $error == 1 ]
+      then
+        break
+      fi
+
       clear
       cat <<EOF
 =============================
@@ -169,12 +185,11 @@ EOF
 
       echo "-----------------------------"
       echo "All operations seemed successful!"
-      error=0
+
+      echo "-----------------------------"
+      read -n 1 -s -r -p "Press any key to contine..."
       break
     done
-
-    echo "-----------------------------"
-    read -n 1 -s -r -p "Press any key to contine..."
 
     if [ $error == 0 ]
     then
@@ -479,6 +494,52 @@ function action-installer-set-config {
     echo "$2: $configvalue"
   fi
   ./QBeat --config set $2 "$configvalue"
+}
+
+function action-installer-set-version {
+  # Sets version as part of first-time setup, similarly to action-version-set.
+  versionsarray=( $( curl -sL https://beatmods.com/api/v1/version | sed -e 's/\[//' -e 's/\]//' -e 's/,/\n/g' ) )
+
+  echo "Default: ${versionsarray[0]//\"/}"
+  echo "Select a version:"
+  for i in ${!versionsarray[@]}
+  do
+    echo "  $((i+1))) ${versionsarray[${i}]//\"/}"
+  done
+  echo -ne "Your input: "
+  read selectedoption
+  if ! [[ "$selectedoption" -eq "$selectedoption" ]] 2> /dev/null
+  then
+    echo "-----------------------------"
+    echo "ERROR: Invalid input."
+    error=1
+  elif ! [[ -n "${selectedoption}" ]]
+  then
+    echo -ne "\033[1A"
+    echo "Your input: ${versionsarray[0]//\"/}"
+    ./QBeat --config set gameVersion "${versionsarray[0]}"
+    if [ $? == 1 ]
+    then
+      echo "-----------------------------"
+      echo "ERROR: Setting gameVersion failed."
+      error=1
+    fi
+  elif [[ $( bc<<<"${selectedoption}<1" ) -eq 1 ]] || [[ $( bc<<<"${selectedoption}>${#versionsarray[@]}" ) -eq 1 ]]
+  then
+    echo "-----------------------------"
+    echo "ERROR: Invalid input."
+    error=1
+  else
+    echo -ne "\033[1A"
+    echo "Your input: ${versionsarray[$((selectedoption-1))]//\"/}"
+    ./QBeat --config set gameVersion "${versionsarray[$((selectedoption-1))]}"
+    if [ $? == 1 ]
+    then
+      echo "-----------------------------"
+      echo "ERROR: Setting gameVersion failed."
+      error=1
+    fi
+  fi
 }
 
 function action-validate-wine {
