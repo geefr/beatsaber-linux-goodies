@@ -521,7 +521,7 @@ function action-installer-set-version {
   then
     echo -ne "\033[1A"
     echo "Your input: ${versionsarray[0]//\"/}"
-    ./QBeat --config set gameVersion "${versionsarray[0]}"
+    ./QBeat --config set gameVersion "${versionsarray[0]//\"/}"
     if [ $? == 1 ]
     then
       echo "-----------------------------"
@@ -536,7 +536,7 @@ function action-installer-set-version {
   else
     echo -ne "\033[1A"
     echo "Your input: ${versionsarray[$((selectedoption-1))]//\"/}"
-    ./QBeat --config set gameVersion "${versionsarray[$((selectedoption-1))]}"
+    ./QBeat --config set gameVersion "${versionsarray[$((selectedoption-1))]//\"/}"
     if [ $? == 1 ]
     then
       echo "-----------------------------"
@@ -825,7 +825,7 @@ EOF
     echo "-----------------------------"
     echo "ERROR: Invalid input."
   else
-    ./QBeat --config set gameVersion "${versionsarray[$((selectedoption-1))]}"
+    ./QBeat --config set gameVersion "${versionsarray[$((selectedoption-1))]//\"/}"
     if [ $? == 1 ]
     then
       echo "-----------------------------"
