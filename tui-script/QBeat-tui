@@ -694,7 +694,6 @@ EOF
         echo "-----------------------------"
         echo "ERROR: Installing $mod failed."
       fi
-      echo "-----------------------------"
     done
   fi
   echo "-----------------------------"
