@@ -123,6 +123,10 @@ EOF
       fi
       echo "-----------------------------"
       action-installer-set-version
+      if [ $error == 1 ]
+      then
+        break
+      fi
 
       echo "-----------------------------"
       read -n 1 -s -r -p "Press any key to contine..."
@@ -185,11 +189,11 @@ EOF
 
       echo "-----------------------------"
       echo "All operations seemed successful!"
-
-      echo "-----------------------------"
-      read -n 1 -s -r -p "Press any key to contine..."
       break
     done
+
+    echo "-----------------------------"
+    read -n 1 -s -r -p "Press any key to contine..."
 
     if [ $error == 0 ]
     then
