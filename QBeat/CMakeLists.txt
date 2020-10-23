@@ -44,6 +44,7 @@ install( FILES
 install( FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/../tui-script/QBeat-tui
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/workarounds/wine-49532-workaround.sh
+  ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/workarounds/wine-49897-workaround.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/workarounds/proc-stopper.sh
    DESTINATION ./workarounds
    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
