@@ -690,6 +690,7 @@ EOF
   else
     for mod in "${modarray[@]}"
     do
+      echo "-----------------------------"
       ${scriptpath}/QBeat --install $mod
       if [ $? == 1 ]
       then
