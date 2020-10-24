@@ -1,11 +1,13 @@
 #!/bin/bash
 
 args=$@
+scriptname=`basename ${0}`
+scriptpath=`dirname ${0}`
 
 function usage {
   # Outputs help menu; more to be added to in future, perhaps with more options.
   cat <<EOF
-Usage: ${0} [options]
+Usage: ${scriptname} [options]
 
 -h/? | Output this help page.
 
@@ -151,7 +153,7 @@ EOF
 -----------------------------
 EOF
 
-      ./QBeat --setup-wine
+      ${scriptpath}/QBeat --setup-wine
       if [ $? == 1 ]
       then
         echo "-----------------------------"
@@ -160,7 +162,7 @@ EOF
         break
       fi
 
-      ./QBeat --validate-wine
+      ${scriptpath}/QBeat --validate-wine
       if [ $? == 1 ]
       then
         echo "-----------------------------"
@@ -169,7 +171,7 @@ EOF
         break
       fi
 
-      ./QBeat --install "BSIPA"
+      ${scriptpath}/QBeat --install "BSIPA"
       if [ $? == 1 ]
       then
         echo "-----------------------------"
@@ -178,7 +180,7 @@ EOF
         break
       fi
 
-      ./QBeat --patch
+      ${scriptpath}/QBeat --patch
       if [ $? == 1 ]
       then
         echo "-----------------------------"
@@ -497,7 +499,7 @@ function action-installer-set-config {
     echo -ne "\033[1A"
     echo "$2: $configvalue"
   fi
-  ./QBeat --config set $2 "$configvalue"
+  ${scriptpath}/QBeat --config set $2 "$configvalue"
 }
 
 function action-installer-set-version {
@@ -521,7 +523,7 @@ function action-installer-set-version {
   then
     echo -ne "\033[1A"
     echo "Your input: ${versionsarray[0]//\"/}"
-    ./QBeat --config set gameVersion "${versionsarray[0]//\"/}"
+    ${scriptpath}/QBeat --config set gameVersion "${versionsarray[0]//\"/}"
     if [ $? == 1 ]
     then
       echo "-----------------------------"
@@ -536,7 +538,7 @@ function action-installer-set-version {
   else
     echo -ne "\033[1A"
     echo "Your input: ${versionsarray[$((selectedoption-1))]//\"/}"
-    ./QBeat --config set gameVersion "${versionsarray[$((selectedoption-1))]//\"/}"
+    ${scriptpath}/QBeat --config set gameVersion "${versionsarray[$((selectedoption-1))]//\"/}"
     if [ $? == 1 ]
     then
       echo "-----------------------------"
@@ -554,7 +556,7 @@ function action-validate-wine {
   #   Validating Wine:    #
 -----------------------------
 EOF
-  ./QBeat --validate-wine
+  ${scriptpath}/QBeat --validate-wine
   if [ $? == 1 ]
   then
     echo "-----------------------------"
@@ -572,7 +574,7 @@ function action-setup-wine {
   #   Setting up Wine:    #
 -----------------------------
 EOF
-  ./QBeat --setup-wine
+  ${scriptpath}/QBeat --setup-wine
   if [ $? == 1 ]
   then
     echo "-----------------------------"
@@ -590,13 +592,13 @@ function action-patch-game {
   #    Patching game:     #
 -----------------------------
 EOF
-  ./QBeat --install "BSIPA"
+  ${scriptpath}/QBeat --install "BSIPA"
   if [ $? == 1 ]
   then
     echo "-----------------------------"
     echo "ERROR: Installing BSIPA failed."
   else
-    ./QBeat --patch
+    ${scriptpath}/QBeat --patch
     if [ $? == 1 ]
     then
       echo "-----------------------------"
@@ -615,7 +617,7 @@ function action-validate-mods {
   #  Validating all mods:  #
 -----------------------------
 EOF
-  ./QBeat --validate-all
+  ${scriptpath}/QBeat --validate-all
   if [ $? == 1 ]
   then
     echo "-----------------------------"
@@ -638,7 +640,7 @@ like to validate.
 EOF
   echo -ne "Your input: "
   read validatemod
-  ./QBeat --validate $validatemod
+  ${scriptpath}/QBeat --validate $validatemod
   if [ $? == 1 ]
   then
     echo "-----------------------------"
@@ -656,7 +658,7 @@ function action-list-mods {
   #   Listing all mods:   #
 -----------------------------
 EOF
-  ./QBeat --list
+  ${scriptpath}/QBeat --list
   if [ $? == 1 ]
   then
     echo "-----------------------------"
@@ -688,7 +690,7 @@ EOF
   else
     for mod in "${modarray[@]}"
     do
-      ./QBeat --install $mod
+      ${scriptpath}/QBeat --install $mod
       if [ $? == 1 ]
       then
         echo "-----------------------------"
@@ -722,7 +724,7 @@ EOF
   else
     for mod in "${modarray[@]}"
     do
-      ./QBeat --remove $mod
+      ${scriptpath}/QBeat --remove $mod
       if [ $? == 1 ]
       then
         echo "-----------------------------"
@@ -743,7 +745,7 @@ function action-config-get {
   #   Outputting config:   #
 -----------------------------
 EOF
-  ./QBeat --config get $1
+  ${scriptpath}/QBeat --config get $1
   if [ $? == 1 ]
   then
     echo "-----------------------------"
@@ -763,7 +765,7 @@ function action-config-set {
 -----------------------------
 EOF
   echo "Current value: "
-  ./QBeat --config get $1
+  ${scriptpath}/QBeat --config get $1
   echo "-----------------------------"
   echo -ne "Input new value: "
   read -e configvalue # -e enables bash autocompletion
@@ -772,7 +774,7 @@ EOF
     echo "-----------------------------"
     echo "ERROR: No value provided."
   else
-    ./QBeat --config set $1 "$configvalue"
+    ${scriptpath}/QBeat --config set $1 "$configvalue"
     if [ $? == 1 ]
     then
       echo "-----------------------------"
@@ -780,7 +782,7 @@ EOF
     else
       echo "-----------------------------"
       echo "New value: "
-      ./QBeat --config get $1
+      ${scriptpath}/QBeat --config get $1
     fi
   fi
   echo "-----------------------------"
@@ -797,7 +799,7 @@ function action-version-set {
 -----------------------------
 EOF
   echo "Current value: "
-  ./QBeat --config get gameVersion
+  ${scriptpath}/QBeat --config get gameVersion
   echo "-----------------------------"
 
   versionsarray=( $( curl -sL https://beatmods.com/api/v1/version | sed -e 's/\[//' -e 's/\]//' -e 's/,/\n/g' ) )
@@ -824,7 +826,7 @@ EOF
     echo "-----------------------------"
     echo "ERROR: Invalid input."
   else
-    ./QBeat --config set gameVersion "${versionsarray[$((selectedoption-1))]//\"/}"
+    ${scriptpath}/QBeat --config set gameVersion "${versionsarray[$((selectedoption-1))]//\"/}"
     if [ $? == 1 ]
     then
       echo "-----------------------------"
@@ -832,7 +834,7 @@ EOF
     else
       echo "-----------------------------"
       echo "New value: "
-      ./QBeat --config get gameVersion
+      ${scriptpath}/QBeat --config get gameVersion
     fi
   fi
   echo "-----------------------------"
