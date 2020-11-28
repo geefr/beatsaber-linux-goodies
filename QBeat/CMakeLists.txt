@@ -12,9 +12,9 @@ find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 find_package(ZLIB REQUIRED)
 
 set( CMAKE_CXX_STANDARD 11 )
-set( CMAKE_CXX_FLAGS "-Werror" )
+set( CMAKE_CXX_FLAGS "-Werror -Wno-error=deprecated-declarations" )
 
-add_executable(${PROJECT_NAME} 
+add_executable(${PROJECT_NAME}
   util.cpp
   settings.cpp
   main.cpp
@@ -23,7 +23,7 @@ add_executable(${PROJECT_NAME}
   json/mod.cpp
   apis/beatmodsv1.cpp
   qml.qrc
-)  
+)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Core Qt5::Quick minizip)
@@ -39,11 +39,18 @@ install( FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-modfix.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-setup-wine.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/../IPA/bin-minimal-linux64/IPA-Minimal
+  ${CMAKE_CURRENT_SOURCE_DIR}/../tui-script/QBeat-tui
    DESTINATION .
+   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+   )
+install( FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/workarounds/wine-49532-workaround.sh
+  ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/workarounds/wine-49897-workaround.sh
+  ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/workarounds/proc-stopper.sh
+   DESTINATION ./workarounds
    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
    )
 install( FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
   DESTINATION .
   )
-

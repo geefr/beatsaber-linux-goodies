@@ -11,7 +11,7 @@ Settings::Settings()
   : QSettings ("gfrancisdev", "QBeat")
 {
   // Init settings if needed
-  if( !contains(kGameVersion) ) setValue(kGameVersion, "1.6.0");
+  if( !contains(kGameVersion) ) setValue(kGameVersion, "1.12.2");
   if( !contains(kGameType) ) setValue(kGameType, "steam");
 #ifndef Q_OS_WIN32
   if( !contains(kWinePrefix) ) setValue(kWinePrefix, "");

@@ -80,10 +80,46 @@ fi
 chmod +x winetricks
 popd > /dev/null
 
-if ! WINEPREFIX=${winePrefix} ${winePrefix}/winetricks dotnet461 2> /dev/null; then
+wineVersion=`wine --version | cut -d ' ' -f1 | sed -e 's/wine-//' -e 's/-rc.*//'` # Get Wine version
+
+workaround49532=0
+if [[ $( bc<<<"${wineVersion}>=5.12" ) -eq 1 ]] && [[ $( bc<<<"${wineVersion}<5.18" ) -eq 1 ]]; then
+  echo "WARN: Wine version is wine-${wineVersion}; working around wine bug 49532."
+  workaround49532=1
+  ./workarounds/wine-49532-workaround.sh & # Execute workaround script as background process
+  workaround49532pid=$!
+fi
+
+workaround49897=0
+if [[ $( bc<<<"${wineVersion}>=5.18" ) -eq 1 ]]; then
+  echo "WARN: Wine version is wine-${wineVersion}; working around wine bug 49897."
+  workaround49897=1
+  ./workarounds/wine-49897-workaround.sh & # Execute workaround script as background process
+  workaround49897pid=$!
+fi
+
+if ! WINEPREFIX=${winePrefix} ${winePrefix}/winetricks -f -q dotnet461 2> /dev/null; then
   echo "ERROR: Failed to install .Net 4.6.1"
+  if [ $workaround49532 -eq 1 ]; then
+    kill "$workaround49532pid"
+    pkill mscorsvw.exe # In case we missed any
+  fi
+
+  if [ $workaround49897 -eq 1 ]; then
+    kill "$workaround49897pid"
+    pkill mscorsvw.exe # In case we missed any
+  fi
   prefixwarn
   exit 1
+fi
+
+if [ $workaround49532 -eq 1 ]; then
+  kill "$workaround49532pid"
+  pkill mscorsvw.exe # In case we missed any
+fi
+if [ $workaround49897 -eq 1 ]; then
+  kill "$workaround49897pid"
+  pkill mscorsvw.exe # In case we missed any
 fi
 
 if ! ./bs-linux-is-wine-valid.sh ${winePrefix} &> /dev/null; then
