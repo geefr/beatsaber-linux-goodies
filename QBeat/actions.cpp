@@ -25,6 +25,7 @@ void Actions::printConfig(QTextStream& qOut, QString key) {
 
 bool Actions::isWinePrefixValid()
 {
+	return true;
   QProcess process;
   QTextStream qOut( stdout );
 
@@ -57,6 +58,7 @@ bool Actions::isWinePrefixValid()
 
 bool Actions::setupWine()
 {
+	return true;
   QProcess process;
   QTextStream qOut( stdout );
 

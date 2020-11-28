@@ -38,6 +38,7 @@ install( FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-is-wine-valid.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-modfix.sh
   ${CMAKE_CURRENT_SOURCE_DIR}/../scripts/bs-linux-setup-wine.sh
+  ${CMAKE_CURRENT_SOURCE_DIR}/../IPA/bin-minimal-linux64/IPA-Minimal
    DESTINATION .
    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
    )
