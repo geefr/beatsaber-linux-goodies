@@ -68,7 +68,7 @@ fi
 # Patching BS with IPA.exe
 bsInstall=$(realpath "${1}")
 
-cp ../IPA/bin-minimal-linux64/IPA-Minimal "${bsInstall}/"
+cp -p ./IPA-Minimal Beat\ Saber.exe "${bsInstall}/"
 
 pushd "${bsInstall}" &> /dev/null
 
