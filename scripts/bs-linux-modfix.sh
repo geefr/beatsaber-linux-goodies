@@ -68,11 +68,11 @@ fi
 # Patching BS with IPA.exe
 bsInstall=$(realpath "${1}")
 
-cp -p ./IPA-Minimal Beat\ Saber.exe "${bsInstall}/"
+cp -p ./IPA-Minimal "${bsInstall}/"
 
 pushd "${bsInstall}" &> /dev/null
 
-if ! ./IPA-Minimal -n; then
+if ! ./IPA-Minimal Beat\ Saber.exe -n; then
   echo "WARNING: IPA.exe returned non-zero result"
 fi
 
