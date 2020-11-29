@@ -117,6 +117,8 @@ bool Actions::patchBeatSaber()
 
   if( process.exitCode() != EXIT_SUCCESS ) {
       qOut << "Script execution failed: \n" << process.readAll() << "\n";
+  } else {
+    qOut << "Script execution succeeded: \n" << process.readAll() << "\n";
   }
 
   return process.exitCode() == EXIT_SUCCESS;
