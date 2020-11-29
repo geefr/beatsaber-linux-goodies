@@ -7,11 +7,6 @@ namespace Beataroni.Services
 {
   public class BeatModsV1
   {
-    public static async Task<IList<Mod>> FetchMods()
-    {
-      return await FetchMods(null);
-    }
-
     public static async Task<IList<Mod>> FetchMods( Dictionary<string, string> filters )
     {
       throw new NotImplementedException();
@@ -22,7 +17,7 @@ namespace Beataroni.Services
       throw new NotImplementedException();
     }
 
-    public static async Task<bool> InstallMod( Mod modToInstall )
+    public static async Task<bool> InstallMod( Mod modToInstall, string BSDir )
     {
       throw new NotImplementedException();
     }

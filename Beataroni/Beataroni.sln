@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beataroni", "Beataroni\Beataroni.csproj", "{165F30D5-92CF-40B1-9E38-CA398EBD15D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beataroni.Tests", "Beataroni.Tests\Beataroni.Tests.csproj", "{8B48C1CD-69A2-465A-8E37-D9146DABF96B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,17 @@ Global
 		{165F30D5-92CF-40B1-9E38-CA398EBD15D3}.Release|x64.Build.0 = Release|Any CPU
 		{165F30D5-92CF-40B1-9E38-CA398EBD15D3}.Release|x86.ActiveCfg = Release|Any CPU
 		{165F30D5-92CF-40B1-9E38-CA398EBD15D3}.Release|x86.Build.0 = Release|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Debug|x64.Build.0 = Debug|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Debug|x86.Build.0 = Debug|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Release|x64.ActiveCfg = Release|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Release|x64.Build.0 = Release|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Release|x86.ActiveCfg = Release|Any CPU
+		{8B48C1CD-69A2-465A-8E37-D9146DABF96B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
