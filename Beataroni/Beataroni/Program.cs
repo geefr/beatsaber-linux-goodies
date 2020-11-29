@@ -17,7 +17,8 @@ namespace Beataroni
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()
-                .LogToDebug()
+                // TODO: This doesn't compile, not sure why
+                //.LogToDebug()
                 .UseReactiveUI();
     }
 }
