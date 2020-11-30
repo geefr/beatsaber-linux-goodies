@@ -1,23 +1,104 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Beataroni.Models;
+using System.IO;
+using System.Net;
+using System.Text;
+using System.Text.Json;
+using Beataroni.Models.BeatMods;
 
 namespace Beataroni.Services
 {
   public class BeatModsV1
   {
-    public static async Task<IList<Mod>> FetchMods( Dictionary<string, string> filters )
+    public static readonly Dictionary<string, string> DefaultFilters = new Dictionary<string, string>()
     {
-      throw new NotImplementedException();
+      {"status","approved"},
+    };
+
+    /// API endpoints/urls
+    /// Note: You MUST not have '//' in the resulting URLs, beatmods can't handle this
+    private static readonly string APIRoot = "https://beatmods.com/api/v1";
+    private static readonly string APIVersion = "version";
+    private static readonly string APIMod = "mod";
+
+    /// Fetch list of beatsaber/mod versions
+    /// List will be returned in order sent from server - Should be newest -> oldest
+    public static IList<string> FetchBSVersions()
+    {
+      var endpoint = $"{APIRoot}/{APIVersion}";
+
+      // TODO: The usual junk here, maybe a common method for doing a basic GET+deserialise as we're doing lots of those
+      try
+      {
+        var req = WebRequest.Create(endpoint);
+        req.Method = "GET";
+
+        var resp = req.GetResponse();
+
+        var json = "";
+        using (Stream s = resp.GetResponseStream())
+        {
+          var reader = new StreamReader(s, Encoding.UTF8);
+          json = reader.ReadToEnd();
+        }
+
+        List<string> result = JsonSerializer.Deserialize<List<string>>(json);
+        return result;
+      } catch (WebException e)
+      {
+        Console.WriteLine($"Error fetching BS versions: {e.Message}");
+        return null;
+      }
     }
 
-    public static async Task<IList<string>> FetchBSVersions()
+    /// Fetch list of mods for a set of filters
+    /// Typical filters would be game version, installation type, mod status
+    public static IList<Mod> FetchMods( Dictionary<string, string> filters )
     {
-      throw new NotImplementedException();
+      var endpoint = $"{APIRoot}/{APIMod}";
+
+      if( filters != null && filters.Count > 0 )
+      {
+        endpoint += "?";
+        var first = true;
+        foreach( var f in filters )
+        {
+          if( !first )
+          {
+            endpoint += "&";
+          }
+          endpoint += $"{f.Key}={f.Value}";
+          first = false;
+        }
+      }
+
+      // TODO: The usual junk here, maybe a common method for doing a basic GET+deserialise as we're doing lots of those
+      try
+      {
+        var req = WebRequest.Create(endpoint);
+        req.Method = "GET";
+
+        var resp = req.GetResponse();
+
+        var json = "";
+        using (Stream s = resp.GetResponseStream())
+        {
+          var reader = new StreamReader(s, Encoding.UTF8);
+          json = reader.ReadToEnd();
+        }
+
+        List<Mod> result = JsonSerializer.Deserialize<List<Mod>>(json);
+        return result;
+      } catch (WebException e)
+      {
+        Console.WriteLine($"Error fetching BS Mods: {e.Message}");
+        return null;
+      }
     }
 
-    public static async Task<bool> InstallMod( Mod modToInstall, string BSDir )
+    /// Download a mod to a temporary file
+    /// Returns either a path to the file, or null if download failed for some reason
+    public static string DownloadMod( Mod modToInstall, string BSDir )
     {
       throw new NotImplementedException();
     }
