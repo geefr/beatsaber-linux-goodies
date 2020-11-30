@@ -2,7 +2,7 @@ using System;
 
 namespace Beataroni.Services
 {
-  class Settings
+  public class Settings
   {
     // TODO: Most of these are blank - will be initialised to sensible defaults,
     // or need to be setup each time installer is launched. Will need persistent settings
@@ -12,7 +12,6 @@ namespace Beataroni.Services
 
     public Settings()
     {
-      throw new NotImplementedException();
       // var vers = BeatModsV1.FetchBSVersions();
       // if( vers.Count != 0 ) BSVersion = vers[0];
       // BSInstall = SearchForBeatSaber();

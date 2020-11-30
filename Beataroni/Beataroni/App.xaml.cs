@@ -3,11 +3,14 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Beataroni.ViewModels;
 using Beataroni.Views;
+using Beataroni.Services;
 
 namespace Beataroni
 {
     public class App : Application
     {
+        public Settings Config {get;} = new Settings();
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -19,7 +22,7 @@ namespace Beataroni
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = new MainWindowViewModel(Config),
                 };
             }
 
