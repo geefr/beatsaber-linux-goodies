@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -74,27 +75,30 @@ namespace Beataroni.ViewModels
         x => x.BSInstall,
         x => SettingsViewModel.IsBSInstallValid(x)
       );
-      var bsVersionValid = this.WhenAnyValue(
-        x => x.BSVersion,
-        x => !string.IsNullOrEmpty(x)
-      );
-      var settingsValid = Observable.When(
-        bsInstallValid.And(bsVersionValid)
-        .Then((x1,x2) => x1 && x2));
+      // var bsVersionValid = this.WhenAnyValue(
+      //   x => x.BSVersion,
+      //   x => !string.IsNullOrEmpty(x)
+      // );
+      // TODO: This doesn't work because the When triggers when both are observable
+      // i.e when both the settings have been changed.
+      // Disabled for now, as we'll always have a version selected, and only really need to
+      // validate the install path..Will need to re-enable later on when things are more complex
+      // var settingsValid = Observable.When(
+      //   bsInstallValid.And(bsVersionValid)
+      //   .Then((x1,x2) => x1 & x2));
       // Command for button. Enabled if validation passes, fires the command when clicked.
       // Subscribed to in MainWindowViewModel
       ContinueButton = ReactiveCommand.Create(
       () => { },
-      settingsValid);
+      bsInstallValid);
     }
 
     private static bool IsBSInstallValid(string path)
     {
-      // TODO: Actually validate the path
-      // - does it exist?
-      // - is it a directory?
-      // - does it have beat saber in it?
-      return !string.IsNullOrEmpty(path);
+      if( string.IsNullOrEmpty(path) ) return false;
+      if( !Directory.Exists(path) ) return false;
+      if( !File.Exists($"{path}/Beat Saber.exe")) return false;
+      return true;
     }
   }
 }
