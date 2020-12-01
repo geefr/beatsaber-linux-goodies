@@ -57,7 +57,6 @@ namespace Beataroni.ViewModels
     public SettingsViewModel(Settings s)
     {
       settings = s;
-      // TODO: Setup properties to pass through to Services.Settings
 
       // Fetch data from beatmods api, setup defaults
       //Task.Run(() =>
@@ -73,7 +72,7 @@ namespace Beataroni.ViewModels
       // Criteria for continue button to be enabled
       var bsInstallValid = this.WhenAnyValue(
         x => x.BSInstall,
-        x => !string.IsNullOrEmpty(x)
+        x => SettingsViewModel.IsBSInstallValid(x)
       );
       var bsVersionValid = this.WhenAnyValue(
         x => x.BSVersion,
@@ -87,6 +86,15 @@ namespace Beataroni.ViewModels
       ContinueButton = ReactiveCommand.Create(
       () => { },
       settingsValid);
+    }
+
+    private static bool IsBSInstallValid(string path)
+    {
+      // TODO: Actually validate the path
+      // - does it exist?
+      // - is it a directory?
+      // - does it have beat saber in it?
+      return !string.IsNullOrEmpty(path);
     }
   }
 }

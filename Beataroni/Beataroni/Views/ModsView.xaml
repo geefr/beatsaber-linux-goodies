@@ -21,11 +21,9 @@
       <ItemsControl Items="{Binding Mods}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <TextBlock Text="{Binding name}"/>
-  <!--
-            <CheckBox Margin="4"
-              IsChecked="{Binding IsDone}"
-              Content="{Binding Description}"/>-->
+            <CheckBox
+              IsChecked="{Binding selected}"
+              Content="{Binding mod.name}"/>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>
