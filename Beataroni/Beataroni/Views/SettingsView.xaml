@@ -2,7 +2,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:Beataroni.ViewModels;assembly=Beataroni"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
              x:Class="Beataroni.Views.SettingsView">
-  Welcome to Avalonia!
+  <Design.DataContext>
+    <vm:SettingsViewModel/>
+  </Design.DataContext>
+
+  <StackPanel Orientation="Vertical">
+    <TextBlock HorizontalAlignment="Center">Settings</TextBlock>
+
+    <Grid ColumnDefinitions="1*,2*" RowDefinitions="Auto,Auto" Width="380" ShowGridLines="False">
+      <TextBlock Text="Beat Saber Installation" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"></TextBlock>
+      <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding BSInstall}"></TextBox>
+
+      <TextBlock Text="Beat Saber Version" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"></TextBlock>
+      <ComboBox Items="{Binding BSVersions}" SelectedItem="{Binding BSVersion}" SelectedIndex="{Binding BSVersionIndex}" Grid.Column="1" Grid.Row="1"/>
+
+    </Grid>
+    <Button HorizontalAlignment="Stretch" Command="{Binding ContinueButton}">Continue</Button>
+  </StackPanel>
 </UserControl>

@@ -7,5 +7,8 @@
         x:Class="Beataroni.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Beataroni"
-        Content="{Binding Content}">
+        Content="{Binding Content}"
+        Width="400"
+        Height="500"
+        CanResize="False">
 </Window>
