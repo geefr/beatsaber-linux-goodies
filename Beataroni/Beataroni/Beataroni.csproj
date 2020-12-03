@@ -14,11 +14,27 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
   <ItemGroup>
+    <AvaloniaResource Remove="Views\ModInstallView.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <AvaloniaXaml Remove="Views\ModsView.axaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Views\ModInstallView.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaXaml Include="Views\ModInstallView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </AvaloniaXaml>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.9.12" />
     <PackageReference Include="Avalonia.Desktop" Version="0.9.12" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.12" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Views\ModInstallView.xaml.cs">
+      <DependentUpon>ModInstallView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

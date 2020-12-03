@@ -21,21 +21,32 @@ namespace Beataroni.ViewModels
       private set => this.RaiseAndSetIfChanged(ref content, value);
     }
 
-    public ModsViewModel ModList { get; }
-    public SettingsViewModel Settings { get; }
+    private ModsViewModel ModList;
+    private SettingsViewModel Settings;
+    private ModInstallViewModel ModInstallView;
 
     public MainWindowViewModel(Settings settings)
     {
       ModList = new ModsViewModel();
       Settings = new SettingsViewModel(settings);
+      ModInstallView = new ModInstallViewModel();
       Content = Settings;
 
       // Subscribe to events
+      // Transition from settings view -> mods view
       Settings.ContinueButton.Subscribe(x =>
       {
         // TODO: This needs to be async
         ModList.FetchMods(Settings.BSVersion);
         Content = ModList;
+      });
+
+      // Transition from mods view -> mods install view
+      ModList.ContinueButton.Subscribe(x =>
+      {
+        ModInstallView.ModsToInstall = new ModsViewModel.ModEntry[ModList.Mods.Count];
+        ModList.Mods.CopyTo(ModInstallView.ModsToInstall, 0);
+        Content = ModInstallView;
       });
     }
   }

@@ -10,14 +10,14 @@
   </Design.DataContext>
 
   <!-- avalonia views can only contain 1 child, usually a Panel containing other controls -->
-  <DockPanel>
-    <TextBlock DockPanel.Dock="Top" Text="Mods" HorizontalAlignment="Center" />
+  <StackPanel Orientation="Vertical">
+    <TextBlock Text="Mods" HorizontalAlignment="Center" />
     <!-- <TextBlock Text="Test Text: {Binding TestText}" HorizontalAlignment="Center" /> -->
     <!--
     <Button DockPanel.Dock="Bottom"
       Command="{Binding $parent[Window].DataContext.AddNewItem}">
       Add an item</Button>-->
-    <ScrollViewer>
+    <ScrollViewer Height="400">
       <ItemsControl Items="{Binding Mods}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
@@ -31,5 +31,7 @@
         </ItemsControl.ItemTemplate>
       </ItemsControl>
     </ScrollViewer>
-  </DockPanel>
+
+    <Button HorizontalAlignment="Stretch" Command="{Binding ContinueButton}">Continue</Button>
+  </StackPanel>
 </UserControl>

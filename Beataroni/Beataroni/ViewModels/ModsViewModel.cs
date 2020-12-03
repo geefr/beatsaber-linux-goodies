@@ -28,6 +28,8 @@ namespace Beataroni.ViewModels
 
     public ReactiveCommand<ModEntry, Unit> ModChecked { get; }
 
+    public ReactiveCommand<Unit, Unit> ContinueButton { get; }
+
     public ModsViewModel()
     {
       ModChecked = ReactiveCommand.Create<ModEntry>(x =>
@@ -93,11 +95,13 @@ namespace Beataroni.ViewModels
           }
         }
       });
+
+      ContinueButton = ReactiveCommand.Create(() => { });
     }
 
     public void FetchMods(string gameVersion)
     {
-      // TODO: Need filters from somewhere - This shouldn't be called until version/etc has been selected?
+      // List all mods for the specified game version
       var filters = BeatModsV1.DefaultFilters;
       filters.Add("gameVersion", gameVersion);
 
