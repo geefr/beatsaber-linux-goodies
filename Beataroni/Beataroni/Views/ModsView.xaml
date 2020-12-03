@@ -23,7 +23,10 @@
           <DataTemplate>
             <CheckBox
               IsChecked="{Binding selected}"
-              Content="{Binding mod.name}"/>
+              Content="{Binding mod.name}"
+              Command="{Binding $parent[UserControl].DataContext.ModChecked}"
+              CommandParameter="{Binding .}"
+              />
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>

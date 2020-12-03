@@ -26,8 +26,7 @@ namespace Beataroni.Services
     public static IList<string> FetchBSVersions()
     {
       var endpoint = $"{APIRoot}/{APIVersion}";
-
-      // TODO: The usual junk here, maybe a common method for doing a basic GET+deserialise as we're doing lots of those
+      
       try
       {
         var req = WebRequest.Create(endpoint);
@@ -72,7 +71,6 @@ namespace Beataroni.Services
         }
       }
 
-      // TODO: The usual junk here, maybe a common method for doing a basic GET+deserialise as we're doing lots of those
       try
       {
         var req = WebRequest.Create(endpoint);
@@ -87,8 +85,12 @@ namespace Beataroni.Services
           json = reader.ReadToEnd();
         }
 
-        List<Mod> result = JsonSerializer.Deserialize<List<Mod>>(json);
-        return result;
+        List<Mod> mods = JsonSerializer.Deserialize<List<Mod>>(json);
+
+        // Expand any dependencies into .net object references
+        mods.ForEach(x => x.ExpandDependencyRefs(mods));
+
+        return mods;
       } catch (WebException e)
       {
         Console.WriteLine($"Error fetching BS Mods: {e.Message}");
