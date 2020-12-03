@@ -18,12 +18,12 @@ namespace Beataroni.Models.BeatMods
     public string authorId { get; set; }
     public string uploadDate { get; set; }
     public string updatedDate { get; set; }
-    Author author { get; set; }
+    public Author author { get; set; }
     public string status { get; set; }
     public string description { get; set; }
     public string link { get; set; }
     public string category { get; set; }
-    List<Download> downloads { get; set; }
+    public List<Download> downloads { get; set; }
     public bool required { get; set; }
     public List<ModDependency> dependencies { get; set; }
     public string _id { get; set; }
@@ -94,9 +94,9 @@ namespace Beataroni.Models.BeatMods
 
   public class Download
   {
-    string type { get; set; }
-    string url { get; set; }
-    List<Hash> hashMd5 { get; set; }
+    public string type { get; set; }
+    public string url { get; set; }
+    public List<Hash> hashMd5 { get; set; }
   }
 
 

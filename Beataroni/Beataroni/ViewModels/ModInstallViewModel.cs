@@ -49,7 +49,7 @@ namespace Beataroni.ViewModels
     /// Perform mod installation actions
     /// Will consume the contents of ModsToInstall
     /// </summary>
-    public void InstallMods()
+    public void InstallMods(string bsInstall)
     {
       // TODO: For now just fire off the work as async, let the user decide if they want to quit halfway through the process
       // TODO: This should have a progress bar, loading spinner, etc
@@ -63,22 +63,32 @@ namespace Beataroni.ViewModels
           if( m.selected )
           {
             CurrentStep = $"Current Step: Install";
-            if( !installer.InstallMod(m.mod) )
+            if( !installer.InstallMod(m.mod, bsInstall) )
             {
               installLogText += $"{m.mod.name}: Install failed\n";
               this.RaisePropertyChanged(nameof(InstallLogText));
               continue;
             }
+            else
+            {
+              installLogText += $"{m.mod.name}: Installed\n";
+              this.RaisePropertyChanged(nameof(InstallLogText));
+            }
 
             CurrentStep = $"Current Step: Validate";
             if (!installer.ValidateMod(m.mod))
             {
-              installLogText += $"{m.mod.name}: Validate failed\n";
+              installLogText += $"{m.mod.name}: Validate failed (todo)\n";
               this.RaisePropertyChanged(nameof(InstallLogText));
               continue;
             }
+            else
+            {
+              installLogText += $"{m.mod.name}: Validated\n";
+              this.RaisePropertyChanged(nameof(InstallLogText));
+            }
 
-            if( m.mod.name.Equals("BSIPA") )
+            if ( m.mod.name.Equals("BSIPA") )
             {
               CurrentStep = $"Current Step: Patch Beat Saber";
               if (!installer.PatchBeatSaber(m.mod))
@@ -87,6 +97,11 @@ namespace Beataroni.ViewModels
                 this.RaisePropertyChanged(nameof(InstallLogText));
                 continue;
               }
+              else
+              {
+                installLogText += $"{m.mod.name}: Patching succeeded\n";
+                this.RaisePropertyChanged(nameof(InstallLogText));
+              }
             }
           }
           else
@@ -94,7 +109,7 @@ namespace Beataroni.ViewModels
             CurrentStep = $"Current Step: Uninstall";
             if( !installer.UninstallMod(m.mod) )
             {
-              installLogText += $"{m.mod.name}: Uninstall failed\n";
+              installLogText += $"{m.mod.name}: Uninstall failed (todo)\n";
               this.RaisePropertyChanged(nameof(InstallLogText));
             }
           }
