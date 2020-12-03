@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
+using System.Threading;
+using System.Threading.Tasks;
 using Avalonia.Interactivity;
 using Beataroni.Models.BeatMods;
 using Beataroni.Services;
@@ -16,8 +18,91 @@ namespace Beataroni.ViewModels
   {
     public ModsViewModel.ModEntry[] ModsToInstall { get; set; } = null;
 
+    private string installLogText = "";
+    public string InstallLogText
+    {
+      get { return installLogText; }
+      set {
+        this.RaiseAndSetIfChanged(ref installLogText, value);
+      }
+    }
+
+    private string currentMod = "";
+    public string CurrentMod
+    {
+      get { return currentMod; }
+      set { this.RaiseAndSetIfChanged(ref currentMod, value); }
+    }
+
+    private string currentStep = "";
+    public string CurrentStep
+    {
+      get { return currentStep; }
+      set { this.RaiseAndSetIfChanged(ref currentStep, value); }
+    }
+
     public ModInstallViewModel()
     {
+    }
+
+    /// <summary>
+    /// Perform mod installation actions
+    /// Will consume the contents of ModsToInstall
+    /// </summary>
+    public void InstallMods()
+    {
+      // TODO: For now just fire off the work as async, let the user decide if they want to quit halfway through the process
+      // TODO: This should have a progress bar, loading spinner, etc
+      Task.Run(() =>
+      {
+        ModInstaller installer = new ModInstaller();
+        foreach ( var m in ModsToInstall )
+        {
+          CurrentMod = $"Current Mod: {m.mod.name}";
+
+          if( m.selected )
+          {
+            CurrentStep = $"Current Step: Install";
+            if( !installer.InstallMod(m.mod) )
+            {
+              installLogText += $"{m.mod.name}: Install failed\n";
+              this.RaisePropertyChanged(nameof(InstallLogText));
+              continue;
+            }
+
+            CurrentStep = $"Current Step: Validate";
+            if (!installer.ValidateMod(m.mod))
+            {
+              installLogText += $"{m.mod.name}: Validate failed\n";
+              this.RaisePropertyChanged(nameof(InstallLogText));
+              continue;
+            }
+
+            if( m.mod.name.Equals("BSIPA") )
+            {
+              CurrentStep = $"Current Step: Patch Beat Saber";
+              if (!installer.PatchBeatSaber(m.mod))
+              {
+                installLogText += $"{m.mod.name}: Patching failed\n";
+                this.RaisePropertyChanged(nameof(InstallLogText));
+                continue;
+              }
+            }
+          }
+          else
+          {
+            CurrentStep = $"Current Step: Uninstall";
+            if( !installer.UninstallMod(m.mod) )
+            {
+              installLogText += $"{m.mod.name}: Uninstall failed\n";
+              this.RaisePropertyChanged(nameof(InstallLogText));
+            }
+          }
+        }
+
+        CurrentMod = "All Mods Installed";
+        CurrentStep = "Please Check error Log Below, and if it's empty go play the game";
+      });
     }
   }
 }

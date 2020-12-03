@@ -1,3 +1,4 @@
+using Beataroni.Models.BeatMods;
 using System;
 using System.Collections.Generic;
 
@@ -37,6 +38,35 @@ namespace Beataroni.Services
       return $"{foundPath}{path.Substring(foundPath.Length)}";
     }
 
+    public bool InstallMod( Mod m )
+    {
+      // TODO
+      return false;
+    }
+
+    public bool PatchBeatSaber( Mod m )
+    {
+      // TODO
+      return false;
+    }
+
+    public bool UninstallMod( Mod m )
+    {
+      // TODO
+      return false;
+    }
+
+    public bool ValidateMod( Mod m )
+    {
+      // TODO
+      return false;
+    }
+
+    public bool IsModInstalled( Mod m )
+    {
+      // TODO - Return true if mod at least partially installed
+      return false;
+    }
   }
 }
 

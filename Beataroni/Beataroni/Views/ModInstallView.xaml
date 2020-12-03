@@ -4,8 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
              x:Class="Beataroni.Views.ModInstallView">
-  <DockPanel>
-    <TextBlock DockPanel.Dock="Top" Text="Mod Installation Progress" HorizontalAlignment="Center" />
-    <TextBlock DockPanel.Dock="Bottom" Width="400" Height="400" Text="Mod Install log goes here"/>
-  </DockPanel>
+  <StackPanel>
+    <TextBlock Text="Mod Installation Progress" HorizontalAlignment="Center" />
+    <TextBlock Text="{Binding CurrentMod}" HorizontalAlignment="Center" />
+    <TextBlock Text="{Binding CurrentStep}" HorizontalAlignment="Center" />
+    <TextBlock Text="Error Log" HorizontalAlignment="Left" />
+    <ScrollViewer Width="400" Height="400">
+      <TextBox Text="{Binding InstallLogText}" IsReadOnly="True"/>
+    </ScrollViewer>
+  </StackPanel>
 </UserControl>

@@ -47,6 +47,7 @@ namespace Beataroni.ViewModels
         ModInstallView.ModsToInstall = new ModsViewModel.ModEntry[ModList.Mods.Count];
         ModList.Mods.CopyTo(ModInstallView.ModsToInstall, 0);
         Content = ModInstallView;
+        ModInstallView.InstallMods();
       });
     }
   }
