@@ -12,6 +12,7 @@
   <!-- avalonia views can only contain 1 child, usually a Panel containing other controls -->
   <StackPanel Orientation="Vertical">
     <TextBlock Text="Mods" HorizontalAlignment="Center" />
+    <TextBlock HorizontalAlignment="Center">TODO: Installed mods not read from disk</TextBlock>
     <!-- <TextBlock Text="Test Text: {Binding TestText}" HorizontalAlignment="Center" /> -->
     <!--
     <Button DockPanel.Dock="Bottom"

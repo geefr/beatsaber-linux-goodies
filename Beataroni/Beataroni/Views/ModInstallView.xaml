@@ -6,6 +6,8 @@
              x:Class="Beataroni.Views.ModInstallView">
   <StackPanel>
     <TextBlock Text="Mod Installation Progress" HorizontalAlignment="Center" />
+    <TextBlock HorizontalAlignment="Center">TODO: install,uninstall,validate actions not implemented</TextBlock>
+
     <TextBlock Text="{Binding CurrentMod}" HorizontalAlignment="Center" />
     <TextBlock Text="{Binding CurrentStep}" HorizontalAlignment="Center" />
     <TextBlock Text="Error Log" HorizontalAlignment="Left" />

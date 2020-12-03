@@ -12,6 +12,8 @@
   <StackPanel Orientation="Vertical">
     <TextBlock HorizontalAlignment="Center">Settings</TextBlock>
 
+    <TextBlock HorizontalAlignment="Center">TODO: Settings not saved, paste install path below and check version</TextBlock>
+
     <Grid ColumnDefinitions="1*,1*" RowDefinitions="Auto,Auto" Width="380" ShowGridLines="False">
       <TextBlock Text="Beat Saber Installation" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"></TextBlock>
       <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding BSInstall}"></TextBox>

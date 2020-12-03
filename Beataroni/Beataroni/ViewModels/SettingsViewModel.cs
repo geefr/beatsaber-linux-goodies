@@ -55,6 +55,11 @@ namespace Beataroni.ViewModels
 
     public ReactiveCommand<Unit, Unit> ContinueButton { get; }
 
+    public SettingsViewModel()
+    {
+      settings = new Settings();
+    }
+
     public SettingsViewModel(Settings s)
     {
       settings = s;
