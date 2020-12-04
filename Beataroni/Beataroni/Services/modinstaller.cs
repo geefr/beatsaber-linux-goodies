@@ -188,7 +188,10 @@ namespace Beataroni.Services
         proc.StartInfo.UseShellExecute = false;
         proc.StartInfo.FileName = $"{bsInstall}/{ipaExe}";
         proc.StartInfo.WorkingDirectory = $"{bsInstall}";
-        proc.StartInfo.Arguments = "-n"; // Don't wait for user input
+        // Don't wait for user input
+        // IPA-Minimal doesn't work unless the executable is specified
+        // (Due to order of executables in dir it finds some other file if left to its own devices)
+        proc.StartInfo.Arguments = "-n \"Beat Saber.exe\"";
         proc.StartInfo.CreateNoWindow = true;
         proc.StartInfo.RedirectStandardOutput = true;
         proc.StartInfo.RedirectStandardError = true;
