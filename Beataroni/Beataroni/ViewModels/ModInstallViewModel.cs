@@ -45,6 +45,12 @@ namespace Beataroni.ViewModels
     {
     }
 
+    public void LogLine(string msg)
+    {
+      installLogText += $"{msg}\n";
+      this.RaisePropertyChanged(nameof(InstallLogText));
+    }
+
     /// <summary>
     /// Perform mod installation actions
     /// Will consume the contents of ModsToInstall
@@ -63,7 +69,7 @@ namespace Beataroni.ViewModels
           if( m.selected )
           {
             CurrentStep = $"Current Step: Install";
-            if( !installer.InstallMod(m.mod, bsInstall) )
+            if( !installer.InstallMod(m.mod, bsInstall, LogLine) )
             {
               installLogText += $"{m.mod.name}: Install failed\n";
               this.RaisePropertyChanged(nameof(InstallLogText));
@@ -76,7 +82,7 @@ namespace Beataroni.ViewModels
             }
 
             CurrentStep = $"Current Step: Validate";
-            if (!installer.ValidateMod(m.mod))
+            if (!installer.ValidateMod(m.mod, LogLine))
             {
               installLogText += $"{m.mod.name}: Validate failed (todo)\n";
               this.RaisePropertyChanged(nameof(InstallLogText));
@@ -91,7 +97,7 @@ namespace Beataroni.ViewModels
             if ( m.mod.name.Equals("BSIPA") )
             {
               CurrentStep = $"Current Step: Patch Beat Saber";
-              if (!installer.PatchBeatSaber(bsInstall))
+              if (!installer.PatchBeatSaber(bsInstall, LogLine))
               {
                 installLogText += $"{m.mod.name}: Patching failed\n";
                 this.RaisePropertyChanged(nameof(InstallLogText));
@@ -107,7 +113,7 @@ namespace Beataroni.ViewModels
           else
           {
             CurrentStep = $"Current Step: Uninstall";
-            if( !installer.UninstallMod(m.mod) )
+            if( !installer.UninstallMod(m.mod, LogLine) )
             {
               // TODO: This is fine - Any unchecked mods will be 'uninstalled'
               // but it's not implemented yet, commented out to avoid spamming
