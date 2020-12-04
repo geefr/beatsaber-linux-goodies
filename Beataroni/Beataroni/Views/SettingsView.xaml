@@ -24,11 +24,16 @@
     <Button HorizontalAlignment="Stretch" Command="{Binding ContinueButton}">Continue</Button>
 
     <TextBlock HorizontalAlignment="Center">Notes:</TextBlock>
+    <TextBlock HorizontalAlignment="Center">!!!! This is a very early version !!!!</TextBlock>
+    <TextBlock HorizontalAlignment="Center">!!!! Some things may not work !!!!</TextBlock>
     <TextBlock HorizontalAlignment="Center">Beataroni only supports Steam installations</TextBlock>
-    <TextBlock HorizontalAlignment="Center">If you're running Windows go use ModAssistant</TextBlock>
+    <TextBlock HorizontalAlignment="Center">Linux is the primary target for now</TextBlock>
+    <TextBlock HorizontalAlignment="Center">For Windows use ModAssistant, it's way better</TextBlock>
     <TextBlock HorizontalAlignment="Center">Report any Beataroni bugs at</TextBlock>
     <TextBlock HorizontalAlignment="Center">https://github.com/geefr/beatsaber-linux-goodies</TextBlock>
     <TextBlock HorizontalAlignment="Center">Or message ITGaz in Beat Saber Modding Discord</TextBlock>
     <TextBlock HorizontalAlignment="Center">And please, don't bug mod creators for Linux-specific bugs &lt;3</TextBlock>
+    <TextBlock HorizontalAlignment="Center">Copyright (c) 2020 Gareth Francis, released under BSD 2-Clause Licence</TextBlock>
+    <TextBlock HorizontalAlignment="Center">Includes BSIPA Copyright (c) 2019 Anairkoen Schno, MIT Licence</TextBlock>
   </StackPanel>
 </UserControl>
