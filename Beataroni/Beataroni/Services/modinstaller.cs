@@ -223,7 +223,8 @@ namespace Beataroni.Services
         var pfxFile = $"{bsInstall}/../../compatdata/620980/pfx/user.reg";
         using (StreamWriter w = File.AppendText(pfxFile))
         {
-          w.WriteLine("[Software\\Wine\\DllOverrides]");
+          // We need double-slashes within the resulting file
+          w.WriteLine("[Software\\\\Wine\\\\DllOverrides]");
           w.WriteLine("\"winhttp\"=\"native,builtin\"");
         }
       } 
