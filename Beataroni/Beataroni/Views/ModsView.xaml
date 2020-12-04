@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:Beataroni.ViewModels;assembly=Beataroni"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500"
+             x:Class="Beataroni.Views.ModsView">
+  <Design.DataContext>
+    <vm:ModsViewModel/>
+  </Design.DataContext>
+
+  <!-- avalonia views can only contain 1 child, usually a Panel containing other controls -->
+  <StackPanel Orientation="Vertical">
+    <TextBlock Text="Mods" HorizontalAlignment="Center" />
+    <TextBlock HorizontalAlignment="Center">TODO: Installed mods not read from disk</TextBlock>
+    <!-- <TextBlock Text="Test Text: {Binding TestText}" HorizontalAlignment="Center" /> -->
+    <!--
+    <Button DockPanel.Dock="Bottom"
+      Command="{Binding $parent[Window].DataContext.AddNewItem}">
+      Add an item</Button>-->
+    <ScrollViewer Height="380">
+      <ItemsControl Items="{Binding Mods}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <CheckBox
+              IsChecked="{Binding selected}"
+              Content="{Binding mod.name}"
+              Command="{Binding $parent[UserControl].DataContext.ModChecked}"
+              CommandParameter="{Binding .}"
+              />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+
+    <Button HorizontalAlignment="Stretch" Command="{Binding SelectAllButton}">Select All</Button>
+    <Button HorizontalAlignment="Stretch" Command="{Binding SelectNoneButton}">Select None</Button>
+    <Button HorizontalAlignment="Stretch" Command="{Binding ContinueButton}">Continue</Button>
+  </StackPanel>
+</UserControl>

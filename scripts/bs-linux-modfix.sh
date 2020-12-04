@@ -67,13 +67,12 @@ fi
 
 # Patching BS with IPA.exe
 bsInstall=$(realpath "${1}")
+
+cp -p ./IPA-Minimal "${bsInstall}/"
+
 pushd "${bsInstall}" &> /dev/null
 
-# TODO: Would be nice to exploit the Proton installation here, or otherwise not require the user to deal with winetricks
-#WINEPATH="${bsProtonDir}/dist/bin/wine64" WINEPREFIX="${bsProtonDir}/dist/share/default_pfx" "${bsProtonDir}/dist/bin/wine64" IPA.exe
-# TODO: Would be nice to be able to detect if .net 4.6.1 is supported by wine and quit otherwise
-# For now system wine must be setup with at least dotnet461 installed
-if ! WINEPREFIX=${winePrefix} wine IPA.exe -n 2> /dev/null; then
+if ! ./IPA-Minimal Beat\ Saber.exe -n; then
   echo "WARNING: IPA.exe returned non-zero result"
 fi
 

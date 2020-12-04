@@ -38,6 +38,9 @@
 # Returns:
 # 0 if installation was successful
 
+# TODO: Sober hax
+exit 0
+
 if [ $# -ne 1 ]; then
   echo "USAGE: ${0} <Wine Prefix> : Sets up a wine prefix for running BSIPA"
   exit 1
