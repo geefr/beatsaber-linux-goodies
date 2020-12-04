@@ -18,7 +18,7 @@
     <Button DockPanel.Dock="Bottom"
       Command="{Binding $parent[Window].DataContext.AddNewItem}">
       Add an item</Button>-->
-    <ScrollViewer Height="400">
+    <ScrollViewer Height="380">
       <ItemsControl Items="{Binding Mods}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
@@ -33,6 +33,8 @@
       </ItemsControl>
     </ScrollViewer>
 
+    <Button HorizontalAlignment="Stretch" Command="{Binding SelectAllButton}">Select All</Button>
+    <Button HorizontalAlignment="Stretch" Command="{Binding SelectNoneButton}">Select None</Button>
     <Button HorizontalAlignment="Stretch" Command="{Binding ContinueButton}">Continue</Button>
   </StackPanel>
 </UserControl>

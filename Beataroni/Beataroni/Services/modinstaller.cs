@@ -1,8 +1,10 @@
 using Beataroni.Models.BeatMods;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime.InteropServices;
 
 namespace Beataroni.Services
 {
@@ -87,17 +89,21 @@ namespace Beataroni.Services
               // Gets the full path to ensure that relative segments are removed.
               string destinationPath = Path.GetFullPath(Path.Combine(bsInstall, entry.FullName));
 
-              if (entry.FullName.EndsWith('/'))
+              // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
+              // are case-insensitive.
+              if (destinationPath.StartsWith(bsInstall, StringComparison.Ordinal))
               {
-                // It's not well documented, but this is a directory
-                Directory.CreateDirectory(destinationPath);
-              }
-              else
-              {
-                // Otherwise it must be a file
-                // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
-                // are case-insensitive.
-                if (destinationPath.StartsWith(bsInstall, StringComparison.Ordinal)) entry.ExtractToFile(destinationPath);
+                if (entry.FullName.EndsWith('/'))
+                {
+                  // It's not well documented, but this is a directory
+                  Directory.CreateDirectory(destinationPath);
+                }
+                else
+                {
+                  // Otherwise it must be a file
+                  Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+                  entry.ExtractToFile(destinationPath, true);
+                }
               }
             }
           }
@@ -113,8 +119,55 @@ namespace Beataroni.Services
       return true;
     }
 
-    public bool PatchBeatSaber(Mod m)
+    public bool PatchBeatSaber(string bsInstall)
     {
+      // To patch beat saber we just need to run IPA.exe in the
+      // directory
+      // This method requires that BSIPA be installed first
+      var ipaExe = "IPA.exe";
+      var runningOnLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+      if (runningOnLinux)
+      {
+        ipaExe = "IPA-Linux";
+        if (!PatchSteamProtonPrefix(bsInstall))
+        {
+          Console.WriteLine("PatchBeatSaber: Failed to patch steam's proton prefix");
+          return false;
+        }
+      }
+
+      try
+      {
+        Process proc = new Process();
+        proc.StartInfo.UseShellExecute = false;
+        proc.StartInfo.FileName = $"{bsInstall}/{ipaExe}";
+        proc.StartInfo.WorkingDirectory = $"{bsInstall}";
+        proc.StartInfo.Arguments = "-n"; // Don't wait for user input
+        proc.StartInfo.CreateNoWindow = true;
+        proc.Start();
+        // Assuming proc will kill itself here, if not we'll hang, or need to use the Kill method
+        proc.WaitForExit();
+        if( proc.ExitCode != 0 )
+        {
+          Console.WriteLine($"PatchBeatSaber: IPA.exe returned non-zero:\n StdOut: {proc.StandardOutput} \n StdErr: {proc.StandardError}");
+          return false;
+        }
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine(e.Message);
+        return false;
+      }
+      return true;
+    }
+
+    public bool PatchSteamProtonPrefix(string bsInstall)
+    {
+      // Make a small modification to beat saber's proton prefix
+      // in order to ensure winhttp.dll is loaded from IPA instead
+      // of using the built-in wine variant
+
+
       // TODO
       return false;
     }

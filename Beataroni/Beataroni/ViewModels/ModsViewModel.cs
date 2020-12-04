@@ -29,6 +29,8 @@ namespace Beataroni.ViewModels
     public ReactiveCommand<ModEntry, Unit> ModChecked { get; }
 
     public ReactiveCommand<Unit, Unit> ContinueButton { get; }
+    public ReactiveCommand<Unit, Unit> SelectAllButton { get; }
+    public ReactiveCommand<Unit, Unit> SelectNoneButton { get; }
 
     public ModsViewModel()
     {
@@ -97,6 +99,28 @@ namespace Beataroni.ViewModels
       });
 
       ContinueButton = ReactiveCommand.Create(() => { });
+      SelectAllButton = ReactiveCommand.Create(() =>
+      {
+        for( var i = 0; i < Mods.Count; ++i )
+        {
+          // TODO: This little dance notifies the collection that something has changed, but it's not the best approach
+          var entry = Mods[i];
+          Mods.RemoveAt(i);
+          entry.selected = true;
+          Mods.Insert(i, entry);
+        }
+      });
+      SelectNoneButton = ReactiveCommand.Create(() =>
+      {
+        for (var i = 0; i < Mods.Count; ++i)
+        {
+          // TODO: This little dance notifies the collection that something has changed, but it's not the best approach
+          var entry = Mods[i];
+          Mods.RemoveAt(i);
+          entry.selected = false;
+          Mods.Insert(i, entry);
+        }
+      });
     }
 
     public void FetchMods(string gameVersion)

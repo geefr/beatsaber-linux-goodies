@@ -80,7 +80,7 @@ namespace Beataroni.ViewModels
             {
               installLogText += $"{m.mod.name}: Validate failed (todo)\n";
               this.RaisePropertyChanged(nameof(InstallLogText));
-              continue;
+              // continue;
             }
             else
             {
@@ -91,7 +91,7 @@ namespace Beataroni.ViewModels
             if ( m.mod.name.Equals("BSIPA") )
             {
               CurrentStep = $"Current Step: Patch Beat Saber";
-              if (!installer.PatchBeatSaber(m.mod))
+              if (!installer.PatchBeatSaber(bsInstall))
               {
                 installLogText += $"{m.mod.name}: Patching failed\n";
                 this.RaisePropertyChanged(nameof(InstallLogText));
@@ -109,14 +109,17 @@ namespace Beataroni.ViewModels
             CurrentStep = $"Current Step: Uninstall";
             if( !installer.UninstallMod(m.mod) )
             {
-              installLogText += $"{m.mod.name}: Uninstall failed (todo)\n";
-              this.RaisePropertyChanged(nameof(InstallLogText));
+              // TODO: This is fine - Any unchecked mods will be 'uninstalled'
+              // but it's not implemented yet, commented out to avoid spamming
+              // user with errors
+              //installLogText += $"{m.mod.name}: Uninstall failed (todo)\n";
+              //this.RaisePropertyChanged(nameof(InstallLogText));
             }
           }
         }
 
-        CurrentMod = "All Mods Installed";
-        CurrentStep = "Please Check error Log Below, and if it's empty go play the game";
+        CurrentMod = "SUCCESS: All Mods Installed";
+        CurrentStep = "Please Check the log below, if all is good go and enjoy your mods :)";
       });
     }
   }
