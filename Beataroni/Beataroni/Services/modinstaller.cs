@@ -125,13 +125,30 @@ namespace Beataroni.Services
       // directory
       // This method requires that BSIPA be installed first
       var ipaExe = "IPA.exe";
+      var ipaLinuxExe = "IPA-Minimal";
       var runningOnLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
       if (runningOnLinux)
       {
-        ipaExe = "IPA-Linux";
+        ipaExe = ipaLinuxExe;
         if (!PatchSteamProtonPrefix(bsInstall))
         {
           Console.WriteLine("PatchBeatSaber: Failed to patch steam's proton prefix");
+          return false;
+        }
+
+        // Copy the Linux build of IPA into bsInstall
+        // TODO: The packaging/build setup for this binary isn't great, consider
+        // pulling it in directly as a library?
+        try
+        {
+          var roniDir = Path.Combine(
+            Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) 
+            ?? throw new InvalidOperationException(), "Beataroni");
+          File.Copy($"{roniDir}/{ipaLinuxExe}", $"{bsInstall}/{ipaLinuxExe}");
+        }
+        catch(Exception e)
+        {
+          Console.WriteLine($"PatchBeatSaber: Failed to install IPA-Minimal: {e.Message}");
           return false;
         }
       }
