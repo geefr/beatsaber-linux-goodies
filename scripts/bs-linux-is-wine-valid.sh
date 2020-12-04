@@ -36,6 +36,9 @@
 # - wine prefix, required
 # Returns: 0 if the prefix seems valid
 
+# TODO: sober hacks
+exit 0
+
 if [ $# -ne 1 ]; then
   echo "USAGE: ${0} <Wine Prefix>: Validates whether a wine prefix is setup for running BSIPA"
   exit 1
