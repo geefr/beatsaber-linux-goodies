@@ -1,0 +1,13 @@
+ version: 2.1
+
+ orbs:
+  win: circleci/windows@2.2.0
+
+ jobs:
+  build:
+    docker: 
+      - image: mcr.microsoft.com/dotnet/sdk:5.0
+    steps:
+      - checkout
+      - run: cd Beataroni && ./build/publish-linux-x64.sh
+      
