@@ -5,6 +5,9 @@ pipeline {
       label 'docker-host-dev'
     }
   }
+  environment {
+    DOTNET_CLI_HOME = "${env.WORKSPACE}"
+  }
   options {
     buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
     timeout(time: 1, unit: 'HOURS')
