@@ -22,7 +22,7 @@ pipeline {
     } }
     stage('Artifacts') {
       steps {
-          sh "tar -C ${env.WORKSPACE}/Beataroni/Beataroni/bin/Release/publish-linux64/ -cvzf ${env.WORKSPACE}/Beataroni-linux64.tar.gz ."
+          sh "tar -C ${env.WORKSPACE}/Beataroni/Beataroni/bin/Release/net5.0/publish-Linux64/ -cvzf ${env.WORKSPACE}/Beataroni-linux64.tar.gz ."
 archiveArtifacts artifacts: 'Beataroni-linux64.tar.gz', fingerprint: true, onlyIfSuccessful: true
       }
     }
