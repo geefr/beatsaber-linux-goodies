@@ -1,0 +1,17 @@
+ version: 2.1
+
+ orbs:
+  win: circleci/windows@2.2.0
+
+ jobs:
+  build:
+    docker: 
+      - image: mcr.microsoft.com/dotnet/sdk:5.0
+    steps:
+      - checkout
+      - run: cd Beataroni && ./build/publish-linux-x64.sh
+      - run: tar -C Beataroni/Beataroni/bin/Release/net5.0/publish-Linux64/ -cvzf Beataroni-linux64.tar.gz .
+      - store_artifacts:
+          path: Beataroni-linux64.tar.gz
+          destination: Beataroni-linux64.tar.gz
+
