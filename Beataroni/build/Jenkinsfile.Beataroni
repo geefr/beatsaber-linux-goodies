@@ -1,0 +1,37 @@
+pipeline {
+  agent {
+    dockerfile {
+      filename 'Beataroni/build/Dockerfile.Beataroni'
+      label 'docker-host-dev'
+    }
+  }
+  environment {
+    DOTNET_CLI_HOME = "${env.WORKSPACE}"
+    DOTNET_CLI_TELEMETRY_OPTOUT = "1"
+  }
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '30', artifactNumToKeepStr: '30'))
+    timeout(time: 1, unit: 'HOURS')
+  }
+
+  stages {
+    stage('Publish Linux 64') { steps {
+      dir("${env.WORKSPACE}/Beataroni") {
+        sh '''./build/publish-linux-x64.sh'''
+      }
+    } }
+    stage('Artifacts') {
+      steps {
+          sh "tar -C ${env.WORKSPACE}/Beataroni/Beataroni/bin/Release/net5.0/publish-Linux64/ -cvzf ${env.WORKSPACE}/Beataroni-linux64.tar.gz ."
+archiveArtifacts artifacts: 'Beataroni-linux64.tar.gz', fingerprint: true, onlyIfSuccessful: true
+      }
+    }
+  }
+
+  post {
+    always {
+emailext attachLog: true, body: '''${DEFAULT_CONTENT}''', compressLog: true, recipientProviders: [[$class: 'CulpritsRecipientProvider']], subject: '${DEFAULT_SUBJECT}', to: '${DEFAULT_RECIPIENTS}'
+    }
+  }
+}
+
