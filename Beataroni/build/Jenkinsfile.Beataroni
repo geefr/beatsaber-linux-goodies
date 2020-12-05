@@ -1,7 +1,7 @@
 pipeline {
   agent {
     dockerfile {
-      filename 'Dockerfile.Beataroni'
+      filename 'Beataroni/build/Dockerfile.Beataroni'
       label 'docker-host-dev'
     }
   }
