@@ -82,11 +82,11 @@ namespace Beataroni.ViewModels
             }
 
             CurrentStep = $"Current Step: Validate";
-            if (!installer.ValidateMod(m.mod, LogLine))
+            if (!installer.ValidateMod(m.mod, bsInstall, LogLine))
             {
               installLogText += $"{m.mod.name}: Validate failed (todo)\n";
               this.RaisePropertyChanged(nameof(InstallLogText));
-              // continue;
+              continue;
             }
             else
             {

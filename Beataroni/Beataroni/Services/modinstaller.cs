@@ -7,6 +7,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 namespace Beataroni.Services
 {
@@ -35,16 +36,20 @@ namespace Beataroni.Services
      * Ensure the case of path is correct, so that files are placed
      * in the correct folders under BS install
      */
-    private string FixPath(string path)
+    private string FixPath(string entry)
     {
-      var foundPath = BSPathsToFix.Find(x =>
+      // Ported from QBeat/util.cpp
+      foreach (var correctPath in BSPathsToFix)
       {
-        if (path.Length < x.Length) return false;
-        var testPath = path.Remove(x.Length);
-        return string.Equals(testPath, x, StringComparison.OrdinalIgnoreCase);
-      });
-      if (string.IsNullOrEmpty(foundPath)) return path;
-      return $"{foundPath}{path.Substring(foundPath.Length)}";
+        var path = entry;
+        if (path.StartsWith(correctPath, StringComparison.OrdinalIgnoreCase))
+        {
+          path = path.Remove(0, correctPath.Length);
+          path = $"{correctPath}{path}";
+          return path;
+        }
+      }
+      return entry;
     }
 
     public bool InstallMod(Mod m, string bsInstall, InstallLogLine log)
@@ -54,6 +59,7 @@ namespace Beataroni.Services
         if (!(dl.type.Equals("steam") || dl.type.Equals("universal")))
         {
           // TODO: At the moment Beataroni only supports steam installs - As Oculus doesn't work on Linux
+          continue;
         }
 
         // Download the file
@@ -79,19 +85,10 @@ namespace Beataroni.Services
           {
             foreach (ZipArchiveEntry entry in archive.Entries)
             {
-              // Ported from QBeat/util.cpp
-              foreach (var correctPath in BSPathsToFix)
-              {
-                var path = entry.FullName;
-                if (path.StartsWith(correctPath, StringComparison.OrdinalIgnoreCase))
-                {
-                  path = path.Remove(0, correctPath.Length);
-                  path = $"{correctPath}{path}";
-                }
-              }
+              var path = FixPath(entry.FullName);
 
               // Gets the full path to ensure that relative segments are removed.
-              string destinationPath = Path.GetFullPath(Path.Combine(bsInstall, entry.FullName));
+              string destinationPath = Path.GetFullPath(Path.Combine(bsInstall, path));
 
               // Ordinal match is safest, case-sensitive volumes can be mounted within volumes that
               // are case-insensitive.
@@ -242,10 +239,42 @@ namespace Beataroni.Services
       return false;
     }
 
-    public bool ValidateMod(Mod m, InstallLogLine log)
+    public bool ValidateMod(Mod m, string bsInstall, InstallLogLine log)
     {
-      // TODO
-      return false;
+      foreach( var dl in m.downloads )
+      {
+        if (!(dl.type.Equals("steam") || dl.type.Equals("universal")))
+        {
+          // TODO: At the moment Beataroni only supports steam installs - As Oculus doesn't work on Linux
+          continue;
+        }
+
+        foreach( var hash in dl.hashMd5 )
+        {
+          var path = FixPath(hash.file);
+          path = Path.Combine(bsInstall, path);
+          try
+          {
+            using (var md5 = MD5.Create())
+            {
+              using (var stream = File.OpenRead(path))
+              {
+                var fileHash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-","");
+                if( !string.Equals(fileHash, hash.hash, StringComparison.OrdinalIgnoreCase) )
+                {
+                  log($"ValidateMod: Failed to validate {path} : Expected {hash.hash} : Actual {fileHash}");
+                  return false;
+                }
+              }
+            }
+          }
+          catch(Exception e)
+          {
+            log($"ValidateMod: Failed to calc md5 for {path}: {e.Message}");
+          }
+        }
+      }
+      return true;
     }
 
     public bool IsModInstalled(Mod m, InstallLogLine log)
