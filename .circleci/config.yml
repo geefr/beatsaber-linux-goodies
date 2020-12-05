@@ -10,4 +10,8 @@
     steps:
       - checkout
       - run: cd Beataroni && ./build/publish-linux-x64.sh
-      
+      - run: tar -C Beataroni/Beataroni/bin/Release/net5.0/publish-Linux64/ -cvzf Beataroni-linux64.tar.gz .
+      - store_artifacts:
+          path: Beataroni/Beataroni-linux64.tar.gz
+          destination: Beataroni-linux64.tar.gz
+
