@@ -13,7 +13,7 @@ pipeline {
   stages {
     stage('Publish Linux 64') { steps {
       dir("${env.WORKSPACE}/Beataroni") {
-        sh '''./build/publish-linux64.sh'''
+        sh '''./build/publish-linu-x64.sh'''
       }
     } }
     stage('Artifacts') {
