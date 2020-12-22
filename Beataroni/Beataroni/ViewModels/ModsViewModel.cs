@@ -123,16 +123,19 @@ namespace Beataroni.ViewModels
       });
     }
 
-    public void FetchMods(string gameVersion)
+    public void FetchMods(string gameVersion, string bsInstall)
     {
       // List all mods for the specified game version
       var filters = BeatModsV1.DefaultFilters;
       filters.Add("gameVersion", gameVersion);
 
       var m = BeatModsV1.FetchMods(BeatModsV1.DefaultFilters);
-
+      var installer = new ModInstaller();
       var entries = new List<ModEntry>();
-      foreach( var mm in m ) entries.Add(new ModEntry() { mod = mm });
+      foreach( var mm in m ) {
+        var mod = new ModEntry() { mod = mm, selected = installer.IsModInstalled(mm, bsInstall) };
+        entries.Add(mod);
+      }
 
       mods = new ObservableCollection<ModEntry>(entries);
     }
