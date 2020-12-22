@@ -37,7 +37,7 @@ namespace Beataroni.ViewModels
       Settings.ContinueButton.Subscribe(x =>
       {
         // TODO: This needs to be async
-        ModList.FetchMods(Settings.BSVersion);
+        ModList.FetchMods(Settings.BSVersion, Settings.BSInstall);
         Content = ModList;
       });
 

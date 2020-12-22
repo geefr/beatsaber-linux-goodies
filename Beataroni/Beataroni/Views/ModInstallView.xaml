@@ -6,13 +6,10 @@
              x:Class="Beataroni.Views.ModInstallView">
   <StackPanel>
     <TextBlock Text="Mod Installation Progress" HorizontalAlignment="Center" />
-    <TextBlock HorizontalAlignment="Center">TODO: uninstall,isinstalled actions not implemented</TextBlock>
-
     <TextBlock Text="{Binding CurrentMod}" HorizontalAlignment="Center" />
     <TextBlock Text="{Binding CurrentStep}" HorizontalAlignment="Center" />
-    <TextBlock Text="Error Log" HorizontalAlignment="Left" />
     <ScrollViewer Width="400" Height="400">
-      <TextBox Text="{Binding InstallLogText}" IsReadOnly="True"/>
+      <TextBox Text="{Binding InstallLogText}" IsReadOnly="True" TextWrapping="Wrap" Width="400"/>
     </ScrollViewer>
   </StackPanel>
 </UserControl>
