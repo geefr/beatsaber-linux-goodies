@@ -113,7 +113,7 @@ namespace Beataroni.Services
 
           File.Delete(tmpFile);
         }
-        catch( Exception e )
+        catch (Exception e)
         {
           log($"Error Extracting Mod: {dl.url}, {e.Message}");
           return false;
@@ -172,7 +172,7 @@ namespace Beataroni.Services
           log($"INFO: Linux Patching: roniDir: {roniDir}");
           File.Copy($"{roniDir}/{ipaExe}", $"{bsInstall}/{ipaExe}", true);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
           log($"PatchBeatSaber: Failed to install IPA-Minimal: {e.Message}");
           return false;
@@ -195,7 +195,7 @@ namespace Beataroni.Services
         proc.Start();
         // Assuming proc will kill itself here, if not we'll hang, or need to use the Kill method
         proc.WaitForExit();
-        if( proc.ExitCode != 0 )
+        if (proc.ExitCode != 0)
         {
           log($"PatchBeatSaber: IPA.exe returned non-zero({proc.ExitCode}):\n StdOut: {proc.StandardOutput.ReadToEnd()} \n StdErr: {proc.StandardError.ReadToEnd()}");
           return false;
@@ -224,24 +224,25 @@ namespace Beataroni.Services
           w.WriteLine("[Software\\\\Wine\\\\DllOverrides]");
           w.WriteLine("\"winhttp\"=\"native,builtin\"");
         }
-      } 
-      catch(Exception e)
+      }
+      catch (Exception e)
       {
-        log($"PatchSteamProtonPrefix: Failed to patch pfx/user.reg: {e.Message}");
+        log($"PatchSteamProtonPrefix: Failed to patch pfx/user.reg:\n {e.Message}");
         return false;
       }
       return true;
     }
 
-    public bool UninstallMod(Mod m, InstallLogLine log)
+    /// <summary>
+    /// Uninstall/delete a mod from the system
+    /// TODO: If the installed version of a mod has a different file list than
+    /// the current version this might not work correctly. May need to track
+    /// installed mod versions as well, which tbh would be helpful functionality
+    /// for updates.
+    /// </summary>
+    public void UninstallMod(Mod m, string bsInstall, InstallLogLine log)
     {
-      // TODO
-      return false;
-    }
-
-    public bool ValidateMod(Mod m, string bsInstall, InstallLogLine log)
-    {
-      foreach( var dl in m.downloads )
+      foreach (var dl in m.downloads)
       {
         if (!(dl.type.Equals("steam") || dl.type.Equals("universal")))
         {
@@ -249,7 +250,36 @@ namespace Beataroni.Services
           continue;
         }
 
-        foreach( var hash in dl.hashMd5 )
+        foreach (var hash in dl.hashMd5)
+        {
+          var path = FixPath(hash.file);
+          path = Path.Combine(bsInstall, path);
+          try
+          {
+            File.Delete(path);
+          }
+          catch(Exception)
+          {
+            // We don't care
+          }
+        }
+      }
+    }
+
+    /// <summary>
+    /// Validate installed files for a mod against beatmod's hashes
+    /// </summary>
+    public bool ValidateMod(Mod m, string bsInstall, InstallLogLine log)
+    {
+      foreach (var dl in m.downloads)
+      {
+        if (!(dl.type.Equals("steam") || dl.type.Equals("universal")))
+        {
+          // TODO: At the moment Beataroni only supports steam installs - As Oculus doesn't work on Linux
+          continue;
+        }
+
+        foreach (var hash in dl.hashMd5)
         {
           var path = FixPath(hash.file);
           path = Path.Combine(bsInstall, path);
@@ -259,8 +289,8 @@ namespace Beataroni.Services
             {
               using (var stream = File.OpenRead(path))
               {
-                var fileHash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-","");
-                if( !string.Equals(fileHash, hash.hash, StringComparison.OrdinalIgnoreCase) )
+                var fileHash = BitConverter.ToString(md5.ComputeHash(stream)).Replace("-", "");
+                if (!string.Equals(fileHash, hash.hash, StringComparison.OrdinalIgnoreCase))
                 {
                   log($"ValidateMod: Failed to validate {path} : Expected {hash.hash} : Actual {fileHash}");
                   return false;
@@ -268,7 +298,7 @@ namespace Beataroni.Services
               }
             }
           }
-          catch(Exception e)
+          catch (Exception e)
           {
             log($"ValidateMod: Failed to calc md5 for {path}: {e.Message}");
           }
@@ -277,10 +307,35 @@ namespace Beataroni.Services
       return true;
     }
 
-    public bool IsModInstalled(Mod m, InstallLogLine log)
+    /// <summary>
+    /// Check if a mod is (partially) installed
+    /// Intention of this method is to intialise the list of installed mods,
+    /// and any selected mods will be reinstalled/updated after mod selection
+    /// TODO: If we just overwrite already-installed mods does that break any
+    /// config files, reset things like twitch credentials?
+    /// </summary>
+    public bool IsModInstalled(Mod m, string bsInstall)
     {
-      // TODO - Return true if mod at least partially installed
-      return false;
+      var anyPresent = false;
+      foreach (var dl in m.downloads)
+      {
+        if (!(dl.type.Equals("steam") || dl.type.Equals("universal")))
+        {
+          // TODO: At the moment Beataroni only supports steam installs - As Oculus doesn't work on Linux
+          continue;
+        }
+
+        foreach (var hash in dl.hashMd5)
+        {
+          var path = FixPath(hash.file);
+          path = Path.Combine(bsInstall, path);
+
+          if( File.Exists(path) ) {
+            anyPresent = true;
+          }
+        }
+      }
+      return anyPresent;
     }
   }
 }

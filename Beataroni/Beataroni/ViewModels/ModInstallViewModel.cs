@@ -99,9 +99,23 @@ namespace Beataroni.ViewModels
               CurrentStep = $"Current Step: Patch Beat Saber";
               if (!installer.PatchBeatSaber(bsInstall, LogLine))
               {
+                // If this setup step has failed then no mods will work in the game
+                // The most likely reason is the proton prefix is missing
+                // Which will happen if the game hasn't been run first
+                // before the mods were installed
                 installLogText += $"{m.mod.name}: Patching failed\n";
+
+                installLogText += $"\n\nSorry, looks like patching failed\n";
+                installLogText += $"Your installed mods will not work\n";
+                installLogText += $"First try a fresh install (Run the game once before Beataroni)\n";
+                installLogText += $"Then if it still fails please raise a bug at:\n";
+                installLogText += $"https://github.com/geefr/beatsaber-linux-goodies\n\n";
+
+                CurrentMod = "ERROR: Setup Failed";
+                CurrentStep = "";
+
                 this.RaisePropertyChanged(nameof(InstallLogText));
-                continue;
+                return;
               }
               else
               {
@@ -112,19 +126,14 @@ namespace Beataroni.ViewModels
           }
           else
           {
-            CurrentStep = $"Current Step: Uninstall";
-            if( !installer.UninstallMod(m.mod, LogLine) )
-            {
-              // TODO: This is fine - Any unchecked mods will be 'uninstalled'
-              // but it's not implemented yet, commented out to avoid spamming
-              // user with errors
-              //installLogText += $"{m.mod.name}: Uninstall failed (todo)\n";
-              //this.RaisePropertyChanged(nameof(InstallLogText));
-            }
+            // TODO: At the moment we don't log anything here to avoid user-spam
+            // Do they really care if a mod was uninstalled? Really it's just a pass
+            // over the list to ensure what's installed matches the user's selection
+            installer.UninstallMod(m.mod, bsInstall, LogLine);
           }
         }
 
-        CurrentMod = "SUCCESS: All Mods Installed";
+        CurrentMod = "SUCCESS: Setup Completed";
         CurrentStep = "Please Check the log below, if all is good go and enjoy your mods :)";
       });
     }
