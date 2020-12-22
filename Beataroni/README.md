@@ -15,7 +15,7 @@ Beataroni includes everything needed to setup mods on Linux, so no need to downl
 Head over to the [Release Page](https://github.com/geefr/beatsaber-linux-goodies/releases)  and grab the latest Beataroni release. Extract this to somewhere convenient.
 
 The binary should work on any Linux system, with these quirks:
-* On some systems it can be difficult to run the binary through a graphical file manager. Execute beataroni.sh instead and it should launch the UI.
+* On some systems it can be difficult to run the binary through a graphical file manager. Execute Beataroni-Linux.sh instead and it should launch the UI.
 
 ## First Time Setup
 These steps should only need to be run once on your machine.
@@ -40,10 +40,11 @@ Install steps:
 * Change your mod selection
 * Complete the install process
 
-# Limitations
+# Limitations/Known Bugs
 * Beataroni is new code, there will be bugs
 * Only Steam installations are supported (If you're somehow using oculus on Linux I'll happily add support, wouldn't be difficult)
 * The packaging of BSIPA is currently a hack, there may be side effects of this
+* The install package of Beataroni is a bit weird, as the binary is actually a shared library (Thanks Microsoft). Beataroni-Linux.sh will launch it correctly, or just ./Beataroni from a terminal window until i can work out a better solution.
 
 # Thanks
 Beataroni includes a copy of [BSIPA](https://github.com/bsmg/BeatSaber-IPA-Reloaded), which has been forked/minimised in order to create a Linux-native executable.
