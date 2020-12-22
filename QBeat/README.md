@@ -1,4 +1,8 @@
 # QBeat
+Note: As of December 2020 QBeat is deprecated, and Beataroni should be used instead (QBeat may still get bugfixes if you ask nicely, but will have not undergo active development).
+
+Beataroni Docs:  [See Here, scroll down](https://github.com/geefr/beatsaber-linux-goodies/tree/live/Beataroni)
+
 A Cross platform mod installer for Beat Saber
 
 Current state is fairly primitive, but does provide an alternative to BeatDrop/ModAssistant on Linux
