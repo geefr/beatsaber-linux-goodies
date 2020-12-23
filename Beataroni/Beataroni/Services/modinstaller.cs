@@ -194,15 +194,18 @@ namespace Beataroni.Services
         proc.StartInfo.RedirectStandardError = true;
 
 	log($"PatchBeatSaber: Running IPA.exe");
-        proc.Start();
-        // TODO: Turns out this may be tricky in C#, and we may have a ract condition.
-	// Continue after 30 seconds and hope it works, in the future bake the IPA
-	// functionality in as a library to avoid using Process at all.
-        proc.WaitForExit(30000);
-        if (proc.ExitCode != 0)
-        {
-          log($"PatchBeatSaber: IPA.exe returned non-zero({proc.ExitCode}):\n StdOut: {proc.StandardOutput.ReadToEnd()} \n StdErr: {proc.StandardError.ReadToEnd()}");
-          return false;
+        if( proc.Start() ) {
+          // TODO: Turns out this may be tricky in C#, and we may have a ract condition.
+    	  // Continue after 30 seconds and hope it works, in the future bake the IPA
+	  // functionality in as a library to avoid using Process at all.
+          proc.WaitForExit(30000);
+          if (proc.ExitCode != 0)
+          {
+            log($"PatchBeatSaber: IPA returned non-zero({proc.ExitCode}):\n StdOut: {proc.StandardOutput.ReadToEnd()} \n StdErr: {proc.StandardError.ReadToEnd()}");
+            return false;
+          }
+	} else {
+          log("PatchBeatSaber: Failed to start IPA process, don't know why...");
         }
       }
       catch (Exception e)
