@@ -188,7 +188,7 @@ namespace Beataroni.Services
         // Don't wait for user input
         // IPA-Minimal doesn't work unless the executable is specified
         // (Due to order of executables in dir it finds some other file if left to its own devices)
-        proc.StartInfo.Arguments = "-n \"Beat Saber.exe\"";
+        proc.StartInfo.Arguments = "-n -f \"Beat Saber.exe\"";
         proc.StartInfo.CreateNoWindow = true;
         proc.StartInfo.RedirectStandardOutput = true;
         proc.StartInfo.RedirectStandardError = true;
@@ -198,7 +198,9 @@ namespace Beataroni.Services
           // TODO: Turns out this may be tricky in C#, and we may have a ract condition.
     	  // Continue after 30 seconds and hope it works, in the future bake the IPA
 	  // functionality in as a library to avoid using Process at all.
-          proc.WaitForExit(30000);
+	  if( !proc.HasExited ) {
+            proc.WaitForExit(30000);
+	  }
           if (proc.ExitCode != 0)
           {
             log($"PatchBeatSaber: IPA returned non-zero({proc.ExitCode}):\n StdOut: {proc.StandardOutput.ReadToEnd()} \n StdErr: {proc.StandardError.ReadToEnd()}");
