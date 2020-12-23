@@ -192,6 +192,7 @@ namespace Beataroni.Services
         proc.StartInfo.CreateNoWindow = true;
         proc.StartInfo.RedirectStandardOutput = true;
         proc.StartInfo.RedirectStandardError = true;
+	proc.EnableRaisingEvents = true;
 
 	log($"PatchBeatSaber: Running IPA.exe");
         if( proc.Start() ) {
@@ -199,7 +200,9 @@ namespace Beataroni.Services
     	  // Continue after 30 seconds and hope it works, in the future bake the IPA
 	  // functionality in as a library to avoid using Process at all.
 	  if( !proc.HasExited ) {
-            proc.WaitForExit(30000);
+            if( !proc.WaitForExit(30000) ) {
+              proc.Kill();
+            }
 	  }
           if (proc.ExitCode != 0)
           {
