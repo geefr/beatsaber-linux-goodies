@@ -1,0 +1,3 @@
+[submodule "BSIPA-Linux"]
+	path = BSIPA-Linux
+	url = https://github.com/geefr/BSIPA-Linux.git
