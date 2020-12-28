@@ -37,4 +37,7 @@
       <DependentUpon>ModInstallView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BSIPA-Linux\IPA-lib\IPA-lib.csproj" />
+  </ItemGroup>
 </Project>
