@@ -215,7 +215,7 @@ namespace Beataroni.Services
       }
       catch (Exception e)
       {
-        log(e.Message);
+        log(e.ToString());
         return false;
       }
       return true;
