@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using Avalonia.Interactivity;
 using Beataroni.Models.BeatMods;
@@ -129,7 +130,7 @@ namespace Beataroni.ViewModels
       var filters = BeatModsV1.DefaultFilters;
       filters.Add("gameVersion", gameVersion);
 
-      var m = BeatModsV1.FetchMods(BeatModsV1.DefaultFilters);
+      var m = BeatModsV1.FetchMods(BeatModsV1.DefaultFilters).OrderBy(mod => mod.name, new Helpers.StringInvariantSortComparerUS()).ToList();
       var installer = new ModInstaller();
       var entries = new List<ModEntry>();
       foreach( var mm in m ) {
