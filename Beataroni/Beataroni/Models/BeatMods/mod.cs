@@ -65,6 +65,13 @@ namespace Beataroni.Models.BeatMods
     }
   }
 
+  /// Comparator class for Mod
+  public class ModComparatorByName : IComparer<Mod>
+  {
+    public int Compare(Mod a, Mod b) => string.Compare(a.name, b.name, true);
+  }
+
+
   /// <summary>
   /// A Mod within Mod.dependencies
   /// This is only a different class due to the way BeatMods returns dependencies
