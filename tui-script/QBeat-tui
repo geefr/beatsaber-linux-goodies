@@ -504,7 +504,7 @@ function action-installer-set-config {
 
 function action-installer-set-version {
   # Sets version as part of first-time setup, similarly to action-version-set.
-  versionsarray=( $( curl -sL https://beatmods.com/api/v1/version | sed -e 's/\[//' -e 's/\]//' -e 's/,/\n/g' ) )
+  versionsarray=( $( curl -sL https://versions.beatmods.com/versions.json | sed -e 's/\[//' -e 's/\]//' -e 's/,/\n/g' ) )
 
   echo "Default: ${versionsarray[0]//\"/}"
   echo "Select a version:"
@@ -803,7 +803,7 @@ EOF
   ${scriptpath}/QBeat --config get gameVersion
   echo "-----------------------------"
 
-  versionsarray=( $( curl -sL https://beatmods.com/api/v1/version | sed -e 's/\[//' -e 's/\]//' -e 's/,/\n/g' ) )
+  versionsarray=( $( curl -sL https://versions.beatmods.com/versions | sed -e 's/\[//' -e 's/\]//' -e 's/,/\n/g' ) )
   echo "  Select a version:"
   for i in ${!versionsarray[@]}
   do
