@@ -52,7 +52,7 @@ namespace Beataroni.Services
 
     /// Fetch list of mods for a set of filters
     /// Typical filters would be game version, installation type, mod status
-    public static IList<Mod> FetchMods( Dictionary<string, string> filters )
+    public static ICollection<Mod> FetchMods( Dictionary<string, string> filters )
     {
       var endpoint = $"{APIMod}";
 
@@ -90,7 +90,7 @@ namespace Beataroni.Services
         // Expand any dependencies into .net object references
         mods.ForEach(x => x.ExpandDependencyRefs(mods));
 
-        return mods;
+        return new SortedSet<Mod>(mods, new ModComparatorByName());
       } catch (WebException e)
       {
         Console.WriteLine($"Error fetching BS Mods: {e.Message}");
