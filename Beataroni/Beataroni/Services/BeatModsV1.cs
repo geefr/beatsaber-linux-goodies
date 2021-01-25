@@ -19,14 +19,14 @@ namespace Beataroni.Services
     /// Note: You MUST not have '//' in the resulting URLs, beatmods can't handle this
     private static readonly string APIRoot = "https://beatmods.com/api/v1";
     private static readonly string APIDownload = "https://beatmods.com";
-    private static readonly string APIVersion = "version";
+    private static readonly string APIVersion = "https://versions.beatmods.com/versions.json";
     private static readonly string APIMod = "mod";
 
     /// Fetch list of beatsaber/mod versions
     /// List will be returned in order sent from server - Should be newest -> oldest
     public static IList<string> FetchBSVersions()
     {
-      var endpoint = $"{APIRoot}/{APIVersion}";
+      var endpoint = $"{APIVersion}";
       
       try
       {
