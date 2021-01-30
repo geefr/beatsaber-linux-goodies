@@ -149,7 +149,7 @@ namespace Beataroni.Services
         // TODO: Should capture stdout/stderr from IPA-Minimal lib, can we do that without major rework?
         var origPwd = Directory.GetCurrentDirectory();
         Directory.SetCurrentDirectory(bsInstall);
-        string[] args = {"IPA-Minimal", "-n", "-f", "Beat Saber.exe", "--relativeToPwd"};
+        string[] args = {"-n", "-f", "Beat Saber.exe", "--relativeToPwd"};
         IPA.Program.Main(args);
         Directory.SetCurrentDirectory(origPwd);
 
