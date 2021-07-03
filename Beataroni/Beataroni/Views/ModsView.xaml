@@ -16,12 +16,21 @@
       <ItemsControl Items="{Binding Mods}">
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <CheckBox
-              IsChecked="{Binding selected}"
-              Content="{Binding mod.name}"
-              Command="{Binding $parent[UserControl].DataContext.ModChecked}"
-              CommandParameter="{Binding .}"
-              />
+            <Border Background="Black"
+            BorderBrush="Gray"
+            BorderThickness="2"
+            Padding="15">
+              <StackPanel Orientation="Vertical">
+                <CheckBox
+                  IsChecked="{Binding selected}"
+                  Content="{Binding mod.name}"
+                  Command="{Binding $parent[UserControl].DataContext.ModChecked}"
+                  CommandParameter="{Binding .}"
+                  Background="White"
+                  />
+                <TextBlock Text="{Binding mod.description}" TextWrapping="Wrap" Width="300" HorizontalAlignment="Center"/>
+              </StackPanel>
+            </Border>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>
