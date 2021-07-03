@@ -11,7 +11,7 @@ namespace Beataroni.Tests
         {
             var versions = BeatModsV1.FetchBSVersions();
             Assert.NotNull(versions);
-            Assert.Equal(12, versions.Count);
+            Assert.Equal(14, versions.Count);
         }
 
         [Fact]
