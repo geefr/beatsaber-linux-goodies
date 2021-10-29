@@ -11,6 +11,9 @@ pipeline {
   }
 
   stages {
+    stage('Git') { steps {
+      sh "git submodule update --init"
+    } }
     stage('CMake') { steps {
       dir("${env.WORKSPACE}/QBeat/build") {
         sh "cmake -DCMAKE_INSTALL_PREFIX=${env.WORKSPACE}/QBeat/install ${env.WORKSPACE}/QBeat/"
