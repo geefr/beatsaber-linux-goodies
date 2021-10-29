@@ -15,6 +15,9 @@ pipeline {
   }
 
   stages {
+    stage('Checkout') { steps {
+      sh 'git submodule update --init'
+    } }
     stage('Publish Linux 64') { steps {
       dir("${env.WORKSPACE}/Beataroni") {
         sh '''./build/publish-linux-x64.sh'''
