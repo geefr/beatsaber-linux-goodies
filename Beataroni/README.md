@@ -1,5 +1,5 @@
 # Beataroni
-Beataroni is a graphical mod installer for Linux. In the future it may gain more features/platforms.
+Beataroni is a graphical BeatSaber mod installer for Linux. In the future it may gain more features/platforms.
 
 Beataroni is a spiritual successor to QBeat, but has some major differences:
 * It's written in C#
@@ -43,12 +43,14 @@ Install steps:
 # Limitations/Known Bugs
 * Beataroni is new code, there will be bugs
 * Only Steam installations are supported (If you're somehow using oculus on Linux I'll happily add support, wouldn't be difficult)
-* The packaging of BSIPA is currently a hack, there may be side effects of this
 * The install package of Beataroni is a bit weird, as the binary is actually a shared library (Thanks Microsoft). Beataroni-Linux.sh will launch it correctly, or just ./Beataroni from a terminal window until i can work out a better solution.
 
 # Thanks
-Beataroni includes a copy of [BSIPA](https://github.com/bsmg/BeatSaber-IPA-Reloaded), which has been forked/minimised in order to create a Linux-native executable.
+Beataroni includes a copy of [BSIPA](https://github.com/bsmg/BeatSaber-IPA-Reloaded), which has been forked/minimised in order to create a Linux-native executable. See [BSIPA Linux](https://github.com/geefr/BSIPA-Linux).
 
 BSIPA is Copyright (c) 2019 Anairkoen Schno, distributed under the MIT licence.
 
+Beataroni logo/icon by Ticia Schiffner (CC0 licence).
+
 General thanks go to any early testers, all the mod developers, and the wider community. Stay awesome.
+
