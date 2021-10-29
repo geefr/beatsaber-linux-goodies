@@ -22,7 +22,7 @@
     </Grid>
     <Button HorizontalAlignment="Stretch" Command="{Binding ContinueButton}">Continue</Button>
 
-    <TextBlock HorizontalAlignment="Center">Notes</TextBlock>
+    <TextBlock HorizontalAlignment="Center">** Notes **</TextBlock>
     <TextBlock HorizontalAlignment="Center">Beataroni only supports Steam installations</TextBlock>
     <TextBlock HorizontalAlignment="Center">Linux is the primary target for now</TextBlock>
     <TextBlock HorizontalAlignment="Center">For Windows use ModAssistant, it's way better</TextBlock>
