@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31410.357
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Beataroni", "Beataroni\Beataroni.csproj", "{165F30D5-92CF-40B1-9E38-CA398EBD15D3}"
 EndProject
@@ -17,9 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{165F30D5-92CF-40B1-9E38-CA398EBD15D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -58,5 +55,11 @@ Global
 		{88E1BFB8-83C1-42DD-8102-BCD47A498DE4}.Release|x64.Build.0 = Release|Any CPU
 		{88E1BFB8-83C1-42DD-8102-BCD47A498DE4}.Release|x86.ActiveCfg = Release|Any CPU
 		{88E1BFB8-83C1-42DD-8102-BCD47A498DE4}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F6C785E2-380F-48C9-B873-FC379E9B5308}
 	EndGlobalSection
 EndGlobal
