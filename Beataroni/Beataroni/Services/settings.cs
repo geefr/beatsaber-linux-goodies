@@ -9,9 +9,6 @@ namespace Beataroni.Services
 {
   public class Settings
   {
-    // TODO: Most of these are blank - will be initialised to sensible defaults,
-    // or need to be setup each time installer is launched. Will need persistent settings
-    // storage for this.
     public string BSVersion {get;set;} = "";
     public string BSInstall {get;set;} = "";
 

@@ -14,7 +14,7 @@ namespace Beataroni.Services
 {
   public class ModInstaller
   {
-    private List<string> BSPathsToFix = new List<string>
+    private readonly List<string> BSPathsToFix = new()
     {
       "Beat Saber_Data",
       "DLC",

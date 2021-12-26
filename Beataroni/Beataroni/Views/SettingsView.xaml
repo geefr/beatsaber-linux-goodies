@@ -10,14 +10,12 @@
   </Design.DataContext>
 
   <StackPanel Orientation="Vertical">
-    <TextBlock HorizontalAlignment="Center">Please double-check settings after a beatsaber update</TextBlock>
     <Grid ColumnDefinitions="1*,1*" RowDefinitions="Auto,Auto" Width="380" ShowGridLines="False">
       <TextBlock Text="Beat Saber Installation" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"></TextBlock>
       <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding BSInstall}"></TextBox>
 
-      <TextBlock Text="Beat Saber Version" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"></TextBlock>
+      <TextBlock Text="{Binding BSVersionTextLabel}" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"></TextBlock>
       <ComboBox Items="{Binding BSVersions}" SelectedItem="{Binding BSVersion}" SelectedIndex="{Binding BSVersionIndex}" Grid.Column="1" Grid.Row="1"/>
-
     </Grid>
     <Button HorizontalAlignment="Stretch" Command="{Binding ContinueButton}">Continue</Button>
 
