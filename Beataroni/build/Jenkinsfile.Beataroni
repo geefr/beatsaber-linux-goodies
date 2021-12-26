@@ -29,6 +29,7 @@ pipeline {
           sh "zip -r ${env.WORKSPACE}/Beataroni-win64.zip ${env.WORKSPACE}/Beataroni/Beataroni/bin/Release/net6.0/publish-win64/*"
           sh "tar -C ${env.WORKSPACE}/Beataroni/Beataroni/bin/Release/net6.0/publish-Linux64/ -cvzf ${env.WORKSPACE}/Beataroni-linux64.tar.gz ."
           archiveArtifacts artifacts: 'Beataroni-*.tar.gz', fingerprint: true, onlyIfSuccessful: true
+          archiveArtifacts artifacts: 'Beataroni-*.zip', fingerprint: true, onlyIfSuccessful: true
       }
     }
   }
