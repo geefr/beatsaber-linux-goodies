@@ -16,6 +16,7 @@ namespace Beataroni.ViewModels
   public class SettingsViewModel : ViewModelBase
   {
     private ObservableCollection<string> bsVersions;
+    private string bsVersionTextLabel;
     private Settings settings;
     private int bsVersionIndex = 0;
 
@@ -48,9 +49,24 @@ namespace Beataroni.ViewModels
       }
     }
 
+    public string BSVersionTextLabel {
+      get { return bsVersionTextLabel; }
+      set { this.RaiseAndSetIfChanged(ref bsVersionTextLabel, value); }
+    }
+
     public int BSVersionIndex {
       get { return bsVersionIndex; }
-      set { this.RaiseAndSetIfChanged(ref bsVersionIndex, value); }
+      set {
+        if (value != 0)
+        {
+          BSVersionTextLabel = "Beatsaber Version (not latest)";
+        }
+        else
+        {
+          BSVersionTextLabel = "Beatsaber Version";
+        }
+        this.RaiseAndSetIfChanged(ref bsVersionIndex, value);
+      }
     }
 
     public ReactiveCommand<Unit, Unit> ContinueButton { get; }
@@ -71,9 +87,15 @@ namespace Beataroni.ViewModels
       var versions = BeatModsV1.FetchBSVersions();
       var versionSet = new ObservableCollection<string>(versions);
       this.RaiseAndSetIfChanged(ref bsVersions, versionSet);
-      // TODO: Should be versions.IndexOf(settings.BSVersion) to select whatever settings says (Or read game version vs last-installed version, modassistant has that so it's clearly possible)
-      BSVersionIndex = 0;
-      //});
+
+      if (!string.IsNullOrWhiteSpace(settings.BSVersion))
+      {
+        BSVersionIndex = versions.IndexOf(settings.BSVersion);
+      }
+      else
+      {
+        BSVersionIndex = 0;
+      }
 
       // Criteria for continue button to be enabled
       var bsInstallValid = this.WhenAnyValue(

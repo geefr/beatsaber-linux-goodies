@@ -11,7 +11,7 @@
       - checkout
       - run: git submodule update --init --recursive
       - run: cd Beataroni && ./build/publish-linux-x64.sh
-      - run: tar -C Beataroni/Beataroni/bin/Release/net5.0/publish-Linux64/ -cvzf Beataroni-linux64.tar.gz .
+      - run: tar -C Beataroni/Beataroni/bin/Release/net6.0/publish-Linux64/ -cvzf Beataroni-linux64.tar.gz .
       - store_artifacts:
           path: Beataroni-linux64.tar.gz
           destination: Beataroni-linux64.tar.gz

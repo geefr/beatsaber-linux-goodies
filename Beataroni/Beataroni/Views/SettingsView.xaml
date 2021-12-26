@@ -10,15 +10,12 @@
   </Design.DataContext>
 
   <StackPanel Orientation="Vertical">
-    <TextBlock HorizontalAlignment="Center">TODO: Settings not saved, paste install path below</TextBlock>
-    <TextBlock HorizontalAlignment="Center">and check version number is correct</TextBlock>
     <Grid ColumnDefinitions="1*,1*" RowDefinitions="Auto,Auto" Width="380" ShowGridLines="False">
       <TextBlock Text="Beat Saber Installation" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center"></TextBlock>
       <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding BSInstall}"></TextBox>
 
-      <TextBlock Text="Beat Saber Version" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"></TextBlock>
+      <TextBlock Text="{Binding BSVersionTextLabel}" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center"></TextBlock>
       <ComboBox Items="{Binding BSVersions}" SelectedItem="{Binding BSVersion}" SelectedIndex="{Binding BSVersionIndex}" Grid.Column="1" Grid.Row="1"/>
-
     </Grid>
     <Button HorizontalAlignment="Stretch" Command="{Binding ContinueButton}">Continue</Button>
 
@@ -30,7 +27,7 @@
     <TextBlock HorizontalAlignment="Center">https://github.com/geefr/beatsaber-linux-goodies</TextBlock>
     <TextBlock HorizontalAlignment="Center">Or message ITGaz in Beat Saber Modding Discord</TextBlock>
     <TextBlock HorizontalAlignment="Center">Please don't bug mod creators for Linux-specific bugs &lt;3</TextBlock>
-    <TextBlock HorizontalAlignment="Center">Copyright (c) 2020 Gareth Francis</TextBlock>
+    <TextBlock HorizontalAlignment="Center">Copyright (c) 2021 Gareth Francis</TextBlock>
     <TextBlock HorizontalAlignment="Center">released under BSD 2-Clause Licence</TextBlock>
     <TextBlock HorizontalAlignment="Center">Includes BSIPA Copyright (c) 2019 Anairkoen Schno, MIT Licence</TextBlock>
   </StackPanel>
