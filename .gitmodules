@@ -1,4 +1,4 @@
 [submodule "BSIPA-Linux"]
 	path = BSIPA-Linux
-	url = git@github.com:geefr/BSIPA-Linux.git
+	url = https://github.com/geefr/BSIPA-Linux.git
   branch = stuff

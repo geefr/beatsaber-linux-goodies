@@ -1,6 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0
 LABEL project="beatsaber-linux-goodies Beataroni Build Container"
 LABEL MAINTAINER Gareth Francis (gfrancis.dev@gmail.com)
-
-RUN apt-get update; apt-get install -y ssh
+# That's it, nothing to do - just the .net 5 sdk needed here
 
