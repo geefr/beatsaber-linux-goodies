@@ -21,12 +21,14 @@ pipeline {
     stage('Publish Linux 64') { steps {
       dir("${env.WORKSPACE}/Beataroni") {
         sh '''./build/publish-linux-x64.sh'''
+        sh '''./build/publish-windows-x64.sh'''
       }
     } }
     stage('Artifacts') {
       steps {
           sh "tar -C ${env.WORKSPACE}/Beataroni/Beataroni/bin/Release/net6.0/publish-Linux64/ -cvzf ${env.WORKSPACE}/Beataroni-linux64.tar.gz ."
-archiveArtifacts artifacts: 'Beataroni-linux64.tar.gz', fingerprint: true, onlyIfSuccessful: true
+          sh "tar -C ${env.WORKSPACE}/Beataroni/Beataroni/bin/Release/net6.0/publish-Windows64/ -cvzf ${env.WORKSPACE}/Beataroni-windows64.tar.gz ."
+          archiveArtifacts artifacts: 'Beataroni-*.tar.gz', fingerprint: true, onlyIfSuccessful: true
       }
     }
   }
