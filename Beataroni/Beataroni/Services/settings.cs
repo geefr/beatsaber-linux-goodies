@@ -12,7 +12,7 @@ namespace Beataroni.Services
     public string BSVersion {get;set;} = "";
     public string BSInstall {get;set;} = "";
 
-    private static string SettingsFile = Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "LocalAppData" : "Home") + "/.config/beataroni/config.json";
+    private static string SettingsFile = Environment.GetEnvironmentVariable(RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ? "HOME" : "LocalAppData" ) + "/.config/beataroni/config.json";
 
     public Settings() {}
 
